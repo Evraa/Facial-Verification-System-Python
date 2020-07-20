@@ -4,3 +4,8 @@ or any other bash files that we might use.
 
 # src folder
 contains the core functional python scripts used.
+
+
+# Requirements
+`pandas`
+`numpy`
