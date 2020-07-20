@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+
 def create_demo(fileName='csv_example.csv'):
     '''
         Creates a csv file with the 7 points and the firs row includes the header
