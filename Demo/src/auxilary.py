@@ -13,34 +13,34 @@ def create_demo(fileName='csv_example.csv'):
                 'Eye_soc_R'     :[],
                 'Nostril_L'     :[],
                 'Nostril_R'     :[],
-                'Moustache'     :[],
+                'Moustache'     :[]
                 # 21 indeces
-                'L_EB_to_R_EB'  :[],
-                'L_EB_to_L_ES'  :[],
-                'L_EB_to_R_ES'  :[],
-                'L_EB_to_L_NT'  :[],
-                'L_EB_to_R_NT'  :[],
-                'L_EB_to_MCH'   :[],
+                # 'L_EB_to_R_EB'  :[],
+                # 'L_EB_to_L_ES'  :[],
+                # 'L_EB_to_R_ES'  :[],
+                # 'L_EB_to_L_NT'  :[],
+                # 'L_EB_to_R_NT'  :[],
+                # 'L_EB_to_MCH'   :[],
 
-                'R_EB_to_L_ES'  :[],
-                'R_EB_to_R_ES'  :[],
-                'R_EB_to_L_NT'  :[],
-                'R_EB_to_R_NT'  :[],
-                'R_EB_to_MCH'   :[],
+                # 'R_EB_to_L_ES'  :[],
+                # 'R_EB_to_R_ES'  :[],
+                # 'R_EB_to_L_NT'  :[],
+                # 'R_EB_to_R_NT'  :[],
+                # 'R_EB_to_MCH'   :[],
 
-                'L_ES_to_R_ES'  :[],
-                'L_ES_to_L_NT'  :[],
-                'L_ES_to_R_NT'  :[],
-                'L_ES_to_R_MCH' :[],
+                # 'L_ES_to_R_ES'  :[],
+                # 'L_ES_to_L_NT'  :[],
+                # 'L_ES_to_R_NT'  :[],
+                # 'L_ES_to_R_MCH' :[],
 
-                'R_ES_to_L_NT'  :[],
-                'R_ES_to_R_NT'  :[],
-                'R_ES_to_MCH'   :[],
+                # 'R_ES_to_L_NT'  :[],
+                # 'R_ES_to_R_NT'  :[],
+                # 'R_ES_to_MCH'   :[],
                 
-                'L_NT_to_R_NT'  :[],
-                'L_NT_to_MCH'   :[],
+                # 'L_NT_to_R_NT'  :[],
+                # 'L_NT_to_MCH'   :[],
 
-                'R_NT_to_MCH'   :[]
+                # 'R_NT_to_MCH'   :[]
                
                 }
 
@@ -67,7 +67,7 @@ def add_row (dataframe,row_dict ,fileName='csv_example.csv'):
     '''
         Append row of data, and store it.
     '''
-    if len(row_dict) < 29:
+    if len(row_dict) < 7:
         print ("error: row length is incorrect!", row_dict)
         return None
 
