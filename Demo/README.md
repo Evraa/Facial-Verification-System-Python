@@ -25,4 +25,6 @@ contains the core functional python scripts used.
     + read the file
     + append rows (auto store)
 
+    the measure.py file:
 
+    responsible for reading the dataset and calculates the points needed in identification.

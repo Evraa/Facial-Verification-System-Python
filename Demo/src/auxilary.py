@@ -13,36 +13,10 @@ def create_demo(fileName='csv_example.csv'):
                 'Eye_soc_R'     :[],
                 'Nostril_L'     :[],
                 'Nostril_R'     :[],
-                'Moustache'     :[]
-                # 21 indeces
-                # 'L_EB_to_R_EB'  :[],
-                # 'L_EB_to_L_ES'  :[],
-                # 'L_EB_to_R_ES'  :[],
-                # 'L_EB_to_L_NT'  :[],
-                # 'L_EB_to_R_NT'  :[],
-                # 'L_EB_to_MCH'   :[],
-
-                # 'R_EB_to_L_ES'  :[],
-                # 'R_EB_to_R_ES'  :[],
-                # 'R_EB_to_L_NT'  :[],
-                # 'R_EB_to_R_NT'  :[],
-                # 'R_EB_to_MCH'   :[],
-
-                # 'L_ES_to_R_ES'  :[],
-                # 'L_ES_to_L_NT'  :[],
-                # 'L_ES_to_R_NT'  :[],
-                # 'L_ES_to_R_MCH' :[],
-
-                # 'R_ES_to_L_NT'  :[],
-                # 'R_ES_to_R_NT'  :[],
-                # 'R_ES_to_MCH'   :[],
-                
-                # 'L_NT_to_R_NT'  :[],
-                # 'L_NT_to_MCH'   :[],
-
-                # 'R_NT_to_MCH'   :[]
-               
-                }
+                'Moustache'     :[],
+                'Face_Width'    :[],
+                'Face_Height'   :[]
+    }
 
     #convert it into dataframe
     df = pd.DataFrame(my_dict)
@@ -75,5 +49,4 @@ def add_row (dataframe,row_dict ,fileName='csv_example.csv'):
     dataframe_concatenatd = pd.concat([dataframe,row], ignore_index = True)
     store_csv(dataframe=dataframe_concatenatd, fileName=fileName)
     return dataframe_concatenatd
-
 
