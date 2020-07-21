@@ -114,7 +114,7 @@ def compareRatios(int1, int2):
     v = abs(int1 - int2)
     return v
 
-#
+# CHANGE WEIGHTING OF FEATURES
 def weights(x):
     return {
         'Eye_br_L': 0.166666667,
