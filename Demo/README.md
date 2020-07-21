@@ -7,6 +7,8 @@
 
 ## Folders Discription:
 
+TODO: add a link to this
+shape_predictor_68_face_landmarks
 
 # [dataset folder](https://github.com/Evraa/Facial-Verification-System-Python/tree/master/Demo/dataset)
 contains a very small set of face images.
@@ -25,6 +27,3 @@ contains the core functional python scripts used.
     + read the file
     + append rows (auto store)
 
-    the measure.py file:
-
-    responsible for reading the dataset and calculates the points needed in identification.
