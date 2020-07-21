@@ -37,22 +37,20 @@ or any other bash files that we might use.
 # [src folder](https://github.com/Evraa/Facial-Verification-System-Python/tree/master/Demo/src)
 contains the core functional python scripts used.
 
-    auxilary.py file usage:
+`main.py`
 
-    you can:
-    + create csv file
-    + read the file
-    + append rows (auto store)
+The file responsible for comparing images.
 
-    face_utils.py
+`facial_landmarks.py`
 
-    simple functions used in face detection
+The main file that detect the face key points and calculate the distances
 
-    facial_landmarks.py
+`auxilary.py`
 
-    the main file that detect the face key points and calculate the distances
-    
- ## Facial Analysis
- Use the permDict(dataframe) to analyze a DataFrame of faces. 
- Each face has 6 length values that determine similarity,
- as compared to the x scale of the face.
+Where repeatedly used functions exist
+ 
+
+## Facial Analysis
+Use the permDict(dataframe) to analyze a DataFrame of faces. 
+Each face has 6 length values that determine similarity,
+as compared to the x scale of the face.

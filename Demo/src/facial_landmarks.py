@@ -4,7 +4,6 @@ import argparse
 import imutils
 import dlib
 import cv2
-from face_utils import *
 from auxilary import *
 
 

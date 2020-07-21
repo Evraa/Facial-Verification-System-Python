@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+import numpy as np
 
 
 def create_demo(fileName='csv_example.csv'):
@@ -54,23 +55,31 @@ def add_row(dataframe, row_dict, fileName='csv_example.csv'):
     return dataframe_concatenatd
 
 
-main_dict = read_csv("csv_example.csv")
+def rect_to_bb(rect):
+	x = rect.left()
+	y = rect.top()
+	w = rect.right() - x
+	h = rect.bottom() - y
+	return (x, y, w, h)
 
-features = main_dict.columns[1:8]
-x_scale = main_dict.columns[8]
-y_scale = main_dict.columns[9]
 
-# append to main dict
-df = pd.DataFrame(columns=['Similar to', 'Same as'])
-
-# arbitrary threshold
-threshold_isSame = 2
-threshold_isSimilar = 10
+def shape_to_np(shape, dtype="int"):
+	'''
+		Convert the `shape` returned from dlib into ndarray
+	'''
+	# initialize the list of (x, y)-coordinates
+	coords = np.zeros((68, 2), dtype=dtype)
+	# loop over the 68 facial landmarks and convert them
+	# to a 2-tuple of (x, y)-coordinates
+	for i in range(0, 68):
+		coords[i] = (shape.part(i).x, shape.part(i).y)
+	# return the list of (x, y)-coordinates
+	return coords
 
 
 # compares all faces in the database to one face
 # returns two lists: similar to and same as
-def compareFaces(indx, rw, d):
+def compareFaces(indx, rw, d, features, x_scale,threshold_isSame, threshold_isSimilar):
     similar = []
     same = []
     # each face
@@ -87,26 +96,13 @@ def compareFaces(indx, rw, d):
             # x = (sum(averagediff) / len(averagediff)) * 1000
             x = (sum(averagediff)) * 1000
             print("Score for", d['image_name'][i], "=", x)
-            r = insertFaces(x)
+            r = insertFaces(x,threshold_isSame, threshold_isSimilar)
             if r == 2:
                 same.append(d['image_name'][i])
             elif r == 1:
                 similar.append(d['image_name'][i])
     pair = [similar, same]
     return pair
-
-
-# compares all faces in the database to all faces
-def permDict(d):
-    toAppend = pd.DataFrame({
-        'isSimilar': [],
-        'isSame': []
-    })
-    for indx, rw in d.iterrows():
-        print("\nAnalyzing Face: ", indx, ", ", d['image_name'][indx])
-        toAppend.loc[indx] = compareFaces(indx, rw, d)
-    result = pd.concat([d, toAppend], axis=1, sort=False)
-    return result
 
 
 # returns simple difference between ratios
@@ -133,7 +129,7 @@ def weightedCompareRatios(int1, int2, feature):
 
 
 # inserts the picture name into the new columns depending of threshold
-def insertFaces(v):
+def insertFaces(v,threshold_isSame, threshold_isSimilar):
     if v < threshold_isSimilar:
         if v < threshold_isSame:
             return 2
@@ -141,6 +137,3 @@ def insertFaces(v):
             return 1
     else:
         return 0
-
-
-print(permDict(main_dict))
