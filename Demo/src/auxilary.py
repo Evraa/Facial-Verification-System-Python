@@ -64,39 +64,83 @@ y_scale = main_dict.columns[9]
 df = pd.DataFrame(columns=['Similar to', 'Same as'])
 
 # arbitrary threshold
-threshold_isSame = .01
-threshold_isSimilar = .1
+threshold_isSame = 2
+threshold_isSimilar = 10
 
 
 # compares all faces in the database to one face
-def compareFaces(indx, rw):
-    for f in range(0, 6):
-        xscale = rw[features[f]] / rw[x_scale]
-        print("\nFor ", features[f], " of Index ", indx, " (", rw[features[f]], ")")
-        print("Face Scale X: ", rw[x_scale])
-        for i, r in main_dict.iterrows():
-            if not i == indx:
+# returns two lists: similar to and same as
+def compareFaces(indx, rw, d):
+    similar = []
+    same = []
+    # each face
+    for i, r in d.iterrows():
+        averagediff = []
+        if not i == indx:
+            # each feature
+            for f in range(0, 6):
+                xscale = rw[features[f]] / rw[x_scale]
                 xscale2 = r[features[f]] / r[x_scale]
-                print("Compare to: ", i, " value: ", r[features[f]], " scale: ", xscale2)
-                compareRatios(xscale, xscale2)
+                # n = compareRatios(xscale, xscale2)
+                n = weightedCompareRatios(xscale, xscale2, features[f])
+                averagediff.append(n)
+            # x = (sum(averagediff) / len(averagediff)) * 1000
+            x = (sum(averagediff)) * 1000
+            print("Score for", d['image_name'][i], "=", x)
+            r = insertFaces(x)
+            if r == 2:
+                same.append(d['image_name'][i])
+            elif r == 1:
+                similar.append(d['image_name'][i])
+    pair = [similar, same]
+    return pair
 
 
 # compares all faces in the database to all faces
-def permDict(dict):
-    for indx, rw in dict:
-        compareFaces(indx, rw)
+def permDict(d):
+    toAppend = pd.DataFrame({
+        'isSimilar': [],
+        'isSame': []
+    })
+    for indx, rw in d.iterrows():
+        print("\nAnalyzing Face: ", indx, ", ", d['image_name'][indx])
+        toAppend.loc[indx] = compareFaces(indx, rw, d)
+    result = pd.concat([d, toAppend], axis=1, sort=False)
+    return result
 
 
 # returns simple difference between ratios
 def compareRatios(int1, int2):
     v = abs(int1 - int2)
-    print("diff: ", v)
+    return v
+
+#
+def weights(x):
+    return {
+        'Eye_br_L': 0.166666667,
+        'Eye_br_R': 0.166666667,
+        'Eye_soc_L': 0.166666667,
+        'Eye_soc_R': 0.166666667,
+        'Nostril_L': 0.166666667,
+        'Nostril_R': 0.166666667
+    }.get(x)  # 5 is default if x not found
+
+# returns simple difference between ratios
+def weightedCompareRatios(int1, int2, feature):
+    weight = weights(feature)
+    v = abs(int1 - int2) * weight
     return v
 
 
 # inserts the picture name into the new columns depending of threshold
-def insertFaces(dataframe, v, indx):
+def insertFaces(v):
     if v < threshold_isSimilar:
         if v < threshold_isSame:
-            obj = dataframe.append({'Index': indx, 'Similar to': "True", 'Same as': "False"}, ignore_index=True)
-            dataframe.append(main_dict.columns[0])
+            return 2
+        else:
+            return 1
+    else:
+        return 0
+
+
+print(permDict(main_dict))
