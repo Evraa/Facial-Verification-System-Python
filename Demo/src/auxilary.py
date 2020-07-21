@@ -16,7 +16,7 @@ def create_demo(fileName='csv_example.csv'):
                 'Moustache'     :[],
                 'Face_Width'    :[],
                 'Face_Height'   :[]
-    }
+                }
 
     #convert it into dataframe
     df = pd.DataFrame(my_dict)
@@ -49,4 +49,5 @@ def add_row (dataframe,row_dict ,fileName='csv_example.csv'):
     dataframe_concatenatd = pd.concat([dataframe,row], ignore_index = True)
     store_csv(dataframe=dataframe_concatenatd, fileName=fileName)
     return dataframe_concatenatd
+
 
