@@ -85,18 +85,23 @@ def compareFaces(indx, rw, d, features, x_scale,threshold_isSame, threshold_isSi
     # each face
     for i, r in d.iterrows():
         averagediff = []
+        valid = 0
         if not i == indx:
             # each feature
-            for f in range(0, 6):
+            for f in range(7):
                 xscale = rw[features[f]] / rw[x_scale]
                 xscale2 = r[features[f]] / r[x_scale]
                 # n = compareRatios(xscale, xscale2)
-                n = weightedCompareRatios(xscale, xscale2, features[f])
-                averagediff.append(n)
+                # n = weightedCompareRatios(xscale, xscale2, features[f])
+                if abs(xscale-xscale2) < 0.004:
+                    valid += 1
+
+                # averagediff.append(n)
             # x = (sum(averagediff) / len(averagediff)) * 1000
-            x = (sum(averagediff)) * 1000
-            print("Score for", d['image_name'][i], "=", x)
-            r = insertFaces(x,threshold_isSame, threshold_isSimilar)
+            # x = (sum(averagediff)) * 1000
+            # print("Score for", d['image_name'][i], "=", x)
+            
+            r = insertFaces(valid,threshold_isSame, threshold_isSimilar)
             if r == 2:
                 same.append(d['image_name'][i])
             elif r == 1:
@@ -129,9 +134,18 @@ def weightedCompareRatios(int1, int2, feature):
 
 
 # inserts the picture name into the new columns depending of threshold
+# def insertFaces(v,threshold_isSame, threshold_isSimilar):
+#     if v < threshold_isSimilar:
+#         if v < threshold_isSame:
+#             return 2
+#         else:
+#             return 1
+#     else:
+#         return 0
+
 def insertFaces(v,threshold_isSame, threshold_isSimilar):
-    if v < threshold_isSimilar:
-        if v < threshold_isSame:
+    if v >= threshold_isSimilar:
+        if v >= threshold_isSame:
             return 2
         else:
             return 1

@@ -11,8 +11,8 @@ if __name__ == "__main__":
     y_scale = main_dict.columns[9]
 
     # arbitrary threshold
-    threshold_isSame = 2
-    threshold_isSimilar = 10
+    threshold_isSame = 7
+    threshold_isSimilar = 5
 
     toAppend = pd.DataFrame({
         'isSimilar': [],
