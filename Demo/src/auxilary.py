@@ -2,8 +2,9 @@ import pandas as pd
 import os
 import numpy as np
 
+path_to_csv_key_points = '../csv_files/csv_key_points.csv'
 
-def create_demo(fileName='csv_example.csv'):
+def create_demo(fileName=path_to_csv_key_points):
     '''
         Creates a csv file with the 7 points and the firs row includes the header
     '''
@@ -26,22 +27,22 @@ def create_demo(fileName='csv_example.csv'):
     df.to_csv(fileName, index=False)
 
 
-def read_csv(fileName='csv_example.csv'):
+def read_csv(fileName=path_to_csv_key_points):
     '''
         returns the csv file we're working on
     '''
-    df = pd.read_csv('csv_example.csv')
+    df = pd.read_csv(fileName)
     return df
 
 
-def store_csv(dataframe, fileName='csv_example.csv'):
+def store_csv(dataframe, fileName=path_to_csv_key_points):
     '''
         this function is called implicity to store the new dictionary rows added.
     '''
     dataframe.to_csv(fileName, index=False)
 
 
-def add_row(dataframe, row_dict, fileName='csv_example.csv'):
+def add_row(dataframe, row_dict, fileName=path_to_csv_key_points):
     '''
         Append row of data, and store it.
     '''
@@ -151,3 +152,62 @@ def insertFaces(v,threshold_isSame, threshold_isSimilar):
             return 1
     else:
         return 0
+
+
+def distance_two_points(x,y):
+    x_diff = x[0] - y[0]
+    x_pow = x_diff**2
+    y_diff = x[1] - y[1]
+    y_pow = y_diff**2
+    return np.sqrt(x_pow + y_pow)
+
+def calc_distances(image_name,shape):
+    '''
+        Calculate the distances:
+            + Left eyebrow
+            + Right eyebrow
+            + Left eye socket
+            + Right eye socket
+            + Left nostril
+            + Right nostril
+            + Mouse
+        
+        then append them in the dictionary
+    '''
+    print (f'this is image: {image_name}')
+    face_features = {   'image_name'    :[],
+                        #7 major points
+                        'Eye_br_L'      :[],
+                        'Eye_br_R'      :[],
+                        'Eye_soc_L'     :[],
+                        'Eye_soc_R'     :[],
+                        'Nostril_L'     :[],
+                        'Nostril_R'     :[],
+                        'Moustache'     :[],
+                        'Face_Width'    :[],
+                        'Face_Height'   :[]
+                        }
+
+    face_features['image_name'].append(image_name)
+    # eyebrows
+    face_features['Eye_br_L'].append(distance_two_points(shape[17],shape[21]))
+    face_features['Eye_br_R'].append( distance_two_points(shape[22],shape[26]))
+    #eye sockets
+    face_features['Eye_soc_L'].append(distance_two_points(shape[36],shape[39]))
+    face_features['Eye_soc_R'].append(distance_two_points(shape[42],shape[45]))
+    #nostrils
+    face_features['Nostril_L'].append(distance_two_points(shape[31],shape[32]))
+    face_features['Nostril_R'].append(distance_two_points(shape[34],shape[35]))
+    #Mouse
+    face_features['Moustache'].append(distance_two_points(shape[48],shape[54]))
+    #width
+    face_features['Face_Width'].append(distance_two_points(shape[0],shape[16]))
+    #height
+    x = shape[19]
+    y = shape[24]
+    mid_point = ((x[0]+y[0])/2 ,(x[1]+y[1])/2 )
+    face_features['Face_Height'] = distance_two_points(mid_point,shape[8])
+    
+    #store the data
+    df = read_csv()
+    add_row(df,face_features)

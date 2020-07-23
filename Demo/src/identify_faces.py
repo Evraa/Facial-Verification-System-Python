@@ -1,10 +1,13 @@
 from auxilary import *
 
 
-if __name__ == "__main__":
-    
+def identify_faces_based_on_lengths():
     #read the data
-    main_dict = read_csv("csv_example.csv")
+    path_to_csv_lengths = "../csv_files/csv_lengths.csv"
+    main_dict = read_csv(path_to_csv_lengths)
+    if len(main_dict) == 0:
+        print ("Error: empty data!!")
+        return 
     #extract features column
     features = main_dict.columns[1:8]
     x_scale = main_dict.columns[8]
@@ -25,4 +28,4 @@ if __name__ == "__main__":
     result = pd.concat([main_dict, toAppend], axis=1, sort=False)
     # print (result)
     #store results
-    store_csv(result,fileName="final_results.csv")
+    store_csv(result,fileName="../csv_files/final_results.csv")
