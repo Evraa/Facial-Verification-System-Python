@@ -39,7 +39,7 @@ contains the core functional python scripts used.
 
 `main.py`
 
-The file responsible for comparing images.
+The file responsible for comparing images, showing facial landmarks...etc
 
 `facial_landmarks.py`
 
