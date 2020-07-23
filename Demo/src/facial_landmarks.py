@@ -5,9 +5,16 @@ import imutils
 import dlib
 import cv2
 from auxilary import *
-
+import timeit
 
 def show_landmarks(image_path, circle_type = "no_dominant"):
+    '''
+        To show red dot circle where key points exist.
+
+        `image_path` is the path to the image
+
+        `circle_type` dominant or no_dominant    
+    '''
     path_to_shape_predictor = "../shape_predictor_68_face_landmarks.dat"
     #prepare the predictor model
     detector = dlib.get_frontal_face_detector()
@@ -32,6 +39,8 @@ def show_landmarks(image_path, circle_type = "no_dominant"):
         if circle_type == 'no_dominant':
             for (x, y) in shape:
                 cv2.circle(image, (x, y), 4, (0, 0, 255), -1)
-
+        else:
+            print ("dominant key points!!")
+    
     cv2.imshow("Output", image)
     cv2.waitKey(0)
