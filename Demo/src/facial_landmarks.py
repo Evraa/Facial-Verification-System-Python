@@ -31,7 +31,7 @@ def show_landmarks(image_path, circle_type = "no_dominant"):
         # and draw them on the image
         if circle_type == 'no_dominant':
             for (x, y) in shape:
-                cv2.circle(image, (x, y), 1, (0, 0, 255), -1)
+                cv2.circle(image, (x, y), 4, (0, 0, 255), -1)
 
     cv2.imshow("Output", image)
     cv2.waitKey(0)
