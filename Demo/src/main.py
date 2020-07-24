@@ -2,7 +2,7 @@ from auxilary import *
 from facial_landmarks import *
 from get_lengths import *
 from identify_faces import *
-
+from calc_weights import calc_weights
 
 '''
     Jobs allowed:
@@ -16,10 +16,8 @@ from identify_faces import *
 
 if __name__ == "__main__":
     print ("hello :D")
-    #TODO: add a pretty CLI for users
-    create_key_points_data_frame()
-    store_key_points(path_to_images_grouped)
-    # image_files_path = "../dataset/"
-    # image_files = os.listdir(image_files_path)
-    # for image_file in image_files:
-    #     show_landmarks(image_path=image_files_path+image_file)
+    #TODO: Ev: add a pretty CLI for users
+    
+    calc_weights()
+
+

@@ -261,7 +261,7 @@ def store_keys(image_name, shape, set_number):
     }
     my_dict['image_set'].append(set_number)
     my_dict['image_name'].append(image_name)
-    my_dict['base_point'].append(fixed_key_point)
+    my_dict['base_point'].append(list(shape[fixed_key_point]))
     my_dict['feat_17'].append(list(shape[17]))
     my_dict['feat_21'].append(list(shape[21]))
     my_dict['feat_22'].append(list(shape[22]))
