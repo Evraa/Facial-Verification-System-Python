@@ -2,9 +2,16 @@ import pandas as pd
 import os
 import numpy as np
 
+#GLOBALS allowed through out the whole project
 path_to_csv_key_points = '../csv_files/csv_key_points.csv'
+dominant_key_points = [17, 21, 22, 26, 36, 39, 42, 45, 32, 34, 48, 54]
+fixed_key_point = 33
+path_to_all_dataset = "../dataset/"
+path_to_csv_lengths = '../csv_files/csv_lengths.csv'
+path_to_shape_predictor = "../shape_predictor_68_face_landmarks.dat"
+path_to_images_grouped = "../dataset/grouped/"
 
-def create_demo(fileName=path_to_csv_key_points):
+def create_demo(fileName=path_to_csv_lengths):
     '''
         Creates a csv file with the 7 points and the firs row includes the header
     '''
@@ -20,6 +27,32 @@ def create_demo(fileName=path_to_csv_key_points):
                'Face_Width': [],
                'Face_Height': []
                }
+
+    # convert it into dataframe
+    df = pd.DataFrame(my_dict)
+    # transfer into csv file
+    df.to_csv(fileName, index=False)
+
+def create_key_points_data_frame(fileName=path_to_csv_key_points):
+    '''
+        Creates a csv file with the 7 points and the firs row includes the header
+    '''
+    my_dict = { 'image_set': [],
+                'image_name': [],
+                'base_point': [],
+                'feat_17': [],
+                'feat_21': [],
+                'feat_22': [],
+                'feat_26': [],
+                'feat_36': [],
+                'feat_39': [],
+                'feat_42': [],
+                'feat_45': [],
+                'feat_32': [],
+                'feat_34': [],
+                'feat_48': [],
+                'feat_54': []
+    }
 
     # convert it into dataframe
     df = pd.DataFrame(my_dict)
@@ -46,10 +79,6 @@ def add_row(dataframe, row_dict, fileName=path_to_csv_key_points):
     '''
         Append row of data, and store it.
     '''
-    if len(row_dict) < 7:
-        print("error: row length is incorrect!", row_dict)
-        return None
-
     row = pd.DataFrame(row_dict)
     dataframe_concatenatd = pd.concat([dataframe, row], ignore_index=True)
     store_csv(dataframe=dataframe_concatenatd, fileName=fileName)
@@ -211,3 +240,42 @@ def calc_distances(image_name,shape):
     #store the data
     df = read_csv()
     add_row(df,face_features)
+
+
+def store_keys(image_name, shape, set_number):
+    my_dict = { 'image_set': [],
+                'image_name': [],
+                'base_point': [],
+                'feat_17': [],
+                'feat_21': [],
+                'feat_22': [],
+                'feat_26': [],
+                'feat_36': [],
+                'feat_39': [],
+                'feat_42': [],
+                'feat_45': [],
+                'feat_32': [],
+                'feat_34': [],
+                'feat_48': [],
+                'feat_54': []
+    }
+    my_dict['image_set'].append(set_number)
+    my_dict['image_name'].append(image_name)
+    my_dict['base_point'].append(fixed_key_point)
+    my_dict['feat_17'].append(list(shape[17]))
+    my_dict['feat_21'].append(list(shape[21]))
+    my_dict['feat_22'].append(list(shape[22]))
+    my_dict['feat_26'].append(list(shape[26]))
+    my_dict['feat_36'].append(list(shape[36]))
+    my_dict['feat_39'].append(list(shape[39]))
+    my_dict['feat_42'].append(list(shape[42]))
+    my_dict['feat_45'].append(list(shape[45]))
+    my_dict['feat_32'].append(list(shape[32]))
+    my_dict['feat_34'].append(list(shape[34]))
+    my_dict['feat_48'].append(list(shape[48]))
+    my_dict['feat_54'].append(list(shape[54]))
+
+    #store the data
+    df = read_csv(path_to_csv_key_points)
+    add_row(df,my_dict)
+    return

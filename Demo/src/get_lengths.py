@@ -7,9 +7,10 @@ import dlib
 import cv2
 
 def get_images_lengths():
-    create_demo() 
-    path_to_images = "../dataset/"
-    path_to_shape_predictor = "../shape_predictor_68_face_landmarks.dat"
+
+    create_demo(fileName=path_to_csv_lengths) 
+    path_to_images = path_to_all_dataset
+    path_to_shape_predictor = path_to_shape_predictor
 
     files = os.listdir(path_to_images)
     
