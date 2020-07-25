@@ -53,6 +53,9 @@ def get_set_devs(j):
     stds = dists.std().tolist()
     return stds
 
+def get_weight():
+    compareFaces()
+
 
 def calc_weights():
     '''
@@ -69,7 +72,7 @@ def calc_weights():
 
                 + add these values
 
-                + normaliz them -> (value[0] = value[0] / sum of all)
+                + normalize them -> (value[0] = value[0] / sum of all)
 
                 + weights = 1 - normalized_version (remember the lower the better)
 
@@ -86,16 +89,14 @@ def calc_weights():
             w.append((factor - i) + factor)
         weight[sets] = w
     weight = pandas.DataFrame(weight).set_index('features').T
-    print(weight)
+    return weight
 
 
 
-    # takes a list of standard deviations
+# takes a list of standard deviations
 def weigh_data(stddev):
     s = sum(stddev)
     l = []
     for i in range(len(stddev)):
         l.append(stddev[i]/s)
     return l
-
-calc_weights()
