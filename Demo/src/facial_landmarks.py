@@ -65,7 +65,7 @@ def draw_parts(image_path):
 	("left_eyebrow", (22, 27)),
 	("right_eye", (36, 42)),
 	("left_eye", (42, 48)),
-	("nose", (27, 35))
+	("nose", (27, 36))
     ])
 
     overlay = image.copy()
@@ -78,6 +78,9 @@ def draw_parts(image_path):
         # face landmark
         (j, k) = FACIAL_LANDMARKS_IDXS[name]
         pts = shape[j:k]
+        #how sure are we?
+        percentage = how_sure (pts,name)
+        name = name + " "+str(percentage) + " %"
         # check if are supposed to draw the jawline
         hull = cv2.convexHull(pts)
         cv2.drawContours(overlay, [hull], -1, colors[i], -1)
