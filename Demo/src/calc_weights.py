@@ -53,6 +53,7 @@ def get_set_devs(j):
     stds = dists.std().tolist()
     return stds
 
+
 def get_weight():
     compareFaces()
 
@@ -85,12 +86,11 @@ def calc_weights():
         deviations = weigh_data(get_set_devs(sets))
         w = []
         for i in deviations:
-            factor = 1/len(deviations)
+            factor = 1 / len(deviations)
             w.append((factor - i) + factor)
         weight[sets] = w
     weight = pandas.DataFrame(weight).set_index('features').T
     return weight
-
 
 
 # takes a list of standard deviations
@@ -98,5 +98,15 @@ def weigh_data(stddev):
     s = sum(stddev)
     l = []
     for i in range(len(stddev)):
-        l.append(stddev[i]/s)
+        l.append(stddev[i] / s)
     return l
+
+
+def store_csv(dataframe, path):
+    '''
+        this function is called implicity to store the new dictionary rows added.
+    '''
+    dataframe.to_csv(path, index=False)
+
+
+store_csv(calc_weights(), path_to_weighted_set_data)

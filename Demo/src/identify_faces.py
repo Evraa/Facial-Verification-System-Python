@@ -14,8 +14,8 @@ def identify_faces_based_on_lengths():
     y_scale = main_dict.columns[9]
 
     # arbitrary threshold
-    threshold_isSame = 7
-    threshold_isSimilar = 5
+    threshold_isSame = 5
+    threshold_isSimilar = 11
 
     toAppend = pd.DataFrame({
         'isSimilar': [],
@@ -24,8 +24,9 @@ def identify_faces_based_on_lengths():
     for indx, rw in main_dict.iterrows():
         print("\nAnalyzing Face: ", indx, ", ", main_dict['image_name'][indx])
         toAppend.loc[indx] = compareFaces(indx, rw, main_dict, features, x_scale,threshold_isSame, threshold_isSimilar)
-
     result = pd.concat([main_dict, toAppend], axis=1, sort=False)
-    # print (result)
+    print (result)
     #store results
     store_csv(result,fileName="../csv_files/final_results.csv")
+
+identify_faces_based_on_lengths()
