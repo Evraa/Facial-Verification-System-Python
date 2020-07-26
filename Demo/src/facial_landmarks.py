@@ -5,7 +5,8 @@ import imutils
 import dlib
 import cv2
 from auxilary import *
-import timeit
+from collections import OrderedDict 
+
 
 def load_pred_detec(path_to_shape_predictor):
     detector = dlib.get_frontal_face_detector()
@@ -53,7 +54,52 @@ def draw_landmarks(image_path, circle_type = "no_dominant"):
     cv2.waitKey(0)
 
     
+def draw_parts(image_path):
+    shape, rect, image = predict_shapes(image_path)
+    (x, y, w, h) = face_utils.rect_to_bb(rect)
+    cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+    
+    FACIAL_LANDMARKS_IDXS = OrderedDict([
+	("mouth", (48, 68)),
+	("right_eyebrow", (17, 22)),
+	("left_eyebrow", (22, 27)),
+	("right_eye", (36, 42)),
+	("left_eye", (42, 48)),
+	("nose", (27, 35))
+    ])
 
+    overlay = image.copy()
+    output = image.copy()
+    colors = [(19, 199, 109), (79, 76, 240), (230, 159, 23),\
+        (168, 100, 168), (158, 163, 32),(163, 38, 32)]
+
+    for (i, name) in enumerate(FACIAL_LANDMARKS_IDXS.keys()):
+        # grab the (x, y)-coordinates associated with the
+        # face landmark
+        (j, k) = FACIAL_LANDMARKS_IDXS[name]
+        pts = shape[j:k]
+        # check if are supposed to draw the jawline
+        hull = cv2.convexHull(pts)
+        cv2.drawContours(overlay, [hull], -1, colors[i], -1)
+        # for parts extraction
+        clone = image.copy()
+        cv2.putText(clone, name, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+        for (x, y) in pts:
+            cv2.circle(clone, (x, y), 3, (0, 0, 255), -1)
+        
+        (x, y, w, h) = cv2.boundingRect(np.array(pts))
+        roi = image[y:y + h, x:x + w]
+        roi = imutils.resize(roi, width=250, inter=cv2.INTER_CUBIC)
+        # show the particular face part
+        cv2.imshow("ROI", roi)
+        cv2.imshow("Image", clone)
+        cv2.waitKey(0)
+        
+    alpha=0.75
+    cv2.addWeighted(overlay, alpha, output, 1 - alpha, 0, output)
+    cv2.imshow(image_path, output)
+    cv2.waitKey(0)
+    return 
 
 
 def store_key_points(image_set_paths):
