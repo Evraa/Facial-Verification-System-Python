@@ -98,4 +98,4 @@ def weigh_data(stddev):
         l.append(stddev[i]/s)
     return l
 
-calc_weights()
+# calc_weights()

@@ -17,7 +17,6 @@ from calc_weights import calc_weights
 if __name__ == "__main__":
     print ("hello :D")
     #TODO: Ev: add a pretty CLI for users
-    
-    calc_weights()
-
+    image_path = path_to_all_dataset + "0.jpg"
+    draw_landmarks(image_path, circle_type = "dominant")
 
