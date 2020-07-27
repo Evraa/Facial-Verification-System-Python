@@ -1,7 +1,7 @@
 from auxilary import *
 # from facial_landmarks import *
 # from get_lengths import *
-from identify_faces import *
+# from identify_faces import *
 from calc_weights import calc_weights
 
 '''
@@ -30,8 +30,18 @@ def display_weights():
     print("Weight: ", calc_weights().loc[set_number, feature])
 
 # takes in an image name and returns all images of the same face
-def like_images():
-    pass
+def like_images(img):
+    # indx, rw, d, features, x_scale, threshold_isSame, threshold_isSimilar
+    indx = data[data["image_name"] == img].index[0]
+    rw = data.loc[indx]
+    d = data
+    features = data.columns[1:8]
+    x_scale = data.iloc[indx, 8]
+    threshold_isSame = 5
+    threshold_isSimilar = 11
+    result = compareFaces(indx, rw, d, features, x_scale, threshold_isSimilar, threshold_isSame)
+    return result
+
 
 
 if __name__ == "__main__":
@@ -51,7 +61,7 @@ if __name__ == "__main__":
                 display_weights()
                 break
             elif action == 2:
-                like_images()
+                like_images(img)
                 break
             else:
                 continue

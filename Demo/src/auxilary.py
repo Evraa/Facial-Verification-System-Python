@@ -142,7 +142,7 @@ def compareFaces(indx, rw, d, features, x_scale, threshold_isSame, threshold_isS
             elif r == 1:
                 similar.append(d['image_name'][i])
     pair = [similar, same]
-    print(pair)
+    # print(pair)
     return pair
 
 

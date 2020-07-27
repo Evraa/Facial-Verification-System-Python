@@ -10,7 +10,7 @@ def get_images_lengths():
 
     create_demo(fileName=path_to_csv_lengths) 
     path_to_images = path_to_all_dataset
-    path_to_shape_predictor = path_to_shape_predictor
+    # path_to_shape_predictor = path_to_shape_predictor
 
     files = os.listdir(path_to_images)
     
@@ -34,3 +34,5 @@ def get_images_lengths():
             shape = shape_to_np(shape)
             #I am assuming only one face is represented in this image
             calc_distances(image_name,shape)
+
+get_images_lengths()

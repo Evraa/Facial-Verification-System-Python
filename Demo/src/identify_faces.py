@@ -22,7 +22,7 @@ def identify_faces_based_on_lengths():
         'isSame': []
     })
     for indx, rw in main_dict.iterrows():
-        print("\nAnalyzing Face: ", indx, ", ", main_dict['image_name'][indx])
+        # print("\nAnalyzing Face: ", indx, ", ", main_dict['image_name'][indx])
         toAppend.loc[indx] = compareFaces(indx, rw, main_dict, features, x_scale,threshold_isSame, threshold_isSimilar)
     result = pd.concat([main_dict, toAppend], axis=1, sort=False)
     print (result)
