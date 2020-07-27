@@ -1,8 +1,8 @@
-from auxilary import *
-# from facial_landmarks import *
+from auxilary import path_to_all_dataset
+from facial_landmarks import draw_landmarks, draw_parts
 # from get_lengths import *
 # from identify_faces import *
-from calc_weights import calc_weights
+# from calc_weights import calc_weights
 
 '''
     Jobs allowed:
@@ -66,4 +66,10 @@ if __name__ == "__main__":
             else:
                 continue
             break
+
+    #start of Evram's code
+    image_path = path_to_all_dataset + "ev.JPG"
+    # image_path = path_to_all_dataset + "14.jpg"
+    draw_landmarks(image_path, circle_type = "dominant")
+    draw_parts(image_path)
 

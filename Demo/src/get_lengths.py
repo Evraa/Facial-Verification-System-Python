@@ -1,7 +1,8 @@
-from auxilary import *
+from auxilary import path_to_shape_predictor , shape_to_np, calc_distances, path_to_csv_lengths, create_demo,\
+    path_to_all_dataset
 from imutils import face_utils
 import numpy as np
-import argparse
+import argparse, os
 import imutils
 import dlib
 import cv2
@@ -10,7 +11,6 @@ def get_images_lengths():
 
     create_demo(fileName=path_to_csv_lengths) 
     path_to_images = path_to_all_dataset
-    # path_to_shape_predictor = path_to_shape_predictor
 
     files = os.listdir(path_to_images)
     
@@ -29,7 +29,7 @@ def get_images_lengths():
         rects = detector(gray, 1)
 
         # loop over the face detections
-        for (i, rect) in enumerate(rects):
+        for (_, rect) in enumerate(rects):
             shape = predictor(gray, rect)
             shape = shape_to_np(shape)
             #I am assuming only one face is represented in this image

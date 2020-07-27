@@ -1,9 +1,8 @@
-from auxilary import *
+from auxilary import path_to_csv_lengths,compareFaces,store_csv,pd, read_csv
 
 
 def identify_faces_based_on_lengths():
     #read the data
-    path_to_csv_lengths = "../csv_files/csv_lengths.csv"
     main_dict = read_csv(path_to_csv_lengths)
     if len(main_dict) == 0:
         print ("Error: empty data!!")
@@ -11,7 +10,7 @@ def identify_faces_based_on_lengths():
     #extract features column
     features = main_dict.columns[1:8]
     x_scale = main_dict.columns[8]
-    y_scale = main_dict.columns[9]
+    # y_scale = main_dict.columns[9]
 
     # arbitrary threshold
     threshold_isSame = 5

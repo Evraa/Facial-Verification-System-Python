@@ -13,7 +13,6 @@ path_to_csv_lengths = '../csv_files/csv_lengths.csv'
 path_to_shape_predictor = "../shape_predictor_68_face_landmarks.dat"
 path_to_images_grouped = "../dataset/grouped/"
 
-
 def create_demo(fileName=path_to_csv_lengths):
     '''
         Creates a csv file with the 7 points and the firs row includes the header
@@ -118,7 +117,7 @@ def compareFaces(indx, rw, d, features, x_scale, threshold_isSame, threshold_isS
     same = []
     # each face
     for i, r in d.iterrows():
-        averagediff = []
+        # averagediff = []
         valid = 0
         if not i == indx:
             # each feature
@@ -303,3 +302,70 @@ def store_keys(image_name, shape, set_number):
     df = read_csv(path_to_csv_key_points)
     add_row(df, my_dict)
     return
+
+def slope(y,x):
+    return (x[1]-y[1])/((x[0]-y[0])+0.00000001)
+
+def xnor_two_lists(lis1,lis2):
+    correct = 0
+    for i in range(len(lis1)):
+        if lis1[i] == lis2[i]:
+            correct += 1
+    return (correct/len(lis1) * 100)
+
+def check_line (x1,x2,x3,x4,x5):
+    xs = [x1,x2,x3,x4,x5]
+    correct = 0
+    for i in range (4):
+        if slope(xs[i], xs[i+1]) >= 0.9:
+            correct += 1
+    return correct/4 * 50
+
+def how_sure (pts,name):
+    if name == 'left_eyebrow' or name == 'right_eyebrow':
+        #expected: neg-neg-pos-pos
+        slopes_sign = [False,False,True,True]
+        results = []
+        for i in range (len(pts)-1):
+            if slope(pts[i],pts[i+1]) <= 0:
+                results.append(False)
+            else:
+                results.append(True)
+        return xnor_two_lists(slopes_sign,results)
+
+    if name == 'right_eye' or name == 'left_eye':
+        #expected: neg-neg-pos-pos
+        slopes_sign = [False,False,True,False,False]
+        results = []
+        for i in range (len(pts)-1):
+            if slope(pts[i],pts[i+1]) <= 0:
+                results.append(False)
+            else:
+                results.append(True)
+        return xnor_two_lists(slopes_sign,results)
+
+    if name == 'mouth':
+        slopes_sign = [ False,False,True,False,True,True,\
+                        False, False, False, True, True, True,
+                        False, False, True, True,
+                        False,False,True]
+        results = []
+        for i in range (len(pts)-1):
+            if slope(pts[i],pts[i+1]) <= 0:
+                results.append(False)
+            else:
+                results.append(True)
+        return xnor_two_lists(slopes_sign,results)
+
+    if name == 'nose':
+        slopes_sign = [True, True,False,False]
+        results = []
+        #check for straight line
+        percentage = check_line (pts[0],pts[1],pts[2],pts[3], pts[6])
+        pts_n = pts[4:]
+        for i in range (len(pts_n)-1):
+            if slope(pts_n[i],pts_n[i+1]) <= 0:
+                results.append(False)
+            else:
+                results.append(True)
+        return percentage  + (xnor_two_lists(slopes_sign,results) / 2)
