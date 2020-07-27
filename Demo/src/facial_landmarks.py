@@ -1,10 +1,11 @@
 from imutils import face_utils
 import numpy as np
-import argparse
+import argparse, os
 import imutils
 import dlib
 import cv2
-from auxilary import *
+from auxilary import path_to_shape_predictor,shape_to_np,dominant_key_points,fixed_key_point,\
+    how_sure, store_keys
 from collections import OrderedDict 
 
 
@@ -135,7 +136,7 @@ def store_key_points(image_set_paths):
             # loop over the face detections
             if len (rects) == 0:
                 print (f"image: {im} doesn't have faces!")
-            for (i, rect) in enumerate(rects):
+            for (_, rect) in enumerate(rects):
                 shape = predictor(gray, rect)
                 shape = shape_to_np(shape)
                 store_keys(im,shape,set_number)

@@ -10,7 +10,7 @@ path_to_all_dataset = "../dataset/"
 path_to_csv_lengths = '../csv_files/csv_lengths.csv'
 path_to_shape_predictor = "../shape_predictor_68_face_landmarks.dat"
 path_to_images_grouped = "../dataset/grouped/"
-
+    
 def create_demo(fileName=path_to_csv_lengths):
     '''
         Creates a csv file with the 7 points and the firs row includes the header
@@ -114,7 +114,7 @@ def compareFaces(indx, rw, d, features, x_scale,threshold_isSame, threshold_isSi
     same = []
     # each face
     for i, r in d.iterrows():
-        averagediff = []
+        # averagediff = []
         valid = 0
         if not i == indx:
             # each feature

@@ -1,8 +1,8 @@
-from auxilary import *
-from facial_landmarks import *
-from get_lengths import *
-from identify_faces import *
-from calc_weights import calc_weights
+from auxilary import path_to_all_dataset
+from facial_landmarks import draw_landmarks, draw_parts
+# from get_lengths import *
+# from identify_faces import *
+# from calc_weights import calc_weights
 
 '''
     Jobs allowed:
@@ -19,8 +19,6 @@ if __name__ == "__main__":
     #TODO: Ev: add a pretty CLI for users
     image_path = path_to_all_dataset + "ev.JPG"
     # image_path = path_to_all_dataset + "14.jpg"
-    print ("Show an image with facial points")
     draw_landmarks(image_path, circle_type = "dominant")
-    print ("Show parts of the image")
     draw_parts(image_path)
 
