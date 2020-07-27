@@ -42,17 +42,26 @@ def draw_landmarks(image_path, circle_type = "no_dominant"):
     cv2.putText(image, "Face #{}".format(1), (x - 10, y - 10),
         cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
     
+    cv2.imshow("Detected Face", image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
     for (x, y) in shape:
         cv2.circle(image, (x, y), 2, (0, 0, 255), -1)
 
+    cv2.imshow("Predicted Facial points", image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+    
     if circle_type == 'dominant':
         shape_dom = shape[dominant_key_points]
         for (x, y) in shape_dom:
             cv2.circle(image, (x, y), 4, (0, 255,0), -1)
         cv2.circle(image, (shape[fixed_key_point][0], shape[fixed_key_point][1]), 4, (255,0,0), -1)
-    cv2.imshow(image_path, image)
-    cv2.waitKey(0)
 
+    cv2.imshow("Dominant Features", image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+    
     
 def draw_parts(image_path):
     shape, rect, image = predict_shapes(image_path)
