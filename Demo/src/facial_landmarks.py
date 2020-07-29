@@ -22,6 +22,8 @@ def predict_shapes(image_path):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     # detect faces in the grayscale image
     rects = detector(gray, 1)
+    if len(rects) == 0:
+        return None,None,None
     rect = rects[0]
     shape = predictor(gray, rect)
     shape = shape_to_np(shape)

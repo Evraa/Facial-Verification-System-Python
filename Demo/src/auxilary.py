@@ -12,6 +12,8 @@ path_to_all_dataset = "../dataset/"
 path_to_csv_lengths = '../csv_files/csv_lengths.csv'
 path_to_shape_predictor = "../shape_predictor_68_face_landmarks.dat"
 path_to_images_grouped = "../dataset/grouped/"
+path_to_shape_tris = '../csv_files/csv_shape_tris.csv'
+
 
 def create_demo(fileName=path_to_csv_lengths):
     '''
@@ -35,6 +37,18 @@ def create_demo(fileName=path_to_csv_lengths):
     # transfer into csv file
     df.to_csv(fileName, index=False)
 
+def create_shape_tris(fileName=path_to_shape_tris):
+    df = pd.DataFrame(columns = ["image_name", "shape","tris"])
+    # my_dict = {'image_name': [],
+    #            # 7 major points
+    #            'shape': [],
+    #            'tris': []
+    #            }
+
+    # convert it into dataframe
+    # df = pd.DataFrame(my_dict)
+    # transfer into csv file
+    df.to_csv(fileName, index=False)
 
 def create_key_points_data_frame(fileName=path_to_csv_key_points):
     '''

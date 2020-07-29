@@ -2,7 +2,9 @@ import scipy
 from scipy.spatial import Delaunay
 import matplotlib.pyplot as plt
 from facial_landmarks import predict_shapes,np,cv2
-from auxilary import dominant_key_points
+from auxilary import dominant_key_points,create_shape_tris,path_to_shape_tris,store_csv,read_csv
+import os.path
+
 
 def plotter(points,img):
     tri = Delaunay(points)
@@ -27,26 +29,50 @@ def plotter(points,img):
         draw_line(x_3,y_3, x_2,y_2,img)
         
 
-    return img
+    return img,triangles
 
-
-    # print (points[:,0])
-    # print (points[:,1])
-    # print(tri.simplices.copy())
-    # plt.triplot(points[:,0], points[:,1], tri.simplices.copy())
-    # plt.plot(points[:,0], points[:,1], 'o')
-    # plt.show()
-
-    return 
 
 def draw_line (x_1,y_1,x_2,y_2,img):
     cv2.line(img, (x_1, y_1), (x_2, y_2), (168, 185, 90), 2) 
     return
 
 
-def get_delaunay_points(image_path):
+def get_delaunay_points(image_path,returned = False):
     shape,_,image = predict_shapes(image_path)
+    if len(shape) == 0:
+        return None
     shape_d = shape[dominant_key_points]
-    imgage = plotter(shape_d,image)
-    cv2.imshow('Delaunay', imgage) 
-    cv2.waitKey(0)
+    image,tris = plotter(shape,image)
+    if returned:
+        return shape,tris
+
+    else:
+        cv2.imshow('Delaunay', image) 
+        cv2.waitKey(0)
+
+
+def store_shape_tri (image_path,image_name):
+    shape,tris = get_delaunay_points(image_path,returned = True)
+    if len(shape) == 0:
+        return
+    #create csv for tris and shape
+    if not os.path.exists (path_to_shape_tris):
+        create_shape_tris(fileName=path_to_shape_tris)
+    #store values
+    my_dict = {'image_name': None,
+               # 7 major points
+               'shape': None,
+               'tris': None
+               }
+    my_dict['image_name'] = image_name
+    my_dict['shape'] = shape
+    my_dict['tris'] = tris
+    
+    dataframe = read_csv(fileName=path_to_shape_tris)
+    n_rows = len(dataframe)
+    dataframe.at[n_rows,'image_name'] = image_name
+    dataframe.at[n_rows,'shape'] = shape
+    dataframe.at[n_rows,'tris'] = tris
+    store_csv(dataframe=dataframe, fileName=path_to_shape_tris)
+    
+    return
