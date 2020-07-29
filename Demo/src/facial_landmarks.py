@@ -61,7 +61,7 @@ def draw_landmarks(image_path, circle_type = "no_dominant"):
 
     cv2.imshow("Dominant Features", image)
     cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    # cv2.destroyAllWindows()
     
     
 def draw_parts(image_path):

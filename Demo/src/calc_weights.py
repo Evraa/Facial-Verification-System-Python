@@ -1,8 +1,6 @@
 import statistics
-
 import pandas
-
-from auxilary import *
+from auxilary import path_to_csv_key_points,np,distance_two_points,read_csv,store_csv
 
 data = read_csv(fileName=path_to_csv_key_points)
 base = data["base_point"]
@@ -54,8 +52,8 @@ def get_set_devs(j):
     return stds
 
 
-def get_weight():
-    compareFaces()
+# def get_weight():
+#     compareFaces()
 
 
 def calc_weights():
@@ -102,11 +100,102 @@ def weigh_data(stddev):
     return l
 
 
-def store_csv(dataframe, path):
-    '''
-        this function is called implicity to store the new dictionary rows added.
-    '''
-    dataframe.to_csv(path, index=False)
 
+# def store_csv(dataframe, path):
+#     '''
+#         this function is called implicity to store the new dictionary rows added.
+#     '''
+#     dataframe.to_csv(path, index=False)
 
+'''
 store_csv(calc_weights(), path_to_weighted_set_data)
+    From EV:
+        + you can call these function in the main file 'main.py' by simply importing them first
+        + if u do it like this, it may rasie a problem when calling the file from main.
+        + the functions: [store_csv, compareFaces] both exist in auxiliary file
+            so either you change their names (if they are doing something different)
+            or modify those in auxilary file
+            or just import/call those at the auxilary file.
+        + when u import functions from auxiliary, you better not type this
+        from auxilary import * -> it raises so many warnings
+        + better use this
+        from auxilary import path_to_csv_key_points,np,distance_two_points,read_csv,store_csv,pandas
+        + or this
+        import auxilary
+            then auxilary.funcName()
+        
+        + don't forget to doument your functions for further maintenance
+        + and erase the TODO comments
+        + pandas is already imported in auxilary, re-importing it may occur a time hazard...
+        + finally, since the file name is calc_weights, if the file is only doing one job (like this one),
+            so its better that the function calc_weights to be the main function that will be called from the main.py
+            not store_scv()....
+        
+        + these constants
+        data = read_csv(fileName=path_to_csv_key_points)
+        base = data["base_point"]
+        features = data[data.columns[3:15]]
+
+        it's better called from/within a function
+        because when the main import this file, these constants will also be global
+        and this will cause a problem depeneding on the order of importing.
+        so the var data may be missed...or filled with undesred data.
+'''
+
+
+'''
+    Extra :')
+    + the code below, it's better be typed in a file, whether it's [calc_weights, identify_face]
+        depending on what it does.
+
+
+
+data = read_csv(fileName=path_to_csv_key_points)
+def display_weights():
+    set_number = int(data.loc[data[data["image_name"] == img].index, "image_set"])
+    print("Image", img, "is in set", set_number)
+    features = calc_weights().columns.tolist()
+    print("Features: ", *features)
+    while True:
+        feature = input('Enter a feature: ')
+        if feature not in features:
+            print('Please enter a valid feature')
+            continue
+        else:
+            break
+    print("Weight: ", calc_weights().loc[set_number, feature])
+
+# takes in an image name and returns all images of the same face
+def like_images(img):
+    # indx, rw, d, features, x_scale, threshold_isSame, threshold_isSimilar
+    indx = data[data["image_name"] == img].index[0]
+    rw = data.loc[indx]
+    d = data
+    features = data.columns[1:8]
+    x_scale = data.iloc[indx, 8]
+    threshold_isSame = 5
+    threshold_isSimilar = 11
+    result = compareFaces(indx, rw, d, features, x_scale, threshold_isSimilar, threshold_isSame)
+    return result
+
+
+# select an image
+list_images = data["image_name"].tolist()
+while True:
+    img = input("Please enter an image: ")
+    if img not in list_images:
+        print("Sorry, your response must not be negative.")
+        continue
+    else:
+        action = int(input("Would you like to\n[1]: Calculate feature weights\n[2]: Find like images?\n"))
+        if action == 1:
+            display_weights()
+            break
+        elif action == 2:
+            like_images(img)
+            break
+        else:
+            continue
+        break
+'''
+
