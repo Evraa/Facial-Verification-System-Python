@@ -1,9 +1,12 @@
-from auxilary import path_to_all_dataset,os
-from facial_landmarks import draw_landmarks, draw_parts
+# from auxilary import path_to_all_dataset,os,path_to_yalefaces
+# from facial_landmarks import draw_landmarks, draw_parts,store_key_points
+import facial_landmarks
+import auxilary
+import os
 # from get_lengths import *
 # from identify_faces import *
 # from calc_weights import calc_weights
-from delaunay import get_delaunay_points,store_shape_tri
+# from delaunay import get_delaunay_points,store_shape_tri
 '''
     Jobs allowed:
         + show an image with facial landmarks on it (dominance option)
@@ -24,8 +27,4 @@ if __name__ == "__main__":
 
     # TODO: Ev: add a pretty CLI for users
 
-    files = os.listdir(path_to_all_dataset)
-    for image_name in files:
-        image_path = path_to_all_dataset + image_name
-        store_shape_tri (image_path,image_name)
-
+    facial_landmarks.store_key_points(auxilary.path_to_yalefaces)
