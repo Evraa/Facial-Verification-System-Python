@@ -117,7 +117,7 @@ def compareFaces(indx, rw, d, features, x_scale, threshold_isSame, threshold_isS
     same = []
     # each face
     for i, r in d.iterrows():
-        # averagediff = []
+        averagediff = []
         valid = 0
         if not i == indx:
             # each feature
