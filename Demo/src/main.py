@@ -4,6 +4,7 @@ import facial_landmarks
 import auxilary
 import os
 import get_diff
+import SVM
 # from get_lengths import *
 # from identify_faces import *
 # from calc_weights import calc_weights
@@ -23,5 +24,5 @@ import get_diff
 
 if __name__ == "__main__":
     print("hello :D")
-
+    SVM.svm()
     
