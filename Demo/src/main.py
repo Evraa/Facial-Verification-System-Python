@@ -21,31 +21,6 @@ from delaunay import get_delaunay_points
 if __name__ == "__main__":
     print("hello :D")
 
-
-
-    # TODO: Ev: add a pretty CLI for users
-
-    #
-    # select an image
-    # list_images = data["image_name"].tolist()
-    # while True:
-    #     img = input("Please enter an image: ")
-    #     if img not in list_images:
-    #         print("Sorry, your response must not be negative.")
-    #         continue
-    #     else:
-    #         action = int(input("Would you like to\n[1]: Calculate feature weights\n[2]: Find like images?\n"))
-    #         if action == 1:
-    #             display_weights()
-    #             break
-    #         elif action == 2:
-    #             like_images(img)
-    #             break
-    #         else:
-    #             continue
-    #         break
-
-
     #start of Evram's code
     image_path = path_to_all_dataset + "19.jpg"
     # image_path = path_to_all_dataset + "ev.JPG"
