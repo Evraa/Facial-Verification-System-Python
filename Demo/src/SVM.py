@@ -23,3 +23,4 @@ def svm():
     labels = np.ones([N,1])
     labels[data_labels] = 0
 
+    
