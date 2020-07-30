@@ -1,5 +1,4 @@
-from auxilary import path_to_shape_predictor , shape_to_np, calc_distances, path_to_csv_lengths, create_demo,\
-    path_to_all_dataset
+from auxilary import path_to_shape_predictor , shape_to_np, calc_distances, path_to_csv_lengths, create_demo,path_to_all_dataset
 from imutils import face_utils
 import numpy as np
 import argparse, os
@@ -34,5 +33,3 @@ def get_images_lengths():
             shape = shape_to_np(shape)
             #I am assuming only one face is represented in this image
             calc_distances(image_name,shape)
-
-get_images_lengths()

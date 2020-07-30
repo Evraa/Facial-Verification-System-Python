@@ -1,9 +1,14 @@
-from auxilary import *
-from facial_landmarks import draw_landmarks, draw_parts
+# from auxilary import path_to_all_dataset,os,path_to_yalefaces
+# from facial_landmarks import draw_landmarks, draw_parts,store_key_points
+import facial_landmarks
+import auxilary
+import os
+import get_diff
+import SVM
 # from get_lengths import *
 # from identify_faces import *
 # from calc_weights import calc_weights
-from delaunay import get_delaunay_points
+# from delaunay import get_delaunay_points,store_shape_tri
 
 '''
     Jobs allowed:
@@ -20,15 +25,5 @@ from delaunay import get_delaunay_points
 
 if __name__ == "__main__":
     print("hello :D")
-
-    #start of Evram's code
-    image_path = path_to_all_dataset + "19.jpg"
-    # image_path = path_to_all_dataset + "ev.JPG"
-
-    draw_landmarks(image_path, circle_type = "dominant")
+    SVM.svm()
     
-    get_delaunay_points(image_path)
-
-
-    # draw_parts(image_path)
-

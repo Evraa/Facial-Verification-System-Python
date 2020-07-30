@@ -12,6 +12,8 @@ path_to_all_dataset = "../dataset/"
 path_to_csv_lengths = '../csv_files/csv_lengths.csv'
 path_to_shape_predictor = "../shape_predictor_68_face_landmarks.dat"
 path_to_images_grouped = "../dataset/grouped/"
+path_to_shape_tris = '../csv_files/csv_shape_tris.csv'
+path_to_yalefaces = '../dataset/yalefaces/'
 
 def create_demo(fileName=path_to_csv_lengths):
     '''
@@ -35,6 +37,18 @@ def create_demo(fileName=path_to_csv_lengths):
     # transfer into csv file
     df.to_csv(fileName, index=False)
 
+def create_shape_tris(fileName=path_to_shape_tris):
+    df = pd.DataFrame(columns = ["image_name", "shape","tris"])
+    # my_dict = {'image_name': [],
+    #            # 7 major points
+    #            'shape': [],
+    #            'tris': []
+    #            }
+
+    # convert it into dataframe
+    # df = pd.DataFrame(my_dict)
+    # transfer into csv file
+    df.to_csv(fileName, index=False)
 
 def create_key_points_data_frame(fileName=path_to_csv_key_points):
     '''
@@ -62,6 +76,9 @@ def create_key_points_data_frame(fileName=path_to_csv_key_points):
     # transfer into csv file
     df.to_csv(fileName, index=False)
 
+def create_csv (path, columns):
+    df = pd.DataFrame(columns = columns)
+    df.to_csv(path, index=False)
 
 def read_csv(fileName=path_to_csv_key_points):
     '''
@@ -283,6 +300,7 @@ def store_keys(image_name, shape, set_number):
                'feat_54': []
                }
     my_dict['image_set'].append(set_number)
+    print (image_name)
     my_dict['image_name'].append(image_name)
     my_dict['base_point'].append(list(shape[fixed_key_point]))
     my_dict['feat_17'].append(list(shape[17]))
@@ -369,3 +387,18 @@ def how_sure (pts,name):
             else:
                 results.append(True)
         return percentage  + (xnor_two_lists(slopes_sign,results) / 2)
+
+
+def strings_to_lists (string):
+    string = string.replace('[', '') 
+    string = string.replace(']', '') 
+    string = string.replace('\n', '') 
+    string = string.replace('', '') 
+    
+    string = string.split(' ')
+    values = []
+    for st in  string:
+        if st == '':
+            continue
+        values.append(float(st))
+    return values

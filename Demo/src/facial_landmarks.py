@@ -5,9 +5,11 @@ import imutils
 import dlib
 import cv2
 from auxilary import path_to_shape_predictor,shape_to_np,dominant_key_points,fixed_key_point,\
-    how_sure, store_keys
+    how_sure, store_keys, create_key_points_data_frame
 from collections import OrderedDict 
-
+from PIL import Image
+from matplotlib import image
+from matplotlib import pyplot
 
 def load_pred_detec(path_to_shape_predictor):
     detector = dlib.get_frontal_face_detector()
@@ -22,6 +24,8 @@ def predict_shapes(image_path):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     # detect faces in the grayscale image
     rects = detector(gray, 1)
+    if len(rects) == 0:
+        return None,None,None
     rect = rects[0]
     shape = predictor(gray, rect)
     shape = shape_to_np(shape)
@@ -117,6 +121,7 @@ def draw_parts(image_path):
 
 def store_key_points(image_set_paths):
     #prepare the predictor model
+    create_key_points_data_frame()
     detector = dlib.get_frontal_face_detector()
     predictor = dlib.shape_predictor(path_to_shape_predictor)
     folders = os.listdir(image_set_paths)
@@ -125,18 +130,33 @@ def store_key_points(image_set_paths):
         folder_path = image_set_paths+folder+"/"
         images = (os.listdir(folder_path))
         for im in images:
-            print (f'image {im} from set {folder}')
+            # print (f'image {im} from set {folder}')
             image_path = folder_path + im
+            # print (image_path)
             #read the image
-            image = cv2.imread(image_path)
-            image = imutils.resize(image, width=500)
-            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            img = Image.open(image_path)
+            # print (image.size)
+            # print (image.mode)
+            image = np.asarray(img)
+            # image = cv2.imread(image_path,0)
+            # print (image.shape)
+            # image = imutils.resize(image, width=500)
+            # gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
             # detect faces in the grayscale image
-            rects = detector(gray, 1)
+            # cv2.imshow("i",image)
+            
+            rects = detector(image, 1)
             # loop over the face detections
             if len (rects) == 0:
                 print (f"image: {im} doesn't have faces!")
             for (_, rect) in enumerate(rects):
-                shape = predictor(gray, rect)
+                shape = predictor(image, rect)
                 shape = shape_to_np(shape)
-                store_keys(im,shape,set_number)
+                # for (x, y) in shape:
+                #     cv2.circle(image, (x, y), 3, (0, 0, 255), -1)
+                # pyplot.imshow(image)
+                # pyplot.show()
+                # input('ev')
+                # print (im)
+                iamge_name = str(im)
+                store_keys(iamge_name,shape,set_number)
