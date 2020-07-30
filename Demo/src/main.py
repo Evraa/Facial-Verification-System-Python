@@ -9,6 +9,7 @@ import SVM
 # from identify_faces import *
 # from calc_weights import calc_weights
 # from delaunay import get_delaunay_points,store_shape_tri
+
 '''
     Jobs allowed:
         + show an image with facial landmarks on it (dominance option)

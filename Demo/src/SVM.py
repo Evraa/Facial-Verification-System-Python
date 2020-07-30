@@ -1,7 +1,11 @@
 import auxilary
 import numpy as np
+from sklearn import svm
+from sklearn.linear_model import SGDClassifier
+from sklearn.model_selection import train_test_split
 
-def svm():
+
+def svm_compare():
     '''
     TODO: implement svm
     '''
@@ -24,3 +28,30 @@ def svm():
     labels[data_labels] = 0
 
     
+    clf = svm.SVC(gamma=0.001, C=100, probability=True)
+    X, y = inputs, np.ravel(labels)
+    # shuffles the date to save 20% of data for testing
+    X_train, X_test, y_train, y_test = train_test_split(
+        X,
+        y,
+        test_size=0.2,
+        shuffle=True,
+        random_state=42,
+    )
+    clf.fit(X_train, y_train)
+
+    # TO GET EACH SAMPLE OUTPUT
+    # for sample in X_test:
+    #     y_pred = clf.predict_proba(sample.reshape(1, -1))
+    #     print(y_pred)
+
+    # TO DO ALL SAMPLES AT ONCE
+    y_prob = clf.predict_proba(X_test)
+    y_pred = clf.predict(X_test)
+    print(y_prob)
+    print("predictions: \n" , y_pred[:5])
+    print("\naccuracy: \n",np.array(y_pred == y_test)[:5])
+    print('\npercentage correct: ', 100 * np.sum(y_pred == y_test) / len(y_test))
+
+
+svm_compare()

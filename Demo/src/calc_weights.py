@@ -48,40 +48,13 @@ def get_set_devs(j):
     dists['nose'] = df.iloc[:, 8:10].mean(axis=1)
     dists['mouth'] = df.iloc[:, 10:12].mean(axis=1)
     dists = pandas.DataFrame(dists)
-    stds = dists.std().tolist()
-    return stds
-
-
-# def get_weight():
-#     compareFaces()
+    return dists
 
 
 def calc_weights():
-    '''
-            TODO:
-                + Find differences between all the combinations of each person's images
-                    (person 1 has image 1,2,3) -> diff_1_2, diff_1_3, diff_2_3
-                    if 4 images -> diff_1_2, diff_1_3, diff_1_4, diff_2_3, diff_2_4, diff_3_4
-
-                + store each set of images in a row in the result dataframe
-
-                + check on the range of values (manually, or using some code)
-
-                + convert the values into the largest range (not manually of course)
-
-                + add these values
-
-                + normalize them -> (value[0] = value[0] / sum of all)
-
-                + weights = 1 - normalized_version (remember the lower the better)
-
-                + weights *= 100
-
-                + done :D
-        '''
     weight = {"features": ['left_ebr', 'right_ebr', 'left_eye', 'right_eye', 'nose', 'mouth']}
     for sets in np.unique(data["image_set"].tolist()):
-        deviations = weigh_data(get_set_devs(sets))
+        deviations = weigh_data(get_set_devs(sets).std().tolist())
         w = []
         for i in deviations:
             factor = 1 / len(deviations)
@@ -111,23 +84,8 @@ def weigh_data(stddev):
 store_csv(calc_weights(), path_to_weighted_set_data)
     From EV:
         + you can call these function in the main file 'main.py' by simply importing them first
-        + if u do it like this, it may rasie a problem when calling the file from main.
-        + the functions: [store_csv, compareFaces] both exist in auxiliary file
-            so either you change their names (if they are doing something different)
-            or modify those in auxilary file
-            or just import/call those at the auxilary file.
-        + when u import functions from auxiliary, you better not type this
-        from auxilary import * -> it raises so many warnings
-        + better use this
-        from auxilary import path_to_csv_key_points,np,distance_two_points,read_csv,store_csv,pandas
-        + or this
-        import auxilary
-            then auxilary.funcName()
-        
-        + don't forget to doument your functions for further maintenance
-        + and erase the TODO comments
-        + pandas is already imported in auxilary, re-importing it may occur a time hazard...
-        + finally, since the file name is calc_weights, if the file is only doing one job (like this one),
+        + if u do it like this, it may rasie a problem when calling the file from main.        
+       + finally, since the file name is calc_weights, if the file is only doing one job (like this one),
             so its better that the function calc_weights to be the main function that will be called from the main.py
             not store_scv()....
         
