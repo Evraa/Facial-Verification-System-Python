@@ -8,6 +8,8 @@ from auxilary import path_to_shape_predictor,shape_to_np,dominant_key_points,fix
     how_sure, store_keys, create_key_points_data_frame
 from collections import OrderedDict 
 from PIL import Image
+from matplotlib import image
+from matplotlib import pyplot
 
 def load_pred_detec(path_to_shape_predictor):
     detector = dlib.get_frontal_face_detector()
@@ -150,6 +152,11 @@ def store_key_points(image_set_paths):
             for (_, rect) in enumerate(rects):
                 shape = predictor(image, rect)
                 shape = shape_to_np(shape)
-                print (im)
+                # for (x, y) in shape:
+                #     cv2.circle(image, (x, y), 3, (0, 0, 255), -1)
+                # pyplot.imshow(image)
+                # pyplot.show()
+                # input('ev')
+                # print (im)
                 iamge_name = str(im)
                 store_keys(iamge_name,shape,set_number)

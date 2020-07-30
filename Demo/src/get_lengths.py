@@ -33,5 +33,3 @@ def get_images_lengths():
             shape = shape_to_np(shape)
             #I am assuming only one face is represented in this image
             calc_distances(image_name,shape)
-
-get_images_lengths()

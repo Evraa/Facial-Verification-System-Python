@@ -76,6 +76,9 @@ def create_key_points_data_frame(fileName=path_to_csv_key_points):
     # transfer into csv file
     df.to_csv(fileName, index=False)
 
+def create_csv (path, columns):
+    df = pd.DataFrame(columns = columns)
+    df.to_csv(path, index=False)
 
 def read_csv(fileName=path_to_csv_key_points):
     '''
@@ -384,3 +387,18 @@ def how_sure (pts,name):
             else:
                 results.append(True)
         return percentage  + (xnor_two_lists(slopes_sign,results) / 2)
+
+
+def strings_to_lists (string):
+    string = string.replace('[', '') 
+    string = string.replace(']', '') 
+    string = string.replace('\n', '') 
+    string = string.replace('', '') 
+    
+    string = string.split(' ')
+    values = []
+    for st in  string:
+        if st == '':
+            continue
+        values.append(float(st))
+    return values

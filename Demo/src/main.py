@@ -3,6 +3,7 @@
 import facial_landmarks
 import auxilary
 import os
+import get_diff
 # from get_lengths import *
 # from identify_faces import *
 # from calc_weights import calc_weights
@@ -23,8 +24,4 @@ import os
 if __name__ == "__main__":
     print("hello :D")
 
-
-
-    # TODO: Ev: add a pretty CLI for users
-
-    facial_landmarks.store_key_points(auxilary.path_to_yalefaces)
+    
