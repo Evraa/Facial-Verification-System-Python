@@ -54,4 +54,4 @@ def svm_compare():
     print('\npercentage correct: ', 100 * np.sum(y_pred == y_test) / len(y_test))
 
 
-svm_compare()
+# svm_compare()

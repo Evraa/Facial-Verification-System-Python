@@ -5,6 +5,7 @@ import auxilary
 import os
 import get_diff
 import SVM
+import show_tests
 # from get_lengths import *
 # from identify_faces import *
 # from calc_weights import calc_weights
@@ -25,5 +26,4 @@ import SVM
 
 if __name__ == "__main__":
     print("hello :D")
-    SVM.svm()
-    
+    show_tests.show_tests(auxilary.path_to_yalefaces)    
