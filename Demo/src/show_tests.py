@@ -71,9 +71,10 @@ def show_tests(dataset_path,clf,detector,predictor):
 
             5- state the prediction
     '''
-    # orig_image_path, orig_image_name = get_random_image_path(dataset_path)
-    orig_image_path = '../dataset/yalefaces/6/subject06_0.gif'
-    orig_image_name = "subject01_0.gif"
+    orig_image_path, orig_image_name = get_random_image_path(dataset_path)
+    print (f'image name: {orig_image_name}')
+    # orig_image_path = '../dataset/yalefaces/6/subject06_0.gif'
+    # orig_image_name = "subject01_0.gif"
     orig_key_points,state = facial_landmarks.get_key_points(orig_image_path,detector,predictor)
     while state is False:
         orig_image_path, orig_image_name = get_random_image_path(dataset_path)
