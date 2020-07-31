@@ -2,3 +2,5 @@
 shape_predictor_68_face_landmarks.dat
 .*
 Demo/dataset/old_data
+Demo/not_used_code
+Demo/dataset/*

@@ -16,9 +16,10 @@
 ## Before running:
 
 1- [shape_predictor_68_face_landmarks](http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2)
-    download this file and place it at `./Demo/`
+    download this file and place it at `./Demo/`, note it's 90 MB.
 
-2- place your data of images at `./Demo/dataset`
+2- download the [dataset](http://vis-www.cs.umass.edu/lfw/lfw.tgz) and extract it here `./Demo/dataset`, note it's 170 MB.
+
 
 ## To run the main file:
 

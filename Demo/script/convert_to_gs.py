@@ -2,6 +2,10 @@ import os
 from PIL import Image 
 
 
+#WILL NEED THEM
+# from glob import glob
+# human_files = np.array(glob("/data/lfw/*/*"))
+
 
 
 dataset_path = '../dataset/yalefaces/'
