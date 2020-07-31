@@ -48,10 +48,10 @@ def svm_compare():
     # TO DO ALL SAMPLES AT ONCE
     y_prob = clf.predict_proba(X_test)
     y_pred = clf.predict(X_test)
-    print(y_prob)
-    print("predictions: \n" , y_pred[:5])
-    print("\naccuracy: \n",np.array(y_pred == y_test)[:5])
-    print('\npercentage correct: ', 100 * np.sum(y_pred == y_test) / len(y_test))
-
+    # print(y_prob[:5])
+    # print("predictions: \n" , y_pred[:5])
+    # print("\naccuracy: \n",np.array(y_pred == y_test)[:5])
+    # print('\npercentage correct: ', 100 * np.sum(y_pred == y_test) / len(y_test))
+    return clf
 
 # svm_compare()

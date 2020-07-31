@@ -160,3 +160,15 @@ def store_key_points(image_set_paths):
                 # print (im)
                 iamge_name = str(im)
                 store_keys(iamge_name,shape,set_number)
+
+def get_key_points(image_path,detector,predictor):
+    img = Image.open(image_path)
+    # image = cv2.imread(image_path)
+    image = np.asarray(img)
+    rects = detector(image, 1)
+    if len(rects) == 0:
+        return None,False
+    rect = rects[0]
+    shape = predictor(image, rect)
+    shape = shape_to_np(shape)
+    return shape,True

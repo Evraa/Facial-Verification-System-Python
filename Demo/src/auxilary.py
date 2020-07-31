@@ -402,3 +402,9 @@ def strings_to_lists (string):
             continue
         values.append(float(st))
     return values
+
+def calc_lengths(key_points,base_point):
+    lengths = []
+    for key_point in key_points:
+        lengths.append(distance_two_points(base_point,key_point))
+    return lengths
