@@ -165,7 +165,7 @@ def get_key_points(image_path,detector,predictor):
     img = Image.open(image_path)
     # image = cv2.imread(image_path)
     image = np.asarray(img)
-    print (type(image))
+    # print (type(image))
     rects = detector(image, 1)
     if len(rects) == 0:
         return None,False
