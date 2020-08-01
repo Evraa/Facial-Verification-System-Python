@@ -12,6 +12,22 @@
 `pandas` : pip install pandas
 
 `sklearn` : pip install sklearn
+
+`keras` : pip install Keras
+
+`tensorflow` : pip install --upgrade tensorflow
+
+`openface`: For Windows and Anaconda
+        
+        + Open the command line from within anaconda.
+        + If required, install git (conda install -c anaconda git)
+        + git clone https://github.com/cmusatyalab/openface.git
+        + cd openface
+        + pip install -r requirements.txt
+        + IF there's a problem with pandas, delete it from requirements.txt and install it manually
+        + python setup.py install
+        + Refresh
+
  
 ## Before running:
 
@@ -20,7 +36,7 @@
 
 2- Download the [dataset](http://vis-www.cs.umass.edu/lfw/lfw.tgz) and extract it here `./Demo/dataset`, note it's 170 MB.
 
-
+3- Prepare `open_face.h5`, found in this [repo](https://github.com/krsatyam1996/Face-recognition-and-identification), clone or download it, and place the file `open_face.h5` in `./Demo/src/`.
 
 # What to run?
 + Create new dataset contains old images with only the faces:

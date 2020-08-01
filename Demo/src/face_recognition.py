@@ -4,6 +4,8 @@ import numpy as np
 import os
 import openface
 import cv2
+from create_model import create_model
+import pandas as pd
 
 #local imports
 import facial_landmarks
@@ -18,7 +20,6 @@ def get_name_from_path(path):
         + Path example ../dataset/lfw\Jacques_Chirac\Jacques_Chirac_0006.jpg
         + Result: Jacques_Chirac
     '''
-    
     #split /
     file_name = path.split('/')
     #split \
@@ -60,6 +61,11 @@ def move_images_with_no_predicted_faces(human_files,pred,detec):
         if i%100 == 0:
             print (f'iteration {i} falsy: {falsy}')
 
+def get_labesl(human_files):
+    labels = []
+    for human_file in human_files:
+        labels.append(get_name_from_path(human_file))
+    return labels
 
 def affine_transformation(human_files,pred,detec):
     '''
@@ -74,14 +80,13 @@ def affine_transformation(human_files,pred,detec):
     affine_dir = '../dataset/lfw_affine/'
     for i, human_file in enumerate(human_files):
         state, shape, rect, image = facial_landmarks.get_shape(human_file, pred, detec)
-        
         if state:
             file_path = affine_dir + get_folder_from_path(human_file)
             create_folder(affine_dir + get_name_from_path(human_file))
-            alignedFace = face_aligner.align(534, image, rect, \
+            alignedFace = face_aligner.align(96, image, rect, \
                     landmarkIndices=openface.AlignDlib.OUTER_EYES_AND_NOSE)
             cv2.imwrite(file_path, alignedFace)
-            
+            # plt.imshow(face_aligned)
         else:
             file_name = human_file.split('/')
             file_name = file_name[len(file_name)-1]
@@ -91,6 +96,26 @@ def affine_transformation(human_files,pred,detec):
         if i%100 == 0:
             print (f'Working: .... iteration {i}')
 
+def store_embeddings(human_files,model):
+    labels = get_labesl(human_files)
+    data_size = len(human_files)
+    embedded = np.zeros((data_size, 128))
+    for i, human_file in enumerate(human_files):
+        try:
+            image = cv2.imread(human_file,1)
+            image = (image / 255.).astype(np.float32)
+            embedded[i] = model.predict(np.expand_dims(image, axis=0))[0]
+            if i%100 == 0:
+                print (f'Progress: iteration {i}')
+        except:
+            print (f'Failed: {human_file}')
+
+    #STORE
+    df = pd.DataFrame(embedded)
+    df["output"] = labels
+    df.to_csv("../csv_files/embedded.csv",index=False)
+    print ("DONE :D")
+    
 #Main function
 def face_recognition(dataset_path = "../dataset/lfw/*/*"):
     '''
@@ -113,9 +138,14 @@ def face_recognition(dataset_path = "../dataset/lfw/*/*"):
     # move_images_with_no_predicted_faces(human_files,pred,detec)
 
     #Affine Transformation
-    affine_transformation(human_files,pred,detec)
+    # affine_transformation(human_files,pred,detec)
 
-    
+    #Create model for 128 features extraction
+    # model = create_model()
+    # model.load_weights('../open_face.h5')
+    # store_embeddings(human_files,model)
 
 
-face_recognition()
+
+
+# face_recognition(dataset_path = "../dataset/lfw_affine/*/*")
