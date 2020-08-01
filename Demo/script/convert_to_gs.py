@@ -8,8 +8,8 @@ from PIL import Image
 
 
 
-dataset_path = '../dataset/yalefaces/'
-folder_names = os.listdir(dataset_path)
+# dataset_path = '../dataset/yalefaces/'
+# folder_names = os.listdir(dataset_path)
 
 # for folder_name in folder_names:
 #     folder_path = dataset_path+folder_name+'/'
