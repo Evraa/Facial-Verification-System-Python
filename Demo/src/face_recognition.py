@@ -67,7 +67,7 @@ def get_labesl(human_files):
         labels.append(get_name_from_path(human_file))
     return labels
 
-def affine_transformation(human_files,pred,detec):
+def affine_transformation(human_files,pred,detec,preview = False):
     '''
         For each Image in the dataset
             + Extract the key points
@@ -78,6 +78,26 @@ def affine_transformation(human_files,pred,detec):
     falsy_dir = '../dataset/falsy/'
     face_aligner = openface.AlignDlib(auxilary.path_to_shape_predictor)
     affine_dir = '../dataset/lfw_affine/'
+
+    if preview:
+        image_count = len(human_files) - 1
+        rand_int = np.random.random_integers(0,image_count)
+        human_file = human_files[rand_int]
+        while not os.path.exists(human_file):
+            rand_int = np.random.random_integers(0,image_count)
+            human_file = human_files[rand_int]
+        state, shape, rect, image = facial_landmarks.get_shape(human_file, pred, detec)
+        while not state:
+            state, shape, rect, image = facial_landmarks.get_shape(human_file, pred, detec)
+
+        facial_landmarks.draw_landmarks(image,shape,rect)
+        alignedFace = face_aligner.align(96, image, rect, \
+                landmarkIndices=openface.AlignDlib.OUTER_EYES_AND_NOSE)
+        cv2.imshow("Aligned Face", alignedFace)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+        return alignedFace
+    
     for i, human_file in enumerate(human_files):
         state, shape, rect, image = facial_landmarks.get_shape(human_file, pred, detec)
         if state:
@@ -117,7 +137,7 @@ def store_embeddings(human_files,model):
     print ("DONE :D")
     
 #Main function
-def face_recognition(dataset_path = "../dataset/lfw/*/*"):
+def face_recognition(dataset_path = "../dataset/lfw/*/*", preview=False):
     '''
         + My Goal?
         + For each face in the dataset
@@ -141,9 +161,20 @@ def face_recognition(dataset_path = "../dataset/lfw/*/*"):
     # affine_transformation(human_files,pred,detec)
 
     #Create model for 128 features extraction
-    # model = create_model()
-    # model.load_weights('../open_face.h5')
+    model = create_model()
+    model.load_weights('../open_face.h5')
     # store_embeddings(human_files,model)
+
+    if preview:
+        # Show the image
+        # show the image with key points
+        # show the affine image
+        # print out the embeddings
+        image = affine_transformation(human_files,pred,detec,preview=preview)
+        image = (image / 255.).astype(np.float32)
+        print(model.predict(np.expand_dims(image, axis=0))[0])
+        print ("DONE")
+
 
 
 
