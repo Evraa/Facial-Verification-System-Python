@@ -3,7 +3,7 @@
 import facial_landmarks
 import auxilary
 import os
-import get_diff
+# import face_recognition
 import SVM
 import show_tests
 # from get_lengths import *
@@ -21,17 +21,6 @@ import show_tests
         
 '''
 
-
-
-
 if __name__ == "__main__":
     print("hello :D")
-    image_path = '../dataset/Mag.jpg'
-    facial_landmarks.draw_landmarks(image_path)
-    
-    # print ("Loading the detector and predictor")
-    # predictor , detector = facial_landmarks.load_pred_detec(auxilary.path_to_shape_predictor)
-    # print ("Training the Classifier")
-    # clf = SVM.svm_compare()
-    # print ("Taking a random image and test it")
-    # show_tests.show_tests(auxilary.path_to_yalefaces,clf,detector,predictor)    
+    SVM.svm_compare(path="../csv_files/embedded.csv")
