@@ -1,12 +1,15 @@
 import numpy as np
-import os,math
+import os, math
 import matplotlib.pyplot as plt
 from PIL import Image
 import matplotlib.image as mpimg
+from matplotlib import animation
+
 import facial_landmarks
 import auxilary
 
-def show_image(images_list):
+
+def show_image(title, images_list):
     '''
         Simply takes an array of images and show them all together labeld
     '''
@@ -18,23 +21,25 @@ def show_image(images_list):
     size = math.ceil(math.sqrt(list_length))
     _, axs = plt.subplots(size, size)
     axs = axs.flatten()
-    for img,ax in zip(images_list_read,axs):
+    for img, ax in zip(images_list_read, axs):
         ax.imshow(img)
         # ax.set_title(image_name)
         ax.axis('off')
 
-    for i in range (len(images_list),len(axs)):
+    for i in range(len(images_list), len(axs)):
         axs[i].axis('off')
-    # plt.suptitle(title, fontsize=14)
-    return plt
+    plt.suptitle(title, fontsize=14)
+    plt.show
 
-def random_numbers(L,H):
-    return np.random.random_integers(L,H)
+
+def random_numbers(L, H):
+    return np.random.random_integers(L, H)
+
 
 def get_random_image_path(dataset_path):
     # yale set
-    folder_numb = random_numbers(1,15)
-    file_numb = random_numbers(0,10)
+    folder_numb = random_numbers(1, 15)
+    file_numb = random_numbers(0, 10)
 
     # prof set
     # folder_numb = random_numbers(1, 13)
@@ -45,29 +50,34 @@ def get_random_image_path(dataset_path):
     image_name = images[file_numb]
     image_path = folder_path + image_name
     if not os.path.exists(image_path):
-        print (f'ERROR: That image path {image_path} DOES NOT exist')
+        print(f'ERROR: That image path {image_path} DOES NOT exist')
         return False
     return image_path, image_name
+
 
 def show_one_image(orig_image_path):
     img = mpimg.imread(orig_image_path)
     plt.imshow(img)
-    # plt.show()
+    plt.show()
 
-def mse_diff (diff_1,diff_2):
+
+def mse_diff(diff_1, diff_2):
     diff_1 = np.array(diff_1)
     diff_2 = np.array(diff_2)
 
-    return abs(np.subtract(diff_1,diff_2))
+    return abs(np.subtract(diff_1, diff_2))
 
-def close_event():
-    plt.close() #timer calls this function after 3 seconds and closes the window
 
-fig = plt.figure()
-timer = fig.canvas.new_timer(interval = 30) #creating a timer object and setting an interval of 3000 milliseconds
-timer.add_callback(close_event)
+def add_titlebox(ax, text):
+    ax.text(.55, .8, text,
+            horizontalalignment='center',
+            transform=ax.transAxes,
+            bbox=dict(facecolor='white', alpha=0.6),
+            fontsize=12.5)
+    return ax
 
-def show_tests(dataset_path,clf,detector,predictor):
+
+def show_tests(dataset_path, clf, detector, predictor):
     '''
         + Takes the folder of sets of images
         + Randomly choose an image, and show [Identicalls, simillars, Fasle call]
@@ -84,16 +94,16 @@ def show_tests(dataset_path,clf,detector,predictor):
             5- state the prediction
     '''
     orig_image_path, orig_image_name = get_random_image_path(dataset_path)
-    print (f'image name: {orig_image_name}')
+    print(f'image name: {orig_image_name}')
     # orig_image_path = '../dataset/yalefaces/6/subject06_0.gif'
     # orig_image_name = "subject01_0.gif"
-    orig_key_points,state = facial_landmarks.get_key_points(orig_image_path,detector,predictor)
+    orig_key_points, state = facial_landmarks.get_key_points(orig_image_path, detector, predictor)
     while state is False:
         orig_image_path, orig_image_name = get_random_image_path(dataset_path)
-        orig_key_points,state = facial_landmarks.get_key_points(orig_image_path,detector,predictor)
+        orig_key_points, state = facial_landmarks.get_key_points(orig_image_path, detector, predictor)
     orig_base_point = orig_key_points[auxilary.fixed_key_point]
     orig_key_points = orig_key_points[auxilary.dominant_key_points]
-    orig_lengths = auxilary.calc_lengths(orig_key_points,orig_base_point)
+    orig_lengths = auxilary.calc_lengths(orig_key_points, orig_base_point)
 
     # yale set: remove [:1]
     folder_names = os.listdir(dataset_path)
@@ -106,43 +116,44 @@ def show_tests(dataset_path,clf,detector,predictor):
     identical_title = "Identical Images"
     similar_title = "Similar Images"
 
+    fig = plt.figure()
+    ax1 = fig.add_subplot(1, 2, 1)
+    ax2 = fig.add_subplot(1, 2, 2)
+    ims = []
+
     # show_one_image(orig_image_path,orig_image_name)
     for folder_name in folder_names:
         folder_path = dataset_path + folder_name + '/'
         image_names = os.listdir(folder_path)
         for image_name in image_names:
             str = f'testing folder {folder_name} image {image_name}'
-            print (str)
+            # print(str)
             image_path = folder_path + image_name
-
-            timer.start()
-            plt.subplot(1, 2, 1)
-            show_one_image(orig_image_path)
-            plt.subplot(1, 2, 2)
-            show_one_image(image_path)
-            plt.title("%s" % str)
-            plt.show()
+            im = ax2.imshow(mpimg.imread(image_path), animated=True)
+            ax2.set_title("Testing...")
+            ax2.axis("off")
+            ims.append([im])
 
             if image_path == orig_image_path:
                 continue
-            key_points,state  = facial_landmarks.get_key_points(image_path,detector,predictor)
+            key_points, state = facial_landmarks.get_key_points(image_path, detector, predictor)
             if state is False:
                 continue
-            base_point  = key_points[auxilary.fixed_key_point]
-            key_points  = key_points[auxilary.dominant_key_points]
-            lengths     = auxilary.calc_lengths(key_points,base_point)
+            base_point = key_points[auxilary.fixed_key_point]
+            key_points = key_points[auxilary.dominant_key_points]
+            lengths = auxilary.calc_lengths(key_points, base_point)
 
-            #Calc differences
-            diff_input = mse_diff (lengths,orig_lengths)
-            #show it to clf
+            # Calc differences
+            diff_input = mse_diff(lengths, orig_lengths)
+            # show it to clf
             diff_inputs = []
             diff_inputs.append(diff_input)
             prob = clf.predict_proba(diff_inputs)
             prob = prob[0][1]
             if prob <= 0.5:
                 continue
-            thsh= 0.90
-            if prob <= thsh and prob >0.5:
+            thsh = 0.85
+            if prob <= thsh and prob > 0.75:
                 similars.append(image_path)
                 similars_names.append(image_name)
                 continue
@@ -150,41 +161,47 @@ def show_tests(dataset_path,clf,detector,predictor):
                 identicalls.append(image_path)
                 identicalls_names.append(image_name)
                 continue
-    if len(similars) == 0 and len(identicalls) == 0:
-        print ("No matchings at all")
 
-    if (len(identicalls)) == 0:
-        print ("No identicals")
-
-    if len(similars) == 0:
-        print ("No similars")
-
-
-    # plt.subplot(1, 2, 1)
-    # plt.plot(x1, y1, 'ko-')
-    # plt.title('A tale of 2 subplots')
-    # plt.ylabel('Damped oscillation')
-    #
-    # plt.subplot(1, 2, 2)
-    # plt.plot(x2, y2, 'r.-')
-    # plt.xlabel('time (s)')
-    # plt.ylabel('Undamped')
-
-    plt.subplot(121)
-    show_one_image(orig_image_path)
-    plt.title('Original')
-
-    plt.subplot(122)
-    show_image(identicalls)
-
+    ax1.imshow(mpimg.imread(orig_image_path))
+    ax1.set_title("Original Photo")
+    ani = animation.ArtistAnimation(fig, ims, interval=50, blit=True,
+                                    repeat=False)
     plt.show()
 
+    if len(similars) == 0 and len(identicalls) == 0:
+        print("No matchings at all")
 
-    # plt.subplot(1, 2, 2)
-    # show_image(identical_title, identicalls,identicalls_names)
-    # plt.show()
-    # plt.subplot(1, 2, 2)
-    # show_image(similar_title, similars,similars_names)
-    # plt.title('A tale of 2')
-    # plt.show()
+    if (len(identicalls)) == 0:
+        print("No identicals")
+    else:
+        display_sets(identicalls, orig_image_path, identical_title)
 
+    if len(similars) == 0:
+        print("No similars")
+    else:
+        display_sets(similars, orig_image_path, similar_title)
+
+
+def display_sets(img_list, orig, title):
+    get_length = math.ceil(math.sqrt(len(img_list)))
+    iden = get_length
+    gridsize = (iden, iden * 2)
+    plt.figure(figsize=(12, 8))
+    ax1 = plt.subplot2grid(gridsize, (0, 0), colspan=get_length, rowspan=get_length)
+    ax1.set_title("Original Photo")
+    pos = ax1.get_position()
+    x = pos.x0 + pos.x1 / 3
+    y = pos.y1
+    # plt.figtext(x, y, 'Original Photo')
+    plt.figtext(x * 2.2, y, title)
+
+    ax1.imshow(mpimg.imread(orig))
+    loc = []
+    for row in range(iden):
+        for col in range(iden, iden * 2):
+            loc.append([row, col])
+    for location, img in zip(loc, img_list):
+        axn = plt.subplot2grid(gridsize, location)
+        axn.axis("off")
+        axn.imshow(mpimg.imread(img))
+    plt.show()

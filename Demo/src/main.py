@@ -29,9 +29,9 @@ if __name__ == "__main__":
     # image_path = '../dataset/Mag.jpg'
     # facial_landmarks.draw_landmarks(image_path)
     
-    print ("Loading the detector and predictor")
+    print ("Loading the detector and predictor...\n")
     predictor , detector = facial_landmarks.load_pred_detec(auxilary.path_to_shape_predictor)
-    print ("Training the Classifier")
+    print ("Training the Classifier...\n")
     clf = SVM.svm_compare()
-    print ("Taking a random image and test it")
+    print ("Testing random image...\n")
     show_tests.show_tests(auxilary.path_to_yalefaces,clf,detector,predictor)
