@@ -11,13 +11,12 @@ from PIL import Image
 from matplotlib import image
 from matplotlib import pyplot
 
-def load_pred_detec(path_to_shape_predictor):
+def load_pred_detec():
     detector = dlib.get_frontal_face_detector()
     predictor = dlib.shape_predictor(path_to_shape_predictor)    
     return predictor , detector
 
-def predict_shapes(image_path):
-    predictor , detector = load_pred_detec(path_to_shape_predictor)
+def get_shape(image_path, predictor, detector):
     #read the image
     image = cv2.imread(image_path)
     image = imutils.resize(image, width=500)
@@ -25,11 +24,11 @@ def predict_shapes(image_path):
     # detect faces in the grayscale image
     rects = detector(gray, 1)
     if len(rects) == 0:
-        return None,None,None
+        return False,None,None,None
     rect = rects[0]
     shape = predictor(gray, rect)
     shape = shape_to_np(shape)
-    return shape, rect, image
+    return True,shape, rect, image
 
 
 def draw_landmarks(image_path, circle_type = "no_dominant"):
