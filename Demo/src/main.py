@@ -1,11 +1,11 @@
 # from auxilary import path_to_all_dataset,os,path_to_yalefaces
 # from facial_landmarks import draw_landmarks, draw_parts,store_key_points
-import facial_landmarks
-import auxilary
-import os
+# import facial_landmarks
+# import auxilary
+# import os
 # import face_recognition
 import SVM
-import show_tests
+# import show_tests
 # from get_lengths import *
 # from identify_faces import *
 # from calc_weights import calc_weights

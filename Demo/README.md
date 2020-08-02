@@ -42,6 +42,9 @@
 + Create new dataset contains old images with only the faces:
     
         at "./Demo/src", run "python .\sub_main_0.py"
++ Train SVM classifier and store it.
+
+        at "./Demo/src", run "python .\sub_main_2.py"
 + View a Preview of the steps we are running:
 
         at "./Demo/src", run "python .\sub_main_1.py"
