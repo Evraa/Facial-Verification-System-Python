@@ -164,23 +164,6 @@ def compareFaces(indx, rw, d, features, x_scale, threshold_isSame, threshold_isS
 
 # CHANGE WEIGHTING OF FEATURES
 
-# def weights(featureindex, imgindex):
-#     data = read_csv(path_to_csv_key_points)
-#     weightdata = read_csv(path_to_weighted_set_data)
-#     set_number = int(data.loc[imgindex, "image_set"] - 1)
-#     if set_number > 4:
-#         set_number = set_number - 1
-#     f = {
-#         0: "left_ebr",
-#         1: "right_ebr",
-#         2: "left_eye",
-#         3: "right_eye",
-#         4: "nose",
-#         5: "nose",
-#         6: "mouth"
-#     }.get(featureindex)
-#     return weightdata.iloc[set_number].to_dict().get(f)
-
 
 def weights(featureindex):
     f = {
@@ -408,3 +391,10 @@ def calc_lengths(key_points,base_point):
     for key_point in key_points:
         lengths.append(distance_two_points(base_point,key_point))
     return lengths
+
+def mylistdir(directory):
+    """A specialized version of os.listdir() that ignores files that
+    start with a leading period."""
+    filelist = os.listdir(directory)
+    return [x for x in filelist
+            if not (x.startswith('.'))]

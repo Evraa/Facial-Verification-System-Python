@@ -160,8 +160,8 @@ def store_key_points(image_set_paths):
                 # pyplot.show()
                 # input('ev')
                 # print (im)
-                iamge_name = str(im)
-                store_keys(iamge_name, shape, set_number)
+                image_name = str(im)
+                store_keys(image_name, shape, set_number)
 
 
 def get_key_points(image_path, detector, predictor):

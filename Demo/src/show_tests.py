@@ -106,7 +106,7 @@ def show_tests(dataset_path, clf, detector, predictor):
     orig_lengths = auxilary.calc_lengths(orig_key_points, orig_base_point)
 
     # yale set: remove [:1]
-    folder_names = os.listdir(dataset_path)
+    folder_names = auxilary.mylistdir(dataset_path)
     # [1:]
     # folder_names = ['4']
     identicalls = []
@@ -152,8 +152,8 @@ def show_tests(dataset_path, clf, detector, predictor):
             prob = prob[0][1]
             if prob <= 0.5:
                 continue
-            thsh = 0.85
-            if prob <= thsh and prob > 0.75:
+            thsh = 0.88
+            if prob <= thsh and prob > 0.85:
                 similars.append(image_path)
                 similars_names.append(image_name)
                 continue
@@ -194,7 +194,6 @@ def display_sets(img_list, orig, title):
     y = pos.y1
     # plt.figtext(x, y, 'Original Photo')
     plt.figtext(x * 2.2, y, title)
-
     ax1.imshow(mpimg.imread(orig))
     loc = []
     for row in range(iden):
@@ -203,5 +202,36 @@ def display_sets(img_list, orig, title):
     for location, img in zip(loc, img_list):
         axn = plt.subplot2grid(gridsize, location)
         axn.axis("off")
+        axn.set_title(get_answer(img, orig))
         axn.imshow(mpimg.imread(img))
     plt.show()
+
+
+# a = ['../dataset/yalefaces/9/subject09_6.gif', '../dataset/yalefaces/9/subject09_4.gif', '../dataset/yalefaces/9/subject09_5.gif']
+# b = ['../dataset/yalefaces/9/subject09_1.gif', '../dataset/yalefaces/9/subject09_0.gif', '../dataset/yalefaces/9/subject09_2.gif', '../dataset/yalefaces/9/subject09_3.gif', '../dataset/yalefaces/9/subject09_10.gif', '../dataset/yalefaces/7/subject07_6.gif', '../dataset/yalefaces/7/subject07_2.gif', '../dataset/yalefaces/7/subject07_3.gif', '../dataset/yalefaces/7/subject07_10.gif', '../dataset/yalefaces/1/subject01_8.gif', '../dataset/yalefaces/1/subject01_2.gif', '../dataset/yalefaces/1/subject01_7.gif', '../dataset/yalefaces/2/subject02_2.gif', '../dataset/yalefaces/2/subject02_7.gif']
+# c = "../dataset/yalefaces/14/subject14_0.gif"
+
+def get_answer(new_img, original_img):
+    if original_img.split("/")[3] == new_img.split("/")[3]:
+        return "match"
+    elif is_similar(new_img, original_img):
+        return "look-alike"
+    else:
+        return "no match"
+
+def is_similar(img, orig):
+    THRESHOLD = 2
+    data = auxilary.read_csv(auxilary.path_to_csv_key_points)
+    def img_info(imag):
+        dists = []
+        name = imag.split("/")[4]
+        index = data.index[data["image_name"] == name]
+        base_point = [int(i) for i in [x.strip("[]") for x in data[data.columns[2]][index].tolist()[0].split(',')]]
+        for f in data[data.columns[3:15]]:
+            x = [int(i) for i in [x.strip('[]') for x in data.loc[index, f].tolist()[0].split(',')]]
+            dists.append(auxilary.distance_two_points(base_point, x))
+        return dists
+    li = []
+    for x, y in zip(img_info(img), img_info(orig)):
+        li.append(abs(x-y))
+    return np.average(li) < THRESHOLD
