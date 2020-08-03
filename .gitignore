@@ -5,4 +5,5 @@ Demo/dataset/old_data
 Demo/not_used_code
 Demo/dataset/*
 Demo/open_face.h5
-Demo/best_SVM_clf_0.joblib
+Demo/SVM_clf_0.joblib
+Demo/tree.joblib
