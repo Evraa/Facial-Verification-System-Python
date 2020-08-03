@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from PIL import Image
 import matplotlib.image as mpimg
 from matplotlib import animation
+from matplotlib.widgets import Button
 
 import facial_landmarks
 import auxilary
@@ -113,26 +114,27 @@ def show_tests(dataset_path, clf, detector, predictor):
     identicalls_names = []
     similars = []
     similars_names = []
+    left_overs = []
     identical_title = "Identical Images"
     similar_title = "Similar Images"
 
-    fig = plt.figure()
-    ax1 = fig.add_subplot(1, 2, 1)
-    ax2 = fig.add_subplot(1, 2, 2)
-    ims = []
+    # fig = plt.figure()
+    # ax1 = fig.add_subplot(1, 2, 1)
+    # ax2 = fig.add_subplot(1, 2, 2)
+    # ims = []
 
     # show_one_image(orig_image_path,orig_image_name)
     for folder_name in folder_names:
         folder_path = dataset_path + folder_name + '/'
         image_names = os.listdir(folder_path)
         for image_name in image_names:
-            str = f'testing folder {folder_name} image {image_name}'
-            # print(str)
+            str = f'Testing folder {folder_name}, image {image_name}'
+            print(str)
             image_path = folder_path + image_name
-            im = ax2.imshow(mpimg.imread(image_path), animated=True)
-            ax2.set_title("Testing...")
-            ax2.axis("off")
-            ims.append([im])
+            # im = ax2.imshow(mpimg.imread(image_path), animated=True)
+            # ax2.set_title("Testing...")
+            # ax2.axis("off")
+            # ims.append([im])
 
             if image_path == orig_image_path:
                 continue
@@ -152,8 +154,8 @@ def show_tests(dataset_path, clf, detector, predictor):
             prob = prob[0][1]
             if prob <= 0.5:
                 continue
-            thsh = 0.88
-            if prob <= thsh and prob > 0.85:
+            thsh = 0.89
+            if prob <= thsh and prob > 0.80:
                 similars.append(image_path)
                 similars_names.append(image_name)
                 continue
@@ -161,63 +163,64 @@ def show_tests(dataset_path, clf, detector, predictor):
                 identicalls.append(image_path)
                 identicalls_names.append(image_name)
                 continue
+            else:
+                left_overs.append(image_path)
 
-    ax1.imshow(mpimg.imread(orig_image_path))
-    ax1.set_title("Original Photo")
-    ani = animation.ArtistAnimation(fig, ims, interval=50, blit=True,
-                                    repeat=False)
+    # ax1.imshow(mpimg.imread(orig_image_path))
+    # ax1.set_title("Original Photo")
+    # ani = animation.ArtistAnimation(fig, ims, interval=50, blit=True,
+    #                                 repeat=False)
     plt.show()
 
     if len(similars) == 0 and len(identicalls) == 0:
         print("No matchings at all")
 
-    if (len(identicalls)) == 0:
-        print("No identicals")
-    else:
-        display_sets(identicalls, orig_image_path, identical_title)
+    # display_sets(identicalls, orig_image_path, identical_title)
+    # plt.show()
+    # display_sets(similars, orig_image_path, similar_title)
+    # plt.show()
+    # display_sets(left_overs, orig_image_path, "Non-Matched Images")
+    # plt.show()
 
-    if len(similars) == 0:
-        print("No similars")
-    else:
-        display_sets(similars, orig_image_path, similar_title)
+    buttons(identicalls, similars, left_overs, orig_image_path, identical_title, similar_title, "Non-Matched Images")
 
 
 def display_sets(img_list, orig, title):
-    get_length = math.ceil(math.sqrt(len(img_list)))
-    iden = get_length
-    gridsize = (iden, iden * 2)
-    plt.figure(figsize=(12, 8))
-    ax1 = plt.subplot2grid(gridsize, (0, 0), colspan=get_length, rowspan=get_length)
-    ax1.set_title("Original Photo")
-    pos = ax1.get_position()
-    x = pos.x0 + pos.x1 / 3
-    y = pos.y1
-    # plt.figtext(x, y, 'Original Photo')
-    plt.figtext(x * 2.2, y, title)
-    ax1.imshow(mpimg.imread(orig))
-    loc = []
-    for row in range(iden):
-        for col in range(iden, iden * 2):
-            loc.append([row, col])
-    for location, img in zip(loc, img_list):
-        axn = plt.subplot2grid(gridsize, location)
-        axn.axis("off")
-        axn.set_title(get_answer(img, orig))
-        axn.imshow(mpimg.imread(img))
-    plt.show()
+    if img_list:
+        get_length = math.ceil(math.sqrt(len(img_list)))
+        iden = get_length
+        gridsize = (iden, iden * 2)
+        fig = plt.figure(figsize=(12, 8))
+        ax1 = plt.subplot2grid(gridsize, (0, 0), colspan=get_length, rowspan=get_length)
+        ax1.set_title("Original Photo")
+        # pos = ax1.get_position()
+        # x = pos.x0 + pos.x1 / 3
+        # y = pos.y1
+        # plt.figtext(x, y, 'Original Photo')
+        # plt.figtext(x * 2.2, y, title)
+        ax1.imshow(mpimg.imread(orig))
+        loc = []
+        for row in range(iden):
+            for col in range(iden, iden * 2):
+                loc.append([row, col])
+        for location, img in zip(loc, img_list):
+            axn = plt.subplot2grid(gridsize, location)
+            axn.axis("off")
+            axn.set_title(get_answer(img, orig))
+            axn.imshow(mpimg.imread(img))
+        fig.suptitle(title, fontsize=16)
+    else:
+        plt.set_title("No", title)
+    # plt.show()
 
-
-# a = ['../dataset/yalefaces/9/subject09_6.gif', '../dataset/yalefaces/9/subject09_4.gif', '../dataset/yalefaces/9/subject09_5.gif']
-# b = ['../dataset/yalefaces/9/subject09_1.gif', '../dataset/yalefaces/9/subject09_0.gif', '../dataset/yalefaces/9/subject09_2.gif', '../dataset/yalefaces/9/subject09_3.gif', '../dataset/yalefaces/9/subject09_10.gif', '../dataset/yalefaces/7/subject07_6.gif', '../dataset/yalefaces/7/subject07_2.gif', '../dataset/yalefaces/7/subject07_3.gif', '../dataset/yalefaces/7/subject07_10.gif', '../dataset/yalefaces/1/subject01_8.gif', '../dataset/yalefaces/1/subject01_2.gif', '../dataset/yalefaces/1/subject01_7.gif', '../dataset/yalefaces/2/subject02_2.gif', '../dataset/yalefaces/2/subject02_7.gif']
-# c = "../dataset/yalefaces/14/subject14_0.gif"
 
 def get_answer(new_img, original_img):
     if original_img.split("/")[3] == new_img.split("/")[3]:
-        return "match"
+        return "M"
     elif is_similar(new_img, original_img):
-        return "look-alike"
+        return "S"
     else:
-        return "no match"
+        return "NM"
 
 def is_similar(img, orig):
     THRESHOLD = 2
@@ -235,3 +238,34 @@ def is_similar(img, orig):
     for x, y in zip(img_info(img), img_info(orig)):
         li.append(abs(x-y))
     return np.average(li) < THRESHOLD
+
+def buttons(identicalls, similars, left_overs, orig_image_path, title1, title2, title3):
+    class Index(object):
+
+        plt.imshow(mpimg.imread(orig_image_path))
+
+        def same(self, event):
+            display_sets(identicalls, orig_image_path, title1)
+            plt.show()
+
+        def similar(self, event):
+            display_sets(similars, orig_image_path, title2)
+            plt.show()
+
+        def rest(self, event):
+            display_sets(left_overs, orig_image_path, title3)
+            plt.show()
+
+    callback = Index()
+    axsame = plt.axes([0.36, 0, 0.1, 0.075])
+    axsimilar = plt.axes([0.47, 0, 0.1, 0.075])
+    axrest = plt.axes([0.58, 0, 0.1, 0.075])
+    bsame = Button(axsame, 'Identical')
+    bsame.on_clicked(callback.same)
+    bsimilar = Button(axsimilar, 'Similar')
+    bsimilar.on_clicked(callback.similar)
+    brest = Button(axrest, 'Rest')
+    brest.on_clicked(callback.rest)
+
+    print("AEKGBNOEAKMLDF")
+    plt.show()
