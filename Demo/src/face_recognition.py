@@ -96,7 +96,7 @@ def affine_transformation(human_files,pred,detec,preview = False):
         cv2.imshow("Aligned Face", alignedFace)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
-        return alignedFace
+        return alignedFace, get_name_from_path(human_file)
     
     for i, human_file in enumerate(human_files):
         state, shape, rect, image = facial_landmarks.get_shape(human_file, pred, detec)
@@ -170,10 +170,20 @@ def face_recognition(dataset_path = "../dataset/lfw/*/*", preview=False):
         # show the image with key points
         # show the affine image
         # print out the embeddings
-        image = affine_transformation(human_files,pred,detec,preview=preview)
+        image,face_name = affine_transformation(human_files,pred,detec,preview=preview)
         image = (image / 255.).astype(np.float32)
-        print(model.predict(np.expand_dims(image, axis=0))[0])
-        print ("DONE")
+        embeddings = model.predict(np.expand_dims(image, axis=0))[0] 
+        # print(model.predict(np.expand_dims(image, axis=0))[0])
+        # dataset_names = []
+        # for human_file in human_files:
+        #     name = get_name_from_path(human_file)
+        #     direc = "../dataset/lfw_affine/" + str(name) + "/"
+        #     file_count = os.listdir(direc)
+        #     if name not in dataset_names and len(file_count) > 0:
+        #         dataset_names.append(name)
+        print ("Read embeddings")
+        
+        return embeddings, face_name
 
 
 
