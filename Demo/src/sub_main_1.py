@@ -44,9 +44,10 @@ if __name__ == "__main__":
     identicals, similars = results(embeddings, inputs, labels)
 
     print (f'face is: {face_name}')
-
+    print ("\nIdenticals")
     print (identicals)
-
+    print ("\n\n\n")
+    print ("Similars ")
     print (similars)
     # for label in labels:
     #     if label not in labels_unique:
