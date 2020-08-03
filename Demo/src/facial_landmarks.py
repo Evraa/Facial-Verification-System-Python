@@ -4,17 +4,18 @@ import argparse, os
 import imutils
 import dlib
 import cv2
-from auxilary import path_to_shape_predictor,shape_to_np,dominant_key_points,fixed_key_point,\
+from auxilary import path_to_shape_predictor, shape_to_np, dominant_key_points, fixed_key_point, \
     how_sure, store_keys, create_key_points_data_frame
-from collections import OrderedDict 
+from collections import OrderedDict
 from PIL import Image
 from matplotlib import image
 from matplotlib import pyplot
 
 def load_pred_detec():
     detector = dlib.get_frontal_face_detector()
-    predictor = dlib.shape_predictor(path_to_shape_predictor)    
-    return predictor , detector
+    predictor = dlib.shape_predictor(path_to_shape_predictor)
+    return predictor, detector
+
 
 def get_shape(image_path, predictor, detector):
     #read the image
@@ -44,8 +45,8 @@ def draw_landmarks(image,shape,rect):
     cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
     # show the face number
     cv2.putText(image, "Face #{}".format(1), (x - 10, y - 10),
-        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-    
+                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+
     cv2.imshow("Detected Face", image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
@@ -60,14 +61,13 @@ def draw_landmarks(image,shape,rect):
     
 
 
-def get_key_points(image_path,detector,predictor):
+def get_key_points(image_path, detector, predictor):
     img = Image.open(image_path)
     # image = cv2.imread(image_path)
-    image = np.asarray(img)
-    # print (type(image))
+    image = np.asarray(img).astype(np.uint8)
     rects = detector(image, 1)
     if len(rects) == 0:
-        return None,False
+        return None, False
     rect = rects[0]
     shape = predictor(image, rect)
     shape = shape_to_np(shape)

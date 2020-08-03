@@ -1,6 +1,9 @@
+from networkx.drawing.tests.test_pylab import plt
+from sympy.plotting.tests.test_plot import matplotlib
+
 import auxilary
 import numpy as np
-from sklearn import svm
+from sklearn import svm, tree
 from sklearn.linear_model import SGDClassifier
 from sklearn.model_selection import train_test_split
 from joblib import dump, load
