@@ -67,7 +67,7 @@ def get_labesl(human_files):
         labels.append(get_name_from_path(human_file))
     return labels
 
-def affine_transformation(human_files,pred,detec,preview = False):
+def affine_transformation(human_files,pred,detec,preview = False, image_num=0):
     '''
         For each Image in the dataset
             + Extract the key points
@@ -80,8 +80,15 @@ def affine_transformation(human_files,pred,detec,preview = False):
     affine_dir = '../dataset/lfw_affine/'
 
     if preview:
+        # for i ,human_file in enumerate(human_files):
+        #     folders =  (get_folder_from_path(human_file))
+        #     folders = folders.split('\\')
+        #     if folders[0] == 'LeBron_James':
+        #         print (i, human_file)
+        # input("e")
         image_count = len(human_files) - 1
-        rand_int = np.random.random_integers(0,image_count)
+        # rand_int = np.random.random_integers(0,image_count)
+        rand_int = image_num
         human_file = human_files[rand_int]
         while not os.path.exists(human_file):
             rand_int = np.random.random_integers(0,image_count)
@@ -96,7 +103,7 @@ def affine_transformation(human_files,pred,detec,preview = False):
         cv2.imshow("Aligned Face", alignedFace)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
-        return alignedFace, get_name_from_path(human_file)
+        return alignedFace, get_name_from_path(human_file), human_file
     
     for i, human_file in enumerate(human_files):
         state, shape, rect, image = facial_landmarks.get_shape(human_file, pred, detec)
@@ -137,7 +144,7 @@ def store_embeddings(human_files,model):
     print ("DONE :D")
     
 #Main function
-def face_recognition(dataset_path = "../dataset/lfw/*/*", preview=False):
+def face_recognition(dataset_path = "../dataset/lfw/*/*", preview=False, image_num = 0):
     '''
         + My Goal?
         + For each face in the dataset
@@ -170,7 +177,7 @@ def face_recognition(dataset_path = "../dataset/lfw/*/*", preview=False):
         # show the image with key points
         # show the affine image
         # print out the embeddings
-        image,face_name = affine_transformation(human_files,pred,detec,preview=preview)
+        image,face_name, human_file_path = affine_transformation(human_files,pred,detec,preview=preview, image_num = image_num)
         image = (image / 255.).astype(np.float32)
         embeddings = model.predict(np.expand_dims(image, axis=0))[0] 
         # print(model.predict(np.expand_dims(image, axis=0))[0])
@@ -183,7 +190,7 @@ def face_recognition(dataset_path = "../dataset/lfw/*/*", preview=False):
         #         dataset_names.append(name)
         print ("Read embeddings")
         
-        return embeddings, face_name
+        return embeddings, face_name, human_file_path
 
 
 
