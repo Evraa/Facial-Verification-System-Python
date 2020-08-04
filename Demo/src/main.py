@@ -158,7 +158,7 @@ if __name__ == "__main__":
     #KR: 7355
     #LBJ: 7820
     #KG: 7443
-    embeddings,face_name, human_file_path = face_recognition.face_recognition(dataset_path = "../dataset/lfw/*/*", preview=True, image_num = 7820)
+    embeddings,face_name, human_file_path = face_recognition.face_recognition(dataset_path = "../dataset/lfw/*/*", preview=True, image_num = 7355)
     identicals, similars = results(embeddings, inputs, labels)
 
 
