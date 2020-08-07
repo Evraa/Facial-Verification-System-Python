@@ -182,17 +182,18 @@ def show_tests(dataset_path, clf, detector, predictor):
     # display_sets(left_overs, orig_image_path, "Non-Matched Images")
     # plt.show()
 
-    buttons(identicalls, similars, left_overs, orig_image_path, identical_title, similar_title, "Non-Matched Images")
+    # buttons(identicalls, similars, left_overs, orig_image_path, identical_title, similar_title, "Non-Matched Images")
 
 
-def display_sets(img_list, orig, title):
+def display_sets(img_list, img_list_titles, orig, orig_title, title):
     if img_list:
         get_length = math.ceil(math.sqrt(len(img_list)))
         iden = get_length
         gridsize = (iden, iden * 2)
         fig = plt.figure(figsize=(12, 8))
         ax1 = plt.subplot2grid(gridsize, (0, 0), colspan=get_length, rowspan=get_length)
-        ax1.set_title("Original Photo")
+        # ax1.set_title("Original Photo")
+        ax1.set_title(orig_title)
         # pos = ax1.get_position()
         # x = pos.x0 + pos.x1 / 3
         # y = pos.y1
@@ -203,10 +204,13 @@ def display_sets(img_list, orig, title):
         for row in range(iden):
             for col in range(iden, iden * 2):
                 loc.append([row, col])
+        i = 0
         for location, img in zip(loc, img_list):
             axn = plt.subplot2grid(gridsize, location)
             axn.axis("off")
-            axn.set_title(get_answer(img, orig))
+            # axn.set_title(get_answer(img, orig))
+            axn.set_title(img_list_titles[i])
+            i += 1
             axn.imshow(mpimg.imread(img))
         fig.suptitle(title, fontsize=16)
     else:
@@ -239,21 +243,22 @@ def is_similar(img, orig):
         li.append(abs(x-y))
     return np.average(li) < THRESHOLD
 
-def buttons(identicalls, similars, left_overs, orig_image_path, title1, title2, title3):
+def buttons(identicalls, id_titles, similars,sim_titles, left_overs, left_titles,
+                orig_image_path,orig_title,title1, title2, title3):
     class Index(object):
 
         plt.imshow(mpimg.imread(orig_image_path))
 
         def same(self, event):
-            display_sets(identicalls, orig_image_path, title1)
+            display_sets(identicalls, id_titles, orig_image_path, orig_title, title1)
             plt.show()
 
         def similar(self, event):
-            display_sets(similars, orig_image_path, title2)
+            display_sets(similars, sim_titles, orig_image_path, orig_title, title2)
             plt.show()
 
         def rest(self, event):
-            display_sets(left_overs, orig_image_path, title3)
+            display_sets(left_overs, left_titles, orig_image_path,orig_title,  title3)
             plt.show()
 
     callback = Index()

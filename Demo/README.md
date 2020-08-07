@@ -12,35 +12,63 @@
 `pandas` : pip install pandas
 
 `sklearn` : pip install sklearn
+
+`keras` : pip install Keras
+
+`tensorflow` : pip install --upgrade tensorflow
+
+`openface`: For Windows and Anaconda
+        
+        + Open the command line from within anaconda.
+        + If required, install git (conda install -c anaconda git)
+        + git clone https://github.com/cmusatyalab/openface.git
+        + cd openface
+        + pip install -r requirements.txt
+        + IF there's a problem with pandas, delete it from requirements.txt and install it manually
+        + python setup.py install
+        + Refresh
+
  
 ## Before running:
 
 1- [shape_predictor_68_face_landmarks](http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2)
-    download this file and place it at `./Demo/`
+    download this file and place it at `./Demo/`, note it's 90 MB.
 
-2- place your data of images at `./Demo/dataset`
+2- Download the [dataset](http://vis-www.cs.umass.edu/lfw/lfw.tgz) and extract it here `./Demo/dataset`, note it's 170 MB.
 
-## To run the main file:
+3- Prepare `open_face.h5`, found in this [repo](https://github.com/krsatyam1996/Face-recognition-and-identification), clone or download it, and place the file `open_face.h5` in `./Demo/src/`.
 
-1- go to `./Demo/src`, open the terminal and type `python .\main.py`
+# What to run?
++ Create new dataset contains old images with only the faces:
+    
+        at "./Demo/src", run "python .\sub_main_0.py"
++ Train SVM classifier and store it.
+
+        at "./Demo/src", run "python .\sub_main_2.py"
++ View a Preview of the steps we are running:
+
+        at "./Demo/src", run "python .\sub_main_1.py"
+
 
 
 # Folders Discription:
 
 
 # [dataset folder](https://github.com/Evraa/Facial-Verification-System-Python/tree/master/Demo/dataset)
-contains a very small set of face images.
+Obviously!
 
 # [script folder](https://github.com/Evraa/Facial-Verification-System-Python/tree/master/Demo/sctipt)
 contains any used scripts to pre/post-process the data
 or any other bash files that we might use.
 
-# [src folder](https://github.com/Evraa/Facial-Verification-System-Python/tree/master/Demo/src)
-contains the core functional python scripts used.
-
 # [csv_files](https://github.com/Evraa/Facial-Verification-System-Python/tree/master/Demo/csv_files)
 contains all of the csv files used during the process.
 
+
+# [src folder](https://github.com/Evraa/Facial-Verification-System-Python/tree/master/Demo/src)
+contains the core functional python scripts used.
+
+Most important files:
 
 `main.py`
 
@@ -49,18 +77,6 @@ The file responsible for comparing images, showing facial landmarks...etc
 `facial_landmarks.py`
 
 The main file that detect the face key points and extract each part individually.
-
-`get_length`
-
-Calculate the distances between key points.
-
-`calc_weights`
-
-Figures wich key point shall take more wieght in the identification process.
-
-`identify_faces`
-
-Responsible for the logic of identifying the faces.
 
 `auxilary.py`
 

@@ -2,10 +2,14 @@ import os
 from PIL import Image 
 
 
+#WILL NEED THEM
+# from glob import glob
+# human_files = np.array(glob("/data/lfw/*/*"))
 
 
-dataset_path = '../dataset/yalefaces/'
-folder_names = os.listdir(dataset_path)
+
+# dataset_path = '../dataset/yalefaces/'
+# folder_names = os.listdir(dataset_path)
 
 # for folder_name in folder_names:
 #     folder_path = dataset_path+folder_name+'/'

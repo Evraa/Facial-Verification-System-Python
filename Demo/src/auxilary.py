@@ -14,6 +14,7 @@ path_to_shape_predictor = "../shape_predictor_68_face_landmarks.dat"
 path_to_images_grouped = "../dataset/grouped/"
 path_to_shape_tris = '../csv_files/csv_shape_tris.csv'
 path_to_yalefaces = '../dataset/yalefaces/'
+path_to_clf = '../SVM_clf_0.joblib'
 
 def create_demo(fileName=path_to_csv_lengths):
     '''
