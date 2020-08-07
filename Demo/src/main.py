@@ -26,11 +26,11 @@ import show_tests
 
 if __name__ == "__main__":
     print("hello :D")
-    image_path = '../dataset/Mag.jpg'
+    # image_path = '../dataset/Magag.jpg'
     # facial_landmarks.draw_landmarks(image_path)
     # facial_landmarks.draw_parts(image_path)
-    
-    print ("Loading the detector and predictor...\n")
+
+    # print ("Loading the detector and predictor...\n")
     predictor , detector = facial_landmarks.load_pred_detec(auxilary.path_to_shape_predictor)
     print ("Training the Classifier...\n")
     clf = SVM.svm_compare()

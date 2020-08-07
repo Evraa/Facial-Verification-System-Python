@@ -6,6 +6,7 @@ import numpy as np
 from sklearn import svm, tree
 from sklearn.linear_model import SGDClassifier
 from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
 
 
 def svm_compare():
@@ -30,8 +31,9 @@ def svm_compare():
     labels = np.ones([N, 1])
     labels[data_labels] = 0
 
+    clf = GaussianNB()
     # clf = tree.DecisionTreeClassifier()
-    clf = svm.SVC(gamma=0.001, C=100, probability=True)
+    # clf = svm.SVC(gamma=0.001, C=100, probability=True)
     X, y = inputs, np.ravel(labels)
     # shuffles the date to save 20% of data for testing
     X_train, X_test, y_train, y_test = train_test_split(
@@ -52,15 +54,14 @@ def svm_compare():
     y_prob = clf.predict_proba(X_test)
     y_pred = clf.predict(X_test)
     print("probabilities:\n", y_prob[:5])
-    print("\npredictions: \n" , y_pred[:5])
-    print("accuracy: \n",np.array(y_pred == y_test)[:5])
+    print("\npredictions: \n", y_pred[:5])
+    print("accuracy: \n", np.array(y_pred == y_test)[:5])
     print('\npercentage correct: ', 100 * np.sum(y_pred == y_test) / len(y_test))
 
     # Get support vectors themselves
     # support_vectors = clf.support_vectors_
 
     return clf
-
 
 
 svm_compare()
