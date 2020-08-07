@@ -1,4 +1,10 @@
 *__pycache__
 shape_predictor_68_face_landmarks.dat
 .*
-Demo/dataset/old_data
+Demo/dataset
+
+Demo/SVM_clf_0.joblib
+Demo/open_face.h5
+Demo/csv_files/embedded.csv
+Demo/not_used_code
+Demo/tree.joblib
