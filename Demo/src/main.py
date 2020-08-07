@@ -1,23 +1,25 @@
 # from auxilary import path_to_all_dataset,os,path_to_yalefaces
 # from facial_landmarks import draw_landmarks, draw_parts,store_key_points
 # import facial_landmarks
-# import auxilary
+import auxilary
 # import os
-# import face_recognition
+import face_recognition
 # import SVM
-# import show_tests
+import show_tests
 # from get_lengths import *
 # from identify_faces import *
 # from calc_weights import calc_weights
 # from delaunay import get_delaunay_points,store_shape_tri
-import face_recognition
-from joblib import dump, load
-import auxilary
-import pandas as pd
+# import face_recognition
+# from joblib import dump, load
+# import auxilary
+# import pandas as pd
 import numpy as np
-import copy
-import show_tests
+# import copy
+# import show_tests
 import os
+
+
 '''
     Jobs allowed:
         + show an image with facial landmarks on it (dominance option)
@@ -158,7 +160,7 @@ if __name__ == "__main__":
     #KR: 7355
     #LBJ: 7820
     #KG: 7443
-    embeddings,face_name, human_file_path = face_recognition.face_recognition(dataset_path = "../dataset/lfw/*/*", preview=True, image_num = 7355)
+    embeddings,face_name, human_file_path = face_recognition.face_recognition(dataset_path = "../dataset/lfw/*/*", preview=True, image_num = 7820)
     identicals, similars = results(embeddings, inputs, labels)
 
 
@@ -168,3 +170,5 @@ if __name__ == "__main__":
 
     show_tests.buttons(idc_paths, idc_names, sim_paths,sim_names, others_paths, others_names,
                 human_file_path, face_name,"MATCHING", "SIMILARS", "OTHERS")
+
+
