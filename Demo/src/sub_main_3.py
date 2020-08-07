@@ -1,3 +1,9 @@
+'''
+    Finds the threshold for similar/identical/non matching images.
+'''
+
+
+
 import pandas as pd
 import auxilary
 import numpy as np
