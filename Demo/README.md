@@ -32,11 +32,13 @@
 ## Before running:
 
 1- [shape_predictor_68_face_landmarks](http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2)
-    download this file and place it at `./Demo/`, note it's 90 MB.
+    download this file and place it at `./Demo/`, note it's 90 MB. It's responsible for Detecting faces, Predicting the 68 facial points, and apply affine tranformation on face images.
 
-2- Download the [dataset](http://vis-www.cs.umass.edu/lfw/lfw.tgz) and extract it here `./Demo/dataset`, note it's 170 MB.
+2- Download the [dataset](https://drive.google.com/file/d/12Uik_DInDR9YfnHS1rwcLE9QchoeiPLZ/view?usp=sharing) and extract it here `./Demo/dataset`, note it's 70 MB.
 
-3- Prepare `open_face.h5`, found in this [repo](https://github.com/krsatyam1996/Face-recognition-and-identification), clone or download it, and place the file `open_face.h5` in `./Demo/src/`.
+3- Prepare `open_face.h5`, found in this [repo](https://github.com/krsatyam1996/Face-recognition-and-identification), clone or download it, and place the file `open_face.h5` in `./Demo/src/`. It's responsible for Extracting facial features from images that's been transformed.
+
+
 
 # What to run?
 + Create new dataset contains old images with only the faces:
