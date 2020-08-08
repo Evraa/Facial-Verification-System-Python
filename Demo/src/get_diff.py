@@ -14,10 +14,10 @@ def get_points(string):
     points = [int(string[0]),int(string[1])]
     return points
 
-def mse_diff (diff_1,diff_2):
-    diff_1 = np.array(diff_1) 
-    diff_2 = np.array(diff_2) 
-    
+def mse_diff (row1,row2):
+    diff_1 = np.array(clac_diff(row1))
+    diff_2 = np.array(clac_diff(row2))
+
     return abs(np.subtract(diff_1,diff_2))
 
 def clac_diff(row):
@@ -43,60 +43,76 @@ def get_diff(key_points_path):
         auxilary.create_csv(path, columns)
     
     dataframe = auxilary.read_csv(fileName=path)
-    print (len(dataframe))
+    print ("a",len(dataframe))
 
-    print (len(dataframe[dataframe.label == 0] ) )
+    print ("b",len(dataframe[dataframe.label == 0] ) )
     # values = auxilary.strings_to_lists (dataframe['inputs'][0])
-    print(main_data.head())
     num_sets = main_data['image_set'].nunique()
-    # num_sets = 15
 
-    #append similars
-    for i in range (num_sets):
-        set_i_mask = main_data['image_set'] == (i+1)
-        set_i = main_data[set_i_mask]
-        # iters = comnimationals(len(set_i))
-        # for it in range (iters):
-        for index, row in set_i.iterrows():
-            diff_1 = clac_diff(row)
-            
-            for index_2,row_2 in set_i.iterrows():
-                if index >= index_2:
-                    continue
-                diff_2 = clac_diff(row_2)
-                diff = mse_diff (diff_1,diff_2)
-                row_dict = {
-                    'inputs': [],
-                    'label':1
-                }
-                row_dict['inputs'].append(diff)
-                dataframe = auxilary.read_csv(fileName=path)
-                auxilary.add_row(dataframe, row_dict, fileName=path)
 
-    #append differents
-    uniques = []
-    for i in range (15):
-        # set_i_mask = main_data['image_set'] == (i+1)
-        set_i = main_data.loc[ main_data['image_set'] == (i+1) ].iloc[6]
-        uniques.append(set_i)
-
-    for i,unique in enumerate(uniques):
-        diff_1 = clac_diff(unique)
-
-        for j,unique_2 in enumerate(uniques):
-            if i >= j:
+    set_i_mask = main_data['image_set'] == "George_W_Bush"
+    set_i = main_data[set_i_mask]
+    # iters = comnimationals(len(set_i))
+    # for it in range (iters):
+    for index, row in set_i.iterrows():
+        for index2, row2 in set_i.iterrows():
+            if index >= index2:
                 continue
-            diff_2 = clac_diff(unique_2)
-            diff = mse_diff (diff_1,diff_2)
+            diff = mse_diff(row, row2)
             row_dict = {
                 'inputs': [],
-                'label':0
+                'label': 1
             }
             row_dict['inputs'].append(diff)
             dataframe = auxilary.read_csv(fileName=path)
             auxilary.add_row(dataframe, row_dict, fileName=path)
+            print(index,index2)
+    #append similars
+    # for i in range (num_sets):
+        # set_i_mask = main_data['image_set'] == (i+1)
+        # set_i = main_data[set_i_mask]
+        # # iters = comnimationals(len(set_i))
+        # # for it in range (iters):
+        # for index, row in set_i.iterrows():
+        #     diff_1 = clac_diff(row)
+        #
+        #     for index_2,row_2 in set_i.iterrows():
+        #         if index >= index_2:
+        #             continue
+        #         diff_2 = clac_diff(row_2)
+        #         diff = mse_diff (diff_1,diff_2)
+        #         row_dict = {
+        #             'inputs': [],
+        #             'label':1
+        #         }
+        #         row_dict['inputs'].append(diff)
+        #         dataframe = auxilary.read_csv(fileName=path)
+        #         auxilary.add_row(dataframe, row_dict, fileName=path)
+    #
+    # #append differents
+    # uniques = []
+    # for i in range (15):
+    #     # set_i_mask = main_data['image_set'] == (i+1)
+    #     set_i = main_data.loc[ main_data['image_set'] == (i+1) ].iloc[6]
+    #     uniques.append(set_i)
+    #
+    # for i,unique in enumerate(uniques):
+    #     diff_1 = clac_diff(unique)
+    #
+    #     for j,unique_2 in enumerate(uniques):
+    #         if i >= j:
+    #             continue
+    #         diff_2 = clac_diff(unique_2)
+    #         diff = mse_diff (diff_1,diff_2)
+    #         row_dict = {
+    #             'inputs': [],
+    #             'label':0
+    #         }
+    #         row_dict['inputs'].append(diff)
+    #         dataframe = auxilary.read_csv(fileName=path)
+    #         auxilary.add_row(dataframe, row_dict, fileName=path)
             
-    dataframe = auxilary.read_csv(fileName=path)
-    print (len(dataframe))
+    # dataframe = auxilary.read_csv(fileName=path)
+    print ("c",len(dataframe))
 
-    print (len(dataframe[dataframe.label == 0] ) )
+    print ("d",len(dataframe[dataframe.label == 0] ) )
