@@ -28,7 +28,7 @@ def trim_outputs (labels, face_name, identicals, similars):
     N = labels.shape[0]
     others_names = []
     others_paths = []
-    path = '../dataset/lfw/'
+    path = '../dataset/main_data/'
     #for others
     for i in range (9):
         rand_int = np.random.random_integers(0,N-1)
@@ -104,7 +104,7 @@ def trim_outputs (labels, face_name, identicals, similars):
     print ("\n\n\n")
     return idc_paths, idc_names, sim_paths, sim_names, others_paths, others_names
 
-def Euc_result_preview(image_num = 7820):
+def Euc_result_preview(image_num = None):
     print ("Load labels")
     data = auxilary.read_csv(fileName='../csv_files/embedded.csv')
     N = len(data) #13142
@@ -116,16 +116,15 @@ def Euc_result_preview(image_num = 7820):
 
     labels = np.zeros([N,1])
     labels = np.array(data.iloc[:,D])
-    #KR: 7355
-    #LBJ: 7820
-    #KG: 7443
+    
     embeddings,face_name, human_file_path = face_recognition.face_recognition(dataset_path = "../dataset/main_data/*/*", preview=True, image_num = image_num)
     identicals, similars = results(embeddings, inputs, labels)
 
-
+    
 
     idc_paths, idc_names, sim_paths, sim_names, others_paths, others_names = \
         trim_outputs (labels, face_name, identicals, similars)
+
 
     show_tests.buttons(idc_paths, idc_names, sim_paths,sim_names, others_paths, others_names,
                 human_file_path, face_name,"MATCHING", "SIMILARS", "OTHERS")

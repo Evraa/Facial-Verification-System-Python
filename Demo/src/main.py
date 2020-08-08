@@ -67,21 +67,21 @@ if __name__ == "__main__":
             
         elif action == 2:
             dataset_path = '../dataset/lfw_affine/*/*'
-            # human_files = np.array(glob(dataset_path))
-            # model = create_model()
-            # model.load_weights('../open_face.h5')
+            human_files = np.array(glob(dataset_path))
+            model = create_model()
+            model.load_weights('../open_face.h5')
             print (colored("\t\t\tSTARTING",'green'))            
-            # try:
-            face_recognition.face_recognition(dataset_path = dataset_path)
-                # print (colored('\t\t\tDONE','green'))
-            # except:
-            #     print (colored("\t\t\tERROR",'red'))
+            try:
+                face_recognition.store_embeddings(human_files,model)
+                print (colored('\t\t\tDONE','green'))
+            except:
+                print (colored("\t\t\tERROR",'red'))
         
         elif action == 3:
             print (colored("\t\t\tSTARTING",'green'))            
             try:
-                image_num = 7820
-                euc.Euc_result_preview(image_num)
+                # image_num = 7820
+                euc.Euc_result_preview()
                 print (colored('\t\t\tDONE','green'))
             except:
                 print (colored("\t\t\tERROR",'red'))
