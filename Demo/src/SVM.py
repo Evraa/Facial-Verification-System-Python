@@ -6,6 +6,7 @@ import numpy as np
 from sklearn import svm, tree
 from sklearn.linear_model import SGDClassifier
 from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
 from joblib import dump, load
 import random
 from sklearn.tree import DecisionTreeClassifier
@@ -36,6 +37,20 @@ def svm_compare(path = '../csv_files/csv_differences.csv'):
     X_train,y_train = inputs, labels
     X_test, y_test  = X_train[random_list,:] ,y_train[random_list]
 
+
+    clf = GaussianNB()
+    # clf = tree.DecisionTreeClassifier()
+    # clf = svm.SVC(gamma=0.001, C=100, probability=True)
+    X, y = inputs, np.ravel(labels)
+    # shuffles the date to save 20% of data for testing
+    X_train, X_test, y_train, y_test = train_test_split(
+        X,
+        y,
+        test_size=0.2,
+        shuffle=True,
+        random_state=42,
+    )
+    clf.fit(X_train, y_train)
 
 
     # for scale in scales:

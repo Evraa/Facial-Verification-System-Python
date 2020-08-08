@@ -154,8 +154,8 @@ def show_tests(dataset_path, clf, detector, predictor):
             prob = prob[0][1]
             if prob <= 0.5:
                 continue
-            thsh = 0.89
-            if prob <= thsh and prob > 0.80:
+            thsh = 0.99
+            if thsh >= prob > 0.95:
                 similars.append(image_path)
                 similars_names.append(image_name)
                 continue
@@ -214,7 +214,7 @@ def display_sets(img_list, img_list_titles, orig, orig_title, title):
             axn.imshow(mpimg.imread(img))
         fig.suptitle(title, fontsize=16)
     else:
-        print ("Error: Empty list!")
+        plt.title("No " + title)
     # plt.show()
 
 
@@ -272,5 +272,4 @@ def buttons(identicalls, id_titles, similars,sim_titles, left_overs, left_titles
     brest = Button(axrest, 'Rest')
     brest.on_clicked(callback.rest)
 
-    print("AEKGBNOEAKMLDF")
     plt.show()
