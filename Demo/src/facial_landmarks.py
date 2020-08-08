@@ -5,7 +5,7 @@ import imutils
 import dlib
 import cv2
 from auxilary import path_to_shape_predictor, shape_to_np, dominant_key_points, fixed_key_point, \
-    how_sure, store_keys, create_key_points_data_frame
+    how_sure, store_keys, create_key_points_data_frame, mylistdir
 from collections import OrderedDict
 from PIL import Image
 from matplotlib import image
@@ -126,11 +126,11 @@ def store_key_points(image_set_paths):
     create_key_points_data_frame()
     detector = dlib.get_frontal_face_detector()
     predictor = dlib.shape_predictor(path_to_shape_predictor)
-    folders = os.listdir(image_set_paths)
+    folders = mylistdir(image_set_paths)
     for folder in folders:
         set_number = folder
         folder_path = image_set_paths + folder + "/"
-        images = (os.listdir(folder_path))
+        images = (mylistdir(folder_path))
         for im in images:
             # print (f'image {im} from set {folder}')
             image_path = folder_path + im
@@ -139,14 +139,13 @@ def store_key_points(image_set_paths):
             img = Image.open(image_path)
             # print (image.size)
             # print (image.mode)
-            image = np.asarray(img)
+            image = np.array(img)
             # image = cv2.imread(image_path,0)
             # print (image.shape)
             # image = imutils.resize(image, width=500)
             # gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
             # detect faces in the grayscale image
             # cv2.imshow("i",image)
-
             rects = detector(image, 1)
             # loop over the face detections
             if len(rects) == 0:
