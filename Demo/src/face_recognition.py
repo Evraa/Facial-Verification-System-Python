@@ -115,6 +115,7 @@ def affine_transformation(human_files,pred,detec,preview = False, image_num=0):
             cv2.imwrite(file_path, alignedFace)
             # plt.imshow(face_aligned)
         else:
+            print ('Sorry, that image does not have faces!')
             file_name = human_file.split('/')
             file_name = file_name[len(file_name)-1]
             file_name = file_name.split('\\')
@@ -128,20 +129,32 @@ def store_embeddings(human_files,model):
     data_size = len(human_files)
     embedded = np.zeros((data_size, 128))
     for i, human_file in enumerate(human_files):
-        try:
-            image = cv2.imread(human_file,1)
-            image = (image / 255.).astype(np.float32)
-            embedded[i] = model.predict(np.expand_dims(image, axis=0))[0]
-            if i%100 == 0:
-                print (f'Progress: iteration {i}')
-        except:
-            print (f'Failed: {human_file}')
+        # try:
+            
+        image = cv2.imread(human_file,1)
+        image = (image / 255.).astype(np.float32)
+        embedded[i] = model.predict(np.expand_dims(image, axis=0))[0]
+        df = pd.DataFrame(embedded)
+        df["output"] = labels
+        print (df)
+        input("ev")
+        path = "../csv/embedded.csv"
+        if os.path.exists(path):
+            print ("delete")
+            os.remove(path)
+        input("ev")
+        df.to_csv(path,index=False)
+        
+        if i%100 == 0:
+            print (f'Working: iteration {i}')
+            
+        # except:
+        #     print (f'Failed: {human_file}')
 
     #STORE
     df = pd.DataFrame(embedded)
     df["output"] = labels
     df.to_csv("../csv_files/embedded.csv",index=False)
-    print ("DONE :D")
     
 #Main function
 def face_recognition(dataset_path = "../dataset/lfw/*/*", preview=False, image_num = 0):
@@ -170,7 +183,7 @@ def face_recognition(dataset_path = "../dataset/lfw/*/*", preview=False, image_n
     #Create model for 128 features extraction
     model = create_model()
     model.load_weights('../open_face.h5')
-    # store_embeddings(human_files,model)
+    store_embeddings(human_files,model)
 
     if preview:
         # Show the image

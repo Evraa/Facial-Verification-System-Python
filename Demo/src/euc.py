@@ -1,34 +1,8 @@
-# from auxilary import path_to_all_dataset,os,path_to_yalefaces
-# from facial_landmarks import draw_landmarks, draw_parts,store_key_points
-# import facial_landmarks
 import auxilary
-# import os
 import face_recognition
-# import SVM
 import show_tests
-# from get_lengths import *
-# from identify_faces import *
-# from calc_weights import calc_weights
-# from delaunay import get_delaunay_points,store_shape_tri
-# import face_recognition
-# from joblib import dump, load
-# import auxilary
-# import pandas as pd
 import numpy as np
-# import copy
-# import show_tests
 import os
-
-
-'''
-    Jobs allowed:
-        + show an image with facial landmarks on it (dominance option)
-        + show an image with drawings on it
-        + store key points
-        + store lengths...done and wont need it anymore, but it's still there!
-        + calc weights
-        
-'''
 
 
 def euclidean(input_1, input_2):
@@ -130,22 +104,7 @@ def trim_outputs (labels, face_name, identicals, similars):
     print ("\n\n\n")
     return idc_paths, idc_names, sim_paths, sim_names, others_paths, others_names
 
-if __name__ == "__main__":
-    print("hello :D")
-    # SVM.svm_compare(path="../csv_files/embedded.csv")
-    # image_path = '../dataset/Mag.jpg'
-    # # facial_landmarks.draw_landmarks(image_path)
-    # # facial_landmarks.draw_parts(image_path)
-    
-    # print ("Loading the detector and predictor...\n")
-    # predictor , detector = facial_landmarks.load_pred_detec(auxilary.path_to_shape_predictor)
-    # print ("Training the Classifier...\n")
-    # clf = SVM.svm_compare()
-    # print ("Testing random image...\n")
-    # show_tests.show_tests(auxilary.path_to_yalefaces,clf,detector,predictor)
-
-    print ("hello :D")
-
+def Euc_result_preview(image_num = 7820):
     print ("Load labels")
     data = auxilary.read_csv(fileName='../csv_files/embedded.csv')
     N = len(data) #13142
@@ -160,7 +119,7 @@ if __name__ == "__main__":
     #KR: 7355
     #LBJ: 7820
     #KG: 7443
-    embeddings,face_name, human_file_path = face_recognition.face_recognition(dataset_path = "../dataset/lfw/*/*", preview=True, image_num = 7820)
+    embeddings,face_name, human_file_path = face_recognition.face_recognition(dataset_path = "../dataset/main_data/*/*", preview=True, image_num = image_num)
     identicals, similars = results(embeddings, inputs, labels)
 
 

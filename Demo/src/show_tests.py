@@ -214,7 +214,7 @@ def display_sets(img_list, img_list_titles, orig, orig_title, title):
             axn.imshow(mpimg.imread(img))
         fig.suptitle(title, fontsize=16)
     else:
-        plt.set_title("No", title)
+        print ("Error: Empty list!")
     # plt.show()
 
 
