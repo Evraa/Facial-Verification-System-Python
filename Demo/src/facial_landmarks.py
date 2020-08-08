@@ -3,6 +3,7 @@ import numpy as np
 import argparse, os
 import imutils
 import dlib
+import copy
 import cv2
 from auxilary import path_to_shape_predictor, shape_to_np, dominant_key_points, fixed_key_point, \
     how_sure, store_keys, create_key_points_data_frame
@@ -10,6 +11,7 @@ from collections import OrderedDict
 from PIL import Image
 from matplotlib import image
 from matplotlib import pyplot
+import delaunay
 
 def load_pred_detec():
     detector = dlib.get_frontal_face_detector()
@@ -40,6 +42,7 @@ def draw_landmarks(image,shape,rect):
 
         `circle_type` dominant or no_dominant    
     '''
+    orig_image = copy.deepcopy(image)
     # shape, rect, image = predict_shapes(image_path)
     (x, y, w, h) = face_utils.rect_to_bb(rect)
     cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
@@ -56,8 +59,11 @@ def draw_landmarks(image,shape,rect):
     cv2.imshow("Predicted Facial points", image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
+
+    delaunay.get_delaunay_points(shape,orig_image,returned = False)
     
     
+
     
 
 

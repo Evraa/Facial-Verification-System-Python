@@ -96,7 +96,7 @@ def affine_transformation(human_files,pred,detec,preview = False, image_num=0):
         state, shape, rect, image = facial_landmarks.get_shape(human_file, pred, detec)
         while not state:
             state, shape, rect, image = facial_landmarks.get_shape(human_file, pred, detec)
-
+        
         facial_landmarks.draw_landmarks(image,shape,rect)
         alignedFace = face_aligner.align(96, image, rect, \
                 landmarkIndices=openface.AlignDlib.OUTER_EYES_AND_NOSE)
