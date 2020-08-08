@@ -47,9 +47,8 @@ def get_diff(key_points_path):
 
     print (len(dataframe[dataframe.label == 0] ) )
     # values = auxilary.strings_to_lists (dataframe['inputs'][0])
-    print(main_data.head())
     num_sets = main_data['image_set'].nunique()
-    # num_sets = 15
+
 
     #append similars
     for i in range (num_sets):
@@ -59,7 +58,7 @@ def get_diff(key_points_path):
         # for it in range (iters):
         for index, row in set_i.iterrows():
             diff_1 = clac_diff(row)
-            
+
             for index_2,row_2 in set_i.iterrows():
                 if index >= index_2:
                     continue
@@ -72,10 +71,11 @@ def get_diff(key_points_path):
                 row_dict['inputs'].append(diff)
                 dataframe = auxilary.read_csv(fileName=path)
                 auxilary.add_row(dataframe, row_dict, fileName=path)
+                print("head",dataframe.head())
 
     #append differents
     uniques = []
-    for i in range (15):
+    for i in range (num_sets):
         # set_i_mask = main_data['image_set'] == (i+1)
         set_i = main_data.loc[ main_data['image_set'] == (i+1) ].iloc[6]
         uniques.append(set_i)
