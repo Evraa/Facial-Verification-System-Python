@@ -15,6 +15,7 @@ path_to_images_grouped = "../dataset/grouped/"
 path_to_shape_tris = '../csv_files/csv_shape_tris.csv'
 path_to_yalefaces = '../dataset/yalefaces/'
 path_to_clf = '../SVM_clf_0.joblib'
+path_to_maindata = '../dataset/main_data/'
 
 def create_demo(fileName=path_to_csv_lengths):
     '''
@@ -101,7 +102,7 @@ def add_row(dataframe, row_dict, fileName=path_to_csv_key_points):
         Append row of data, and store it.
     '''
     row = pd.DataFrame(row_dict)
-    dataframe_concatenatd = pd.concat([dataframe, row], ignore_index=True)
+    dataframe_concatenatd = dataframe.append(row, ignore_index=True)
     store_csv(dataframe=dataframe_concatenatd, fileName=fileName)
     return dataframe_concatenatd
 
@@ -224,7 +225,7 @@ def calc_distances(image_name, shape):
             + Left nostril
             + Right nostril
             + Mouse
-        
+
         then append them in the dictionary
     '''
     print(f'this is image: {image_name}')
@@ -284,7 +285,7 @@ def store_keys(image_name, shape, set_number):
                'feat_54': []
                }
     my_dict['image_set'].append(set_number)
-    print (image_name)
+    # print(image_name)
     my_dict['image_name'].append(image_name)
     my_dict['base_point'].append(list(shape[fixed_key_point]))
     my_dict['feat_17'].append(list(shape[17]))

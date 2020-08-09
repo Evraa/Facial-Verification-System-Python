@@ -11,3 +11,11 @@ Demo/csv_files/embedded.csv
 Demo/models
 *.h5
 sequential_NN_model.json
+Demo/dataset
+
+Demo/SVM_clf_0.joblib
+Demo/open_face.h5
+Demo/csv_files/embedded.csv
+Demo/not_used_code
+Demo/tree.joblib
+Demo/dataset/main_data
