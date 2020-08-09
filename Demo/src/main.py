@@ -100,6 +100,7 @@ if __name__ == "__main__":
         elif action == 0:
             #EXIT
             break
+        
     # print("hello :D")
     # image_path = '../dataset/Mag.jpg'
     # # facial_landmarks.draw_landmarks(image_path)
