@@ -49,72 +49,72 @@ if __name__ == "__main__":
         # 3- Apply classification using Euclidean metric to test one image
         # 4- Apply classification using Neural Networks
 
-    print (colored('\t\tLoading models once, to make the rest of the operations faster','yellow'))
-    pred, detc = facial_landmarks.load_pred_detec()
-    while True:
-        action = take_action()
+    # print (colored('\t\tLoading models once, to make the rest of the operations faster','yellow'))
+    # pred, detc = facial_landmarks.load_pred_detec()
+    # while True:
+    #     action = take_action()
 
-        if action == 1:
-            #Affine transformation
-            print (colored("\t\t\tSTARTING",'green'))
-            dataset_path = '../dataset/main_data/*/*'
-            human_files = np.array(glob(dataset_path))
-            try:
-                face_recognition.affine_transformation(human_files,pred,detc)
-                print (colored('\t\t\tDONE','green'))
-            except:
-                print (colored("\t\t\tERROR",'red'))
+    #     if action == 1:
+    #         #Affine transformation
+    #         print (colored("\t\t\tSTARTING",'green'))
+    #         dataset_path = '../dataset/main_data/*/*'
+    #         human_files = np.array(glob(dataset_path))
+    #         try:
+    #             face_recognition.affine_transformation(human_files,pred,detc)
+    #             print (colored('\t\t\tDONE','green'))
+    #         except:
+    #             print (colored("\t\t\tERROR",'red'))
             
-        elif action == 2:
-            dataset_path = '../dataset/lfw_affine/*/*'
-            human_files = np.array(glob(dataset_path))
-            model = create_model()
-            model.load_weights('../open_face.h5')
-            print (colored("\t\t\tSTARTING",'green'))            
-            try:
-                face_recognition.store_embeddings(human_files,model)
-                print (colored('\t\t\tDONE','green'))
-            except:
-                print (colored("\t\t\tERROR",'red'))
+    #     elif action == 2:
+    #         dataset_path = '../dataset/lfw_affine/*/*'
+    #         human_files = np.array(glob(dataset_path))
+    #         model = create_model()
+    #         model.load_weights('../open_face.h5')
+    #         print (colored("\t\t\tSTARTING",'green'))            
+    #         try:
+    #             face_recognition.store_embeddings(human_files,model)
+    #             print (colored('\t\t\tDONE','green'))
+    #         except:
+    #             print (colored("\t\t\tERROR",'red'))
         
-        elif action == 3:
-            print (colored("\t\t\tSTARTING",'green'))            
-            try:
-                # image_num = 7820
-                euc.Euc_result_preview()
-                print (colored('\t\t\tDONE','green'))
-            except:
-                print (colored("\t\t\tERROR",'red'))
+    #     elif action == 3:
+    #         print (colored("\t\t\tSTARTING",'green'))            
+    #         try:
+    #             # image_num = 7820
+    #             euc.Euc_result_preview()
+    #             print (colored('\t\t\tDONE','green'))
+    #         except:
+    #             print (colored("\t\t\tERROR",'red'))
         
-        elif action == 4:
-            print (colored("\t\t\tSTARTING",'green'))            
-            try:
-                NN.train()
-                print (colored('\t\t\tDONE','green'))
-            except:
-                print (colored("\t\t\tERROR",'red'))
+    #     elif action == 4:
+    #         print (colored("\t\t\tSTARTING",'green'))            
+    #         try:
+    #             NN.train()
+    #             print (colored('\t\t\tDONE','green'))
+    #         except:
+    #             print (colored("\t\t\tERROR",'red'))
         
-        elif action == 5:
-            pass
+    #     elif action == 5:
+    #         pass
         
-        elif action == 0:
-            #EXIT
-            break
+    #     elif action == 0:
+    #         #EXIT
+    #         break
         
-    # print("hello :D")
-    # image_path = '../dataset/Mag.jpg'
-    # # facial_landmarks.draw_landmarks(image_path)
-    # # facial_landmarks.draw_parts(image_path)
+    print("hello :D")
+    image_path = '../dataset/Mag.jpg'
+    # facial_landmarks.draw_landmarks(image_path)
+    # facial_landmarks.draw_parts(image_path)
 
-    # # load a dataset
-    # # 1) get key points (mylistdir workaround for OS DS_store)
-    # # facial_landmarks.store_key_points(auxilary.path_to_maindata)
-    # # 2) get differences
-    # # get_diff.get_diff(auxilary.path_to_csv_key_points, auxilary.path_to_maindata)\
+    # load a dataset
+    # 1) get key points (mylistdir workaround for OS DS_store)
+    # facial_landmarks.store_key_points(auxilary.path_to_maindata)
+    # 2) get differences
+    # get_diff.get_diff(auxilary.path_to_csv_key_points, auxilary.path_to_maindata)\
     
-    # # print ("Loading the detector and predictor...\n")
-    # predictor , detector = facial_landmarks.load_pred_detec(auxilary.path_to_shape_predictor)
-    # # print ("Training the Classifier...\n")
-    # clf = SVM.svm_compare()
-    # # print ("Testing random image...\n")
-    # show_tests.show_tests(auxilary.path_to_maindata,clf,detector,predictor)
+    # print ("Loading the detector and predictor...\n")
+    predictor , detector = facial_landmarks.load_pred_detec(auxilary.path_to_shape_predictor)
+    # print ("Training the Classifier...\n")
+    clf = SVM.svm_compare()
+    # print ("Testing random image...\n")
+    show_tests.show_tests(auxilary.path_to_maindata,clf,detector,predictor)
