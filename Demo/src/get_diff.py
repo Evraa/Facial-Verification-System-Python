@@ -1,3 +1,6 @@
+import itertools
+from random import random, sample, choices, randint
+
 import os, math
 import auxilary
 import copy
@@ -32,7 +35,7 @@ def clac_diff(row):
         diff_1.append(auxilary.distance_two_points(base,r_p))
     return diff_1
 
-def get_diff(key_points_path):
+def get_diff(key_points_path, image_dir):
 
     main_data = auxilary.read_csv(key_points_path)
     #create diff csv
@@ -43,30 +46,70 @@ def get_diff(key_points_path):
         auxilary.create_csv(path, columns)
     
     dataframe = auxilary.read_csv(fileName=path)
-    print ("a",len(dataframe))
+    print ("a",len(main_data))
+
 
     print ("b",len(dataframe[dataframe.label == 0] ) )
     # values = auxilary.strings_to_lists (dataframe['inputs'][0])
     num_sets = main_data['image_set'].nunique()
 
 
-    set_i_mask = main_data['image_set'] == "George_W_Bush"
+    # GET LABEL 1
+    set_i_mask = main_data['image_set'] == "Vladimir_Putin"
     set_i = main_data[set_i_mask]
-    # iters = comnimationals(len(set_i))
-    # for it in range (iters):
-    for index, row in set_i.iterrows():
-        for index2, row2 in set_i.iterrows():
-            if index >= index2:
-                continue
-            diff = mse_diff(row, row2)
-            row_dict = {
-                'inputs': [],
-                'label': 1
-            }
-            row_dict['inputs'].append(diff)
-            dataframe = auxilary.read_csv(fileName=path)
-            auxilary.add_row(dataframe, row_dict, fileName=path)
-            print(index,index2)
+    # for index, row in set_i.iterrows():
+    #     for index2, row2 in set_i.iterrows():
+    #         if index >= index2:
+    #             continue
+    #         diff = mse_diff(row, row2)
+    #         row_dict = {
+    #             'inputs': [],
+    #             'label': 1
+    #         }
+    #         row_dict['inputs'].append(diff)
+    #         dataframe = auxilary.read_csv(fileName=path)
+    #         auxilary.add_row(dataframe, row_dict, fileName=path)
+    #         print(index,index2)
+
+    # GET LABEL 0
+    num_0 = len(dataframe)
+    photos_per_set = len(dataframe)/num_sets
+    if photos_per_set > 7:
+        photos_per_set = 7
+    sets = auxilary.mylistdir(image_dir)
+    set_indx = 0
+    r = choices(sets, k=num_0)
+    for cset in r:
+        dataframe = auxilary.read_csv(fileName=path)
+        compare_set = main_data[main_data['image_set'] == cset]
+        set_indx = set_indx + 1
+        rand_num = randint(0, len(compare_set) - 1)
+        compare_row = compare_set.iloc[rand_num]
+        row = set_i.iloc[randint(0, len(set_i)-1)]
+        diff = mse_diff(row,compare_row)
+        row_dict = {
+            'inputs': [],
+            'label': 0
+        }
+        row_dict['inputs'].append(diff)
+        auxilary.add_row(dataframe, row_dict, fileName=path)
+
+
+    # for row in set_i.iterrows():
+    #     dataframe = auxilary.read_csv(fileName=path)
+    #     compare_set = main_data[main_data['image_set'] == r[set_indx]]
+    #     set_indx = set_indx + 1
+    #     rand_num = randint(0, len(compare_set) - 1)
+    #     compare_row = compare_set.iloc[rand_num]
+    #     diff = mse_diff(row[1], compare_row)
+    #     # print("DIFFERENCE: ", diff)
+    #     row_dict = {
+    #         'inputs': [],
+    #         'label': 0
+    #     }
+    #     row_dict['inputs'].append(diff)
+    #     auxilary.add_row(dataframe, row_dict, fileName=path)
+
     #append similars
     # for i in range (num_sets):
         # set_i_mask = main_data['image_set'] == (i+1)
@@ -114,5 +157,5 @@ def get_diff(key_points_path):
             
     # dataframe = auxilary.read_csv(fileName=path)
     print ("c",len(dataframe))
-
+    print ("d",len(dataframe[dataframe.label == 1] ) )
     print ("d",len(dataframe[dataframe.label == 0] ) )

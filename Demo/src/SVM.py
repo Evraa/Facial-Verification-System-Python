@@ -12,7 +12,8 @@ def svm_compare():
     '''
     TODO: implement svm
     '''
-    path = '../csv_files/csv_differences.csv'
+    # path = '../csv_files/csv_differences.csv'
+    path = '../csv_files/csv_differences_prof.csv'
     data = auxilary.read_csv(fileName=path)
 
     # READ THE INPUTS

@@ -101,7 +101,7 @@ def add_row(dataframe, row_dict, fileName=path_to_csv_key_points):
         Append row of data, and store it.
     '''
     row = pd.DataFrame(row_dict)
-    dataframe_concatenatd = pd.concat([dataframe, row], ignore_index=True)
+    dataframe_concatenatd = dataframe.append(row, ignore_index=True)
     store_csv(dataframe=dataframe_concatenatd, fileName=fileName)
     return dataframe_concatenatd
 
@@ -224,7 +224,7 @@ def calc_distances(image_name, shape):
             + Left nostril
             + Right nostril
             + Mouse
-        
+
         then append them in the dictionary
     '''
     print(f'this is image: {image_name}')

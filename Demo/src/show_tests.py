@@ -1,3 +1,5 @@
+from random import randint
+
 import numpy as np
 import os, math
 import matplotlib.pyplot as plt
@@ -45,6 +47,11 @@ def get_random_image_path(dataset_path):
     # prof set
     # folder_numb = random_numbers(1, 13)
     # file_numb = 1
+
+    #main set
+    folder_numb = auxilary.mylistdir(dataset_path)[randint(0, len(auxilary.mylistdir(dataset_path))-1)]
+    file_numb = randint(0, len(auxilary.mylistdir(dataset_path+'/'+folder_numb))-1)
+    print(folder_numb, file_numb)
 
     folder_path = dataset_path + str(folder_numb) + '/'
     images = os.listdir(folder_path)
@@ -182,7 +189,7 @@ def show_tests(dataset_path, clf, detector, predictor):
     # display_sets(left_overs, orig_image_path, "Non-Matched Images")
     # plt.show()
 
-    buttons(identicalls, similars, left_overs, orig_image_path, identical_title, similar_title, "Non-Matched Images")
+    buttons(identicalls[:15], similars[:15], left_overs[:15], orig_image_path, identical_title, similar_title, "Non-Matched Images")
 
 
 def display_sets(img_list, orig, title):
