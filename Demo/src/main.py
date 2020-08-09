@@ -1,15 +1,15 @@
 import facial_landmarks
 # import auxilary
 import face_recognition
-# import SVM
-# import show_tests
+import SVM
+import show_tests
 # from get_lengths import *
 # from identify_faces import *
 # from calc_weights import calc_weights
 # from delaunay import get_delaunay_points,store_shape_tri
 # import face_recognition
 # from joblib import dump, load
-# import auxilary
+import auxilary
 # import pandas as pd
 import numpy as np
 from termcolor import colored
@@ -113,8 +113,8 @@ if __name__ == "__main__":
     # get_diff.get_diff(auxilary.path_to_csv_key_points, auxilary.path_to_maindata)\
     
     # print ("Loading the detector and predictor...\n")
-    predictor , detector = facial_landmarks.load_pred_detec(auxilary.path_to_shape_predictor)
+    predictor , detector = facial_landmarks.load_pred_detec()
     # print ("Training the Classifier...\n")
     clf = SVM.svm_compare()
     # print ("Testing random image...\n")
-    show_tests.show_tests(auxilary.path_to_maindata,clf,detector,predictor)
+    show_tests.show_tests(auxilary.path_to_maindata , clf, detector,predictor)
