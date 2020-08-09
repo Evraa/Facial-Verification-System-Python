@@ -64,4 +64,4 @@ def svm_compare():
 
 
 
-svm_compare()
+# svm_compare()

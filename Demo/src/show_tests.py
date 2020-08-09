@@ -193,7 +193,7 @@ def show_tests(dataset_path, clf, detector, predictor):
     buttons(identicalls[:15], similars[:15], left_overs[:15], orig_image_path, identical_title, similar_title, "Non-Matched Images")
 
 
-def display_sets(img_list, img_list_titles, orig, orig_title, title):
+def display_sets(img_list, orig, title, img_list_titles=[], orig_title="Original Photo" ):
     if img_list:
         get_length = math.ceil(math.sqrt(len(img_list)))
         iden = get_length
@@ -217,7 +217,10 @@ def display_sets(img_list, img_list_titles, orig, orig_title, title):
             axn = plt.subplot2grid(gridsize, location)
             axn.axis("off")
             # axn.set_title(get_answer(img, orig))
-            axn.set_title(img_list_titles[i])
+            if len(img_list_titles) == 0:
+                axn.set_title(get_answer(img, orig))
+            else:
+                axn.set_title(img_list_titles[i])
             i += 1
             axn.imshow(mpimg.imread(img))
         fig.suptitle(title, fontsize=16)
@@ -251,8 +254,7 @@ def is_similar(img, orig):
         li.append(abs(x-y))
     return np.average(li) < THRESHOLD
 
-def buttons(identicalls, id_titles, similars,sim_titles, left_overs, left_titles,
-                orig_image_path,orig_title,title1, title2, title3):
+def buttons(identicalls, similars, left_overs, orig_image_path, title1, title2, title3, id_titles=[], sim_titles=[],left_titles=[],orig_title=None ):
     class Index(object):
 
         plt.imshow(mpimg.imread(orig_image_path))
