@@ -16,7 +16,7 @@ from termcolor import colored
 from glob import glob
 from create_model import create_model
 import euc
-
+import NN
 
 
 def take_action():
@@ -87,7 +87,12 @@ if __name__ == "__main__":
                 print (colored("\t\t\tERROR",'red'))
         
         elif action == 4:
-            pass
+            print (colored("\t\t\tSTARTING",'green'))            
+            try:
+                NN.train()
+                print (colored('\t\t\tDONE','green'))
+            except:
+                print (colored("\t\t\tERROR",'red'))
         
         elif action == 5:
             pass
