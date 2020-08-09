@@ -2,6 +2,7 @@ from random import randint
 
 import numpy as np
 import os, math
+
 import matplotlib.pyplot as plt
 from PIL import Image
 import matplotlib.image as mpimg
@@ -201,6 +202,8 @@ def display_sets(img_list, orig, title, img_list_titles=[], orig_title="Original
         fig = plt.figure(figsize=(12, 8))
         ax1 = plt.subplot2grid(gridsize, (0, 0), colspan=get_length, rowspan=get_length)
         # ax1.set_title("Original Photo")
+        if orig_title == None:
+            orig_title = "Original Image"
         ax1.set_title(orig_title)
         # pos = ax1.get_position()
         # x = pos.x0 + pos.x1 / 3
@@ -258,17 +261,18 @@ def buttons(identicalls, similars, left_overs, orig_image_path, title1, title2, 
     class Index(object):
 
         plt.imshow(mpimg.imread(orig_image_path))
-
         def same(self, event):
-            display_sets(identicalls, id_titles, orig_image_path, orig_title, title1)
+            display_sets(img_list=identicalls, orig=orig_image_path, title=title1, img_list_titles=id_titles, orig_title=orig_title)
             plt.show()
 
         def similar(self, event):
-            display_sets(similars, sim_titles, orig_image_path, orig_title, title2)
+            display_sets(img_list=similars, orig=orig_image_path, title=title2, img_list_titles=sim_titles, orig_title=orig_title)
+            
             plt.show()
 
         def rest(self, event):
-            display_sets(left_overs, left_titles, orig_image_path,orig_title,  title3)
+            display_sets(img_list=left_overs, orig=orig_image_path, title=title3, img_list_titles=left_titles, orig_title=orig_title)
+            
             plt.show()
 
     callback = Index()

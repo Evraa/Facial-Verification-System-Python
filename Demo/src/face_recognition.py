@@ -67,7 +67,7 @@ def get_labesl(human_files):
         labels.append(get_name_from_path(human_file))
     return labels
 
-def affine_transformation(human_files,pred,detec,preview = False, image_num=0):
+def affine_transformation(human_files,pred,detec,preview = False, image_num=None):
     '''
         For each Image in the dataset
             + Extract the key points
@@ -88,6 +88,7 @@ def affine_transformation(human_files,pred,detec,preview = False, image_num=0):
         # input("e")
         image_count = len(human_files) - 1
         rand_int = np.random.random_integers(0,image_count)
+        print (f'picked random image number: {rand_int}')
         # rand_int = image_num
         human_file = human_files[rand_int]
         while not os.path.exists(human_file):
@@ -144,7 +145,7 @@ def store_embeddings(human_files,model):
     df.to_csv("../csv_files/embedded.csv",index=False)
     
 #Main function
-def face_recognition(dataset_path = "../dataset/lfw/*/*", preview=False, image_num = 0):
+def face_recognition(dataset_path = "../dataset/lfw/*/*", preview=False, image_num = None):
     '''
         + My Goal?
         + For each face in the dataset

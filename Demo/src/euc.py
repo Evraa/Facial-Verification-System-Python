@@ -124,9 +124,7 @@ def Euc_result_preview(image_num = None):
 
     idc_paths, idc_names, sim_paths, sim_names, others_paths, others_names = \
         trim_outputs (labels, face_name, identicals, similars)
-
-
-    show_tests.buttons(idc_paths, idc_names, sim_paths,sim_names, others_paths, others_names,
-                human_file_path, face_name,"MATCHING", "SIMILARS", "OTHERS")
-
+    
+    show_tests.buttons(identicalls=idc_paths, id_titles=idc_names, similars=sim_paths,sim_titles=sim_names, left_overs=others_paths, left_titles=others_names,
+                orig_image_path=human_file_path, orig_title=face_name,title1="MATCHING",title2= "SIMILARS", title3="OTHERS")
 
