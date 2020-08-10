@@ -159,6 +159,7 @@ def show_tests(dataset_path, clf, detector, predictor):
             diff_inputs = []
             diff_inputs.append(diff_input)
             prob = clf.predict_proba(diff_inputs)[0][1]
+            print(prob)
             skip = True
             if folder_name == orig_image_path.split('/')[3]:
                 skip = False
@@ -166,18 +167,27 @@ def show_tests(dataset_path, clf, detector, predictor):
                 # continue
                 break
             thsh = 0.80
-            if thsh >= prob > 0.6 and skip:
+            if thsh >= prob > 0.6 or not skip:
+                print("sim")
                 similars.append(image_path)
                 similars_names.append(image_name)
                 # continue
-                break
+                if skip:
+                    break
+                elif not skip:
+                    continue
             if prob > thsh or not skip:
+                print("same")
                 identicalls.append(image_path)
                 identicalls_names.append(image_name)
                 continue
             else:
+                print("none")
                 left_overs.append(image_path)
-                break
+                if skip:
+                    break
+                elif not skip:
+                    continue
 
 
     # ax1.imshow(mpimg.imread(orig_image_path))
@@ -197,7 +207,7 @@ def show_tests(dataset_path, clf, detector, predictor):
     # plt.show()
 
     # buttons(identicalls, similars, left_overs, orig_image_path, identical_title, similar_title, "Non-Matched Images")
-    buttons(identicalls[:15], similars[:15], left_overs[:15], orig_image_path, identical_title, similar_title, "Non-Matched Images")
+    buttons(identicalls, similars, left_overs, orig_image_path, identical_title, similar_title, "Non-Matched Images")
 
 
 def display_sets(img_list, orig, title, img_list_titles=[], orig_title="Original Photo" ):
