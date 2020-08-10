@@ -13,7 +13,7 @@ from create_model import create_model
 
 #MAGGIE COMMENT THESE TWO
 import face_recognition
-import euc 
+import show_results 
 
 
 def take_action():
@@ -81,7 +81,7 @@ if __name__ == "__main__":
             print (colored("\t\t\tSTARTING",'green'))            
             try:
                 # image_num = 7820
-                euc.Euc_result_preview()
+                show_results.Euc_result_preview()
                 print (colored('\t\t\tDONE','green'))
             except:
                 print (colored("\t\t\tERROR",'red'))
