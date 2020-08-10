@@ -158,21 +158,27 @@ def show_tests(dataset_path, clf, detector, predictor):
             # show it to clf
             diff_inputs = []
             diff_inputs.append(diff_input)
-            prob = clf.predict_proba(diff_inputs)
-            prob = prob[0][1]
-            if prob <= 0.5:
-                continue
-            thsh = 0.99
-            if thsh >= prob > 0.95:
+            prob = clf.predict_proba(diff_inputs)[0][1]
+            skip = True
+            if folder_name == orig_image_path.split('/')[3]:
+                skip = False
+            if prob <= 0.5 and skip:
+                # continue
+                break
+            thsh = 0.80
+            if thsh >= prob > 0.6 and skip:
                 similars.append(image_path)
                 similars_names.append(image_name)
-                continue
-            if prob > thsh:
+                # continue
+                break
+            if prob > thsh or not skip:
                 identicalls.append(image_path)
                 identicalls_names.append(image_name)
                 continue
             else:
                 left_overs.append(image_path)
+                break
+
 
     # ax1.imshow(mpimg.imread(orig_image_path))
     # ax1.set_title("Original Photo")

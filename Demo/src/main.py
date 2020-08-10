@@ -1,6 +1,6 @@
 import facial_landmarks
 # import auxilary
-import face_recognition
+# import face_recognition
 import SVM
 import show_tests
 # from get_lengths import *
@@ -15,7 +15,7 @@ import numpy as np
 from termcolor import colored
 from glob import glob
 from create_model import create_model
-import euc
+# import euc
 import NN
 
 
@@ -23,7 +23,7 @@ def take_action():
     print (colored("\t\t\tWelcome to our humble applicaion", 'yellow'))
     print (colored("\tBefore we start, please make sure that your dataset is placed at Demo/dataset/*",'red'))
     print (colored("\tand the two models are placed at Demo/src/",'red'))
-    
+
     print (colored("\tTo Transform your data to affine dataset, \t\tpress 1",'cyan'))
     print (colored("\tTo Create Embeddings for the data you just transformed, press 2",'cyan'))
     print (colored("\tTo Test classification using Euclidean equation, \tpress 3",'cyan'))
@@ -38,7 +38,7 @@ def take_action():
             exit = True
         except:
             print (colored('\tPlease enter a number as specified','red'))
-   
+
     return action
 
 if __name__ == "__main__":
