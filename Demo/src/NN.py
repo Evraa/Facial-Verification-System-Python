@@ -42,7 +42,7 @@ def prepare_data():
 
     print (f'Inputs shape: {inputs.shape}')
     print (f'Outputs shape: {y.shape}')
-    return inputs, y
+    return inputs, y, names_encode
 
 def split_data(X,y):
     # X_train, X_test, y_train, y_test = train_test_split(
@@ -105,15 +105,24 @@ def load_model():
     return model
 
 
-def predict_input(model_relu, embedding):
-    pred = model_relu.predict([[embedding]])
-    print (pred)
+def predict_input(embedding):
+    embedding = np.reshape(embedding, (1,-1))
+    inputs, y, le = prepare_data()
+    model = load_model()
+    pred = model.predict([[embedding]])
+    # print (pred)
     ind = np.argsort(pred[0])
-    # print(ind[::-1][:5])
-    # print("Prediction: ",le.inverse_transform([ind[::-1][0]])[0])
+    print(ind[::-1][:5]) #FIRST five
+    identical = []
+    similars = []
+    identical.append(le.inverse_transform([ind[::-1][0]])[0])
+    for i in range (1,5):
+        similars.append(le.inverse_transform([ind[::-1][i]])[0])
     # print("Prediction Probability: ",pred[0][ind[::-1][0]]*100,"%")
+    print ("ID: ", identical)
+    print ("Similar: ",similars)
+    return identical, similars
     
-
 def plot_acc (history):
     plt.figure(figsize=(16,5))
     plt.subplot(121)
@@ -150,16 +159,3 @@ def train():
     plot_acc (history)
     return  model_relu
 
-
-
-if __name__ == "__main__":
-    # model = train()
-    inputs, y = prepare_data()
-    model = load_model()
-    input_Sample = np.zeros([1,128])
-    input_Sample[0] = inputs[0]
-    # print (inputs[0].shape)
-    # print (input_Sample.shape)
-    
-    # print (model.output_shape)
-    predict_input(model,input_Sample )

@@ -80,7 +80,6 @@ if __name__ == "__main__":
         elif action == 3:
             print (colored("\t\t\tSTARTING",'green'))            
             try:
-                # image_num = 7820
                 show_results.Euc_result_preview()
                 print (colored('\t\t\tDONE','green'))
             except:
@@ -95,7 +94,12 @@ if __name__ == "__main__":
                 print (colored("\t\t\tERROR",'red'))
         
         elif action == 5:
-            pass
+            print (colored("\t\t\tSTARTING",'green'))            
+            try:
+                show_results.NN_result_preview()
+                print (colored('\t\t\tDONE','green'))
+            except:
+                print (colored("\t\t\tERROR",'red'))
     
         elif action == 6:
             print (colored("\t\t\tTraining SVM clf",'green'))            

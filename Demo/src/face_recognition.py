@@ -162,12 +162,6 @@ def face_recognition(dataset_path = "../dataset/lfw/*/*", preview=False, image_n
     #Load the dataset
     human_files = np.array(glob(dataset_path))
     
-    #Remove images that we are not able to detect faces on
-    # move_images_with_no_predicted_faces(human_files,pred,detec)
-
-    #Affine Transformation
-    # affine_transformation(human_files,pred,detec)
-
     #Create model for 128 features extraction
     model = create_model()
     model.load_weights('../open_face.h5')
@@ -189,7 +183,7 @@ def face_recognition(dataset_path = "../dataset/lfw/*/*", preview=False, image_n
         #     file_count = os.listdir(direc)
         #     if name not in dataset_names and len(file_count) > 0:
         #         dataset_names.append(name)
-        print ("Read embeddings")
+        # print ("Read embeddings")
         
         return embeddings, face_name, human_file_path
 
