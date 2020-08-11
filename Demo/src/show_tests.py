@@ -159,16 +159,14 @@ def show_tests(dataset_path, clf, detector, predictor):
             diff_inputs = []
             diff_inputs.append(diff_input)
             prob = clf.predict_proba(diff_inputs)[0][1]
-            print(prob)
             skip = True
             if folder_name == orig_image_path.split('/')[3]:
                 skip = False
             if prob <= 0.5 and skip:
                 # continue
                 break
-            thsh = 0.80
-            if thsh >= prob > 0.6 or not skip:
-                print("sim")
+            thsh = 0.75
+            if thsh >= prob > 0.6:
                 similars.append(image_path)
                 similars_names.append(image_name)
                 # continue
@@ -176,13 +174,15 @@ def show_tests(dataset_path, clf, detector, predictor):
                     break
                 elif not skip:
                     continue
-            if prob > thsh or not skip:
-                print("same")
+            if prob > thsh:
                 identicalls.append(image_path)
                 identicalls_names.append(image_name)
-                continue
+                # continue
+                if skip:
+                    break
+                elif not skip:
+                    continue
             else:
-                print("none")
                 left_overs.append(image_path)
                 if skip:
                     break
@@ -219,7 +219,7 @@ def display_sets(img_list, orig, title, img_list_titles=[], orig_title="Original
         ax1 = plt.subplot2grid(gridsize, (0, 0), colspan=get_length, rowspan=get_length)
         # ax1.set_title("Original Photo")
         if orig_title == None:
-            orig_title = "Original Image"
+            orig_title = orig.split("/")[4]
         ax1.set_title(orig_title)
         # pos = ax1.get_position()
         # x = pos.x0 + pos.x1 / 3

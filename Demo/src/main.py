@@ -2,6 +2,7 @@ import facial_landmarks
 # import auxilary
 # import face_recognition
 import SVM
+import get_diff
 import show_tests
 # from get_lengths import *
 # from identify_faces import *
