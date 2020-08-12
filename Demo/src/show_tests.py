@@ -192,7 +192,7 @@ def display_sets(img_list, orig, title):
         gridsize = (iden, iden * 2)
         fig = plt.figure(figsize=(12, 8))
         ax1 = plt.subplot2grid(gridsize, (0, 0), colspan=get_length, rowspan=get_length)
-        ax1.set_title("Original Photo")
+        ax1.set_title(orig.split("/")[4])
         # pos = ax1.get_position()
         # x = pos.x0 + pos.x1 / 3
         # y = pos.y1

@@ -6,6 +6,9 @@ import numpy as np
 from sklearn import svm, tree
 from sklearn.linear_model import SGDClassifier
 from sklearn.model_selection import train_test_split
+from mlxtend.plotting import plot_decision_regions
+from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
 
 
 def svm_compare():
@@ -32,6 +35,7 @@ def svm_compare():
 
     # clf = tree.DecisionTreeClassifier()
     clf = svm.SVC(gamma=0.001, C=100, probability=True)
+    pca = PCA(n_components=2)
     X, y = inputs, np.ravel(labels)
     # shuffles the date to save 20% of data for testing
     X_train, X_test, y_train, y_test = train_test_split(
@@ -58,9 +62,30 @@ def svm_compare():
 
     # Get support vectors themselves
     # support_vectors = clf.support_vectors_
+    # X_train2 = pca.fit_transform(X_train)
+    # clf.fit(X_train2, y_train)
+    # plot_decision_regions(X_train2, y_train.astype(np.integer), clf=clf, legend=2)
+    #
+    # plt.xlabel(X_train[0], size=14)
+    # plt.ylabel(X_train[1], size=14)
+    # plt.title('SVM Decision Region Boundary', size=16)
+    #
+    # plt.show()
+
+    # show_vectors(clf, X_train, y_train)
 
     return clf
 
+def show_vectors(clf, x, y):
+    pca = PCA(n_components=2)
+    X_train2 = pca.fit_transform(x)
+    clf.fit(X_train2, y)
+    plot_decision_regions(X_train2, y.astype(np.integer), clf=clf, legend=2)
+
+    plt.xlabel(x[0], size=14)
+    plt.ylabel(x[1], size=14)
+    plt.title('SVM Decision Region Boundary', size=16)
+
+    plt.show()
 
 
-svm_compare()
