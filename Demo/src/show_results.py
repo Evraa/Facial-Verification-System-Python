@@ -4,6 +4,7 @@ import show_tests
 import numpy as np
 import os
 import NN
+import cv2
 
 def euclidean(input_1, input_2):
     diff = input_1 - input_2
@@ -178,7 +179,9 @@ def trim_NN_outputs (labels, face_name, identicals, similars, human_file_path):
 
     return idc_paths, idc_names, sim_paths, sim_names, others_paths, others_names
 
-def NN_result_preview(image_num = None):
+
+
+def NN_result_preview(image_num = None, blur = False):
     print ("Load labels")
     data = auxilary.read_csv(fileName='../csv_files/embedded.csv')
     N = len(data)
@@ -192,7 +195,7 @@ def NN_result_preview(image_num = None):
     labels = np.array(data.iloc[:,D])
     
     embeddings,face_name, human_file_path = face_recognition.face_recognition(dataset_path = "../dataset/main_data/*/*", 
-        preview=True, image_num = image_num)
+        preview=True, image_num = image_num, blur = blur)
     
     # identicals, similars = NN_results(embeddings, inputs, labels)
     identicals, similars = NN.predict_input(embeddings)

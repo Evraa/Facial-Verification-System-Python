@@ -12,6 +12,7 @@ from PIL import Image
 from matplotlib import image
 from matplotlib import pyplot
 import delaunay
+from scipy import ndimage
 
 def load_pred_detec():
     detector = dlib.get_frontal_face_detector()
@@ -34,14 +35,27 @@ def get_shape(image_path, predictor, detector):
     return True,shape, rect, image
 
 
-def draw_landmarks(image,shape,rect):
+def blur_image(image, sigma):
+    gausBlur = cv2.GaussianBlur(image, (sigma, sigma),0)  
+
+    very_blurred = ndimage.gaussian_filter(image, sigma=5)
+    cv2.imshow('Gaussian Blurring', very_blurred) 
+    cv2.waitKey(0) 
+    cv2.destroyAllWindows()
+    return very_blurred
+
+def draw_landmarks(image,shape,rect, blur = False):
     '''
         To show red dot circle where key points exist.
 
         `image_path` is the path to the image
-
-        `circle_type` dominant or no_dominant    
     '''
+
+    cv2.imshow("Original Image", image)
+    cv2.waitKey(0)
+
+    if blur:
+        image = blur_image(image, 5)
     orig_image = copy.deepcopy(image)
     # shape, rect, image = predict_shapes(image_path)
     (x, y, w, h) = face_utils.rect_to_bb(rect)
@@ -60,20 +74,10 @@ def draw_landmarks(image,shape,rect):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-    delaunay.get_delaunay_points(shape,orig_image,returned = False)
-    
-    
+    delaunay.get_delaunay_points(shape,image,returned = False)
+    image = orig_image
+    return orig_image
 
-    
-    # if circle_type == 'dominant':
-    #     shape_dom = shape[dominant_key_points]
-    #     for (x, y) in shape_dom:
-    #         cv2.circle(image, (x, y), 4, (0, 255, 0), -1)
-    #     cv2.circle(image, (shape[fixed_key_point][0], shape[fixed_key_point][1]), 4, (255, 0, 0), -1)
-
-    # cv2.imshow("Dominant Features", image)
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
 
 
 def draw_parts(image_path):

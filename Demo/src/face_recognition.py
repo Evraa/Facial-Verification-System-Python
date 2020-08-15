@@ -67,7 +67,7 @@ def get_labesl(human_files):
         labels.append(get_name_from_path(human_file))
     return labels
 
-def affine_transformation(human_files,pred,detec,preview = False, image_num=None):
+def affine_transformation(human_files,pred,detec,preview = False, image_num=None, blur = False):
     '''
         For each Image in the dataset
             + Extract the key points
@@ -98,7 +98,7 @@ def affine_transformation(human_files,pred,detec,preview = False, image_num=None
         while not state:
             state, shape, rect, image = facial_landmarks.get_shape(human_file, pred, detec)
         
-        facial_landmarks.draw_landmarks(image,shape,rect)
+        image = facial_landmarks.draw_landmarks(image,shape,rect, blur= blur)
         alignedFace = face_aligner.align(96, image, rect, \
                 landmarkIndices=openface.AlignDlib.OUTER_EYES_AND_NOSE)
         cv2.imshow("Aligned Face", alignedFace)
@@ -145,7 +145,7 @@ def store_embeddings(human_files,model):
     df.to_csv("../csv_files/embedded.csv",index=False)
     
 #Main function
-def face_recognition(dataset_path = "../dataset/lfw/*/*", preview=False, image_num = None):
+def face_recognition(dataset_path = "../dataset/lfw/*/*", preview=False, image_num = None, blur = False):
     '''
         + My Goal?
         + For each face in the dataset
@@ -172,19 +172,10 @@ def face_recognition(dataset_path = "../dataset/lfw/*/*", preview=False, image_n
         # show the image with key points
         # show the affine image
         # print out the embeddings
-        image,face_name, human_file_path = affine_transformation(human_files,pred,detec,preview=preview, image_num = image_num)
+        image,face_name, human_file_path = affine_transformation(human_files,pred,detec,preview=preview, image_num = image_num, blur = blur)
         image = (image / 255.).astype(np.float32)
         embeddings = model.predict(np.expand_dims(image, axis=0))[0] 
-        # print(model.predict(np.expand_dims(image, axis=0))[0])
-        # dataset_names = []
-        # for human_file in human_files:
-        #     name = get_name_from_path(human_file)
-        #     direc = "../dataset/lfw_affine/" + str(name) + "/"
-        #     file_count = os.listdir(direc)
-        #     if name not in dataset_names and len(file_count) > 0:
-        #         dataset_names.append(name)
-        # print ("Read embeddings")
-        
+       
         return embeddings, face_name, human_file_path
 
 

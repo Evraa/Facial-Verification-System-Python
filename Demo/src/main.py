@@ -27,6 +27,7 @@ def take_action():
     print (colored("\tTo Train the NN model for classification, \t\tpress 4 (Do ONCE)",'cyan'))
     print (colored("\tTo Test classification using Neural Networks, \t\tpress 5",'cyan'))
     print (colored("\tTo Test classification using SVM with Bayes, \t\tpress 6",'cyan'))
+    print (colored("\tTo Test classification using NN with Blured images, \tpress 7",'cyan'))
 
 
     print (colored("\tTo Exit \t\t\t\t\t\tpress 0",'cyan'))
@@ -115,7 +116,14 @@ if __name__ == "__main__":
                 print (colored('\t\t\tDone','green'))
             except:
                 print (colored("\t\t\tERROR",'red'))
-        
+
+        elif action == 7:
+            print (colored("\t\t\tSTARTING",'green'))            
+            try:
+                show_results.NN_result_preview(blur=True)
+                print (colored('\t\t\tDONE','green'))
+            except:
+                print (colored("\t\t\tERROR",'red'))
         elif action == 0:
             #EXIT
             break
