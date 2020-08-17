@@ -28,6 +28,7 @@ def take_action():
     print (colored("\tTo Test classification using Neural Networks, \t\tpress 5",'cyan'))
     print (colored("\tTo Test classification using SVM with Bayes, \t\tpress 6",'cyan'))
     print (colored("\tTo Test classification using NN with Blured images, \tpress 7",'cyan'))
+    print (colored("\tTo Extract Features Manually from faces and store them, press 8 (Do ONCE)",'cyan'))
 
 
     print (colored("\tTo Exit \t\t\t\t\t\tpress 0",'cyan'))
@@ -121,6 +122,14 @@ if __name__ == "__main__":
             print (colored("\t\t\tSTARTING",'green'))            
             try:
                 show_results.NN_result_preview(blur=True)
+                print (colored('\t\t\tDONE','green'))
+            except:
+                print (colored("\t\t\tERROR",'red'))
+        elif action == 8:
+            print (colored("\t\t\tSTARTING",'green'))            
+            try:
+                dataset_path = '../dataset/main_data/*/*'
+                facial_landmarks.extract_features(path = dataset_path,pred=pred, detc=detc)
                 print (colored('\t\t\tDONE','green'))
             except:
                 print (colored("\t\t\tERROR",'red'))

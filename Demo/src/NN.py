@@ -25,6 +25,7 @@ def prepare_data():
     data = auxilary.read_csv(fileName='../csv_files/embedded.csv')
     N = data.shape[0] #5050
     D = data.shape[1] - 1 #128
+    
     data_inputs = (data.iloc[:,:D])
     inputs = np.zeros([N,D])
     inputs = np.array(data_inputs)
