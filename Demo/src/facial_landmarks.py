@@ -84,38 +84,75 @@ def draw_landmarks(image,shape,rect, blur = False, manual = False, lines = None)
         return orig_image
 
 
-
-def get_ratios(shape):
+def get_ratios(shape, image):
     '''
         Retutns a list of features (ratios):
-        + width: 0-16
+        + width:    0-16
         + L eyebrow 17-21
         + R eyebrow 22-26
         + L eye     36-39
         + R eye     42-46
         + Mouse     48-54
         + Nose_width    31-35
-        + Height:   27-8
+
+
+        + Height:       27-8
         + Nose_height   27-33
         + L nose proj   30-31
         + R nose proj   30-35
         + M nose proj   30-33
+        + lips height   62-66
+
+        + In addition to these ratios, we can add COLORS:
+            - Eyebrow color
+            - eye color
+            - skin color
     '''
+    # print (shape)
+    # print (type(image))
+    # print (image.shape)
+    # print (image[0])
+    # input ("ev")
+
     ratios = []
 
-    width = distance_two_points(shape(0), shape(16))
-    height = distance_two_points(shape(27), shape(8))
-    ratios.append(distance_two_points(shape(17), shape(21))/width)
-    ratios.append(distance_two_points(shape(22), shape(26))/width)
-    ratios.append(distance_two_points(shape(36), shape(39))/width)
-    ratios.append(distance_two_points(shape(42), shape(46))/width)
-    ratios.append(distance_two_points(shape(48), shape(54))/width)
-    ratios.append(distance_two_points(shape(31), shape(35))/width)
+    width = distance_two_points(shape[0], shape[16])
+    height = distance_two_points(shape[27], shape[8])
 
-    ratios.append(distance_two_points(shape(27), shape(33))/height)
-    ratios.append(distance_two_points(shape(30), shape(31))/height)
-    ratios.append(distance_two_points(shape(30), shape(35))/height)
-    ratios.append(distance_two_points(shape(30), shape(33))/height)
+    ratios.append(distance_two_points(shape[17], shape[21])/width)
+    ratios.append(distance_two_points(shape[22], shape[26])/width)
+    ratios.append(distance_two_points(shape[36], shape[39])/width)
+    ratios.append(distance_two_points(shape[42], shape[46])/width)
+    ratios.append(distance_two_points(shape[48], shape[54])/width)
+    ratios.append(distance_two_points(shape[31], shape[35])/width)
+
+    ratios.append(distance_two_points(shape[27], shape[33])/height)
+    ratios.append(distance_two_points(shape[30], shape[31])/height)
+    ratios.append(distance_two_points(shape[30], shape[35])/height)
+    ratios.append(distance_two_points(shape[30], shape[33])/height)
+    ratios.append(distance_two_points(shape[62], shape[66])/height)
+    
+    #eyebrows points 17-18-19-20-21-22-23-24-25-26
+    eyebrows = shape[17:27]
+    eyebrows_values = []
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    for point in eyebrows:
+        eyebrows_values.append(gray_image[point[0],point[1]])
+    ratios.append(np.average(eyebrows_values)/255)
+
+    #nose color (SKIN)
+    skin = shape[27:36]
+    skin_values = []
+    for point in skin:
+        skin_values.append(gray_image[point[0],point[1]])
+    ratios.append(np.average(skin_values)/255)
+
+    #Lips color
+    lips = shape[48:68]
+    lips_values = []
+    for point in lips:
+        lips_values.append(gray_image[point[0],point[1]])
+    ratios.append(np.average(lips_values)/255)
 
     return ratios
 
@@ -135,12 +172,13 @@ def extract_features(path,pred, detc, preview = False):
         human_name = image_path.split("/")[-1].split("\\")[1]
         
         # Do we have a face?
-        state, shape, rect, image = get_shape(path, pred, detc)
+        state, shape, rect, image = get_shape(image_path, pred, detc)
         if not state:
             print (f"Error: this file: {image_path} doesn't have a face to detect!")
             continue
         
-        ratios = get_ratios(shape)
-
+        ratios = get_ratios(shape, image)
+        
+        
 
 

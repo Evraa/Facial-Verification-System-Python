@@ -126,6 +126,9 @@ if __name__ == "__main__":
             except:
                 print (colored("\t\t\tERROR",'red'))
         elif action == 8:
+            dataset_path = '../dataset/main_data/*/*'
+            facial_landmarks.extract_features(path = dataset_path,pred=pred, detc=detc)
+                
             print (colored("\t\t\tSTARTING",'green'))            
             try:
                 dataset_path = '../dataset/main_data/*/*'
