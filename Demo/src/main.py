@@ -30,6 +30,7 @@ def take_action():
     print (colored("\tTo Test classification using NN with Blured images, \tpress 7",'cyan'))
     print (colored("\tTo Extract Features Manually from faces and store them, press 8 (Do ONCE)",'cyan'))
     print (colored("\tTo Test classification using Neural Networks 2, \tpress 9",'cyan'))
+    print (colored("\tfor Mag! to get inputs and targets \t\t\tpress 10",'cyan'))
     
 
     print (colored("\tTo Exit \t\t\t\t\t\tpress 0",'cyan'))
@@ -140,6 +141,25 @@ if __name__ == "__main__":
             print (colored("\t\t\tSTARTING",'green'))            
             try:
                 show_results.NN_result_preview(second=True,pred=pred, detc=detc)
+                print (colored('\t\t\tDONE','green'))
+            except:
+                print (colored("\t\t\tERROR",'red'))
+        elif action == 10:
+            print (colored("\t\t\tSTARTING",'green'))            
+            try:
+                inputs, targets, encoded_names = NN.prepare_data()
+                image_count = len(targets)
+                random_int = np.random.random_integers(0,image_count)
+                
+                print (colored("first row's features: ", "yellow"))
+                print (inputs[random_int])
+                print (colored("First row's target value:", "yellow"))
+                print (targets[random_int])
+                print (colored("what is the index of the one ?", "yellow"))
+                one = list(np.where(targets[random_int] == 1))
+                print (one)
+                print (colored("encoded value:","yellow"))
+                print (encoded_names.inverse_transform( one ))
                 print (colored('\t\t\tDONE','green'))
             except:
                 print (colored("\t\t\tERROR",'red'))
