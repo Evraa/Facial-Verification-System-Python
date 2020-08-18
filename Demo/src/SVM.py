@@ -1,4 +1,5 @@
 from networkx.drawing.tests.test_pylab import plt
+from sklearn.svm import SVC
 from sympy.plotting.tests.test_plot import matplotlib
 
 import auxilary
@@ -72,20 +73,23 @@ def svm_compare():
     #
     # plt.show()
 
-    # show_vectors(clf, X_train, y_train)
+    # show_vectors(X_train, y_train)
 
     return clf
 
-def show_vectors(clf, x, y):
+def show_vectors(x, y):
+    clf2 = svm.SVC(gamma=0.001, C=100, probability=True)
     pca = PCA(n_components=2)
     X_train2 = pca.fit_transform(x)
-    clf.fit(X_train2, y)
-    plot_decision_regions(X_train2, y.astype(np.integer), clf=clf, legend=2)
+    clf2.fit(X_train2, y)
+    plot_decision_regions(X_train2, y.astype(np.integer), clf=clf2, legend=2)
+
 
     plt.xlabel(x[0], size=14)
     plt.ylabel(x[1], size=14)
     plt.title('SVM Decision Region Boundary', size=16)
 
     plt.show()
+
 
 

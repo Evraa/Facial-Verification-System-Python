@@ -154,8 +154,8 @@ def show_tests(dataset_path, clf, detector, predictor):
             prob = prob[0][1]
             if prob <= 0.5:
                 continue
-            thsh = 0.89
-            if prob <= thsh and prob > 0.80:
+            thsh = 0.86
+            if prob <= thsh and prob > 0.75:
                 similars.append(image_path)
                 similars_names.append(image_name)
                 continue
@@ -267,5 +267,4 @@ def buttons(identicalls, similars, left_overs, orig_image_path, title1, title2, 
     brest = Button(axrest, 'Rest')
     brest.on_clicked(callback.rest)
 
-    print("AEKGBNOEAKMLDF")
     plt.show()
