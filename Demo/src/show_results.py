@@ -5,7 +5,7 @@ import numpy as np
 import os
 import NN
 import cv2
-
+import facial_landmarks
 def euclidean(input_1, input_2):
     diff = input_1 - input_2
     power = np.power(diff, 2)
@@ -181,11 +181,16 @@ def trim_NN_outputs (labels, face_name, identicals, similars, human_file_path):
 
 
 
-def NN_result_preview(image_num = None, blur = False):
+def NN_result_preview(second= False,image_num = None, blur = False, pred=None, detc=None):
     print ("Load labels")
-    data = auxilary.read_csv(fileName='../csv_files/embedded.csv')
+    if second:
+        data = auxilary.read_csv(fileName='../csv_files/embedded_2.csv')
+        D = 14
+    else:
+        data = auxilary.read_csv(fileName='../csv_files/embedded.csv')
+        D = 128
     N = len(data)
-    D = 128
+    
     
     data_inputs = (data.iloc[:,:D])
     inputs = np.zeros([N,D])
@@ -194,11 +199,15 @@ def NN_result_preview(image_num = None, blur = False):
     labels = np.zeros([N,1])
     labels = np.array(data.iloc[:,D])
     
-    embeddings,face_name, human_file_path = face_recognition.face_recognition(dataset_path = "../dataset/main_data/*/*", 
-        preview=True, image_num = image_num, blur = blur)
-    
+    if not second:
+        embeddings,face_name, human_file_path = face_recognition.face_recognition(dataset_path = "../dataset/main_data/*/*", 
+            preview=True, image_num = image_num, blur = blur)
+    else:
+        embeddings,face_name, human_file_path = facial_landmarks.test_preview(blur = blur, dataset_path = "../dataset/main_data/*/*",
+            pred=pred, detc=detc)
+
     # identicals, similars = NN_results(embeddings, inputs, labels)
-    identicals, similars = NN.predict_input(embeddings)
+    identicals, similars = NN.predict_input(embeddings, second = second)
 
     idc_paths, idc_names, sim_paths, sim_names, others_paths, others_names = \
         trim_NN_outputs (labels, face_name, identicals, similars, human_file_path)

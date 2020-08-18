@@ -29,7 +29,8 @@ def take_action():
     print (colored("\tTo Test classification using SVM with Bayes, \t\tpress 6",'cyan'))
     print (colored("\tTo Test classification using NN with Blured images, \tpress 7",'cyan'))
     print (colored("\tTo Extract Features Manually from faces and store them, press 8 (Do ONCE)",'cyan'))
-
+    print (colored("\tTo Test classification using Neural Networks 2, \tpress 9",'cyan'))
+    
 
     print (colored("\tTo Exit \t\t\t\t\t\tpress 0",'cyan'))
     exit = False
@@ -88,6 +89,8 @@ if __name__ == "__main__":
                 print (colored("\t\t\tERROR",'red'))
         
         elif action == 4:
+            # NN.train()
+                
             print (colored("\t\t\tSTARTING",'green'))            
             try:
                 NN.train()
@@ -126,13 +129,17 @@ if __name__ == "__main__":
             except:
                 print (colored("\t\t\tERROR",'red'))
         elif action == 8:
-            dataset_path = '../dataset/main_data/*/*'
-            facial_landmarks.extract_features(path = dataset_path,pred=pred, detc=detc)
-                
             print (colored("\t\t\tSTARTING",'green'))            
             try:
                 dataset_path = '../dataset/main_data/*/*'
                 facial_landmarks.extract_features(path = dataset_path,pred=pred, detc=detc)
+                print (colored('\t\t\tDONE','green'))
+            except:
+                print (colored("\t\t\tERROR",'red'))
+        elif action == 9:
+            print (colored("\t\t\tSTARTING",'green'))            
+            try:
+                show_results.NN_result_preview(second=True,pred=pred, detc=detc)
                 print (colored('\t\t\tDONE','green'))
             except:
                 print (colored("\t\t\tERROR",'red'))

@@ -14,7 +14,7 @@ from matplotlib import pyplot
 import delaunay
 from scipy import ndimage
 from glob import glob
-
+import pandas as pd
 
 def load_pred_detec():
     detector = dlib.get_frontal_face_detector()
@@ -77,7 +77,14 @@ def draw_landmarks(image,shape,rect, blur = False, manual = False, lines = None)
     cv2.destroyAllWindows()
 
     if manual:
-        pass
+        for line in lines:
+            cv2.line(image, (line[0][0],line[0][1]), (line[1][0],line[1][1]), (20,255,212), 2)
+
+        cv2.imshow("Features", image)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+        image = orig_image
+        return orig_image
     else:
         delaunay.get_delaunay_points(shape,image,returned = False)
         image = orig_image
@@ -115,9 +122,11 @@ def get_ratios(shape, image):
     # input ("ev")
 
     ratios = []
-
+    lines = []
     width = distance_two_points(shape[0], shape[16])
+    # lines.append([shape[0], shape[16]])
     height = distance_two_points(shape[27], shape[8])
+    # lines.append([shape[27], shape[8]])
 
     ratios.append(distance_two_points(shape[17], shape[21])/width)
     ratios.append(distance_two_points(shape[22], shape[26])/width)
@@ -126,18 +135,34 @@ def get_ratios(shape, image):
     ratios.append(distance_two_points(shape[48], shape[54])/width)
     ratios.append(distance_two_points(shape[31], shape[35])/width)
 
+    lines.append([shape[22], shape[26]])
+    lines.append([shape[36], shape[39]])
+    lines.append([shape[42], shape[46]])
+    lines.append([shape[48], shape[54]])
+    lines.append([shape[31], shape[35]])
+
+
     ratios.append(distance_two_points(shape[27], shape[33])/height)
     ratios.append(distance_two_points(shape[30], shape[31])/height)
     ratios.append(distance_two_points(shape[30], shape[35])/height)
     ratios.append(distance_two_points(shape[30], shape[33])/height)
     ratios.append(distance_two_points(shape[62], shape[66])/height)
     
+    
+    lines.append([shape[27], shape[33]])
+    lines.append([shape[30], shape[31]])
+    lines.append([shape[30], shape[35]])
+    lines.append([shape[30], shape[33]])
+    lines.append([shape[62], shape[66]])
     #eyebrows points 17-18-19-20-21-22-23-24-25-26
     eyebrows = shape[17:27]
     eyebrows_values = []
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     for point in eyebrows:
-        eyebrows_values.append(gray_image[point[0],point[1]])
+        try:
+            eyebrows_values.append(gray_image[point[0],point[1]])
+        except IndexError:
+            continue
     ratios.append(np.average(eyebrows_values)/255)
 
     #nose color (SKIN)
@@ -154,7 +179,7 @@ def get_ratios(shape, image):
         lips_values.append(gray_image[point[0],point[1]])
     ratios.append(np.average(lips_values)/255)
 
-    return ratios
+    return lines, ratios
 
 def extract_features(path,pred, detc, preview = False):
     '''
@@ -166,8 +191,11 @@ def extract_features(path,pred, detc, preview = False):
     '''
 
     human_files = np.array(glob(path))
-    
-    for image_path in human_files:
+    embedded = np.zeros([len(human_files) ,14])
+    labels = []
+    for i, image_path in enumerate(human_files):
+        if i%100 == 0:
+            print (f'image: {i}')
         # Fetch the name
         human_name = image_path.split("/")[-1].split("\\")[1]
         
@@ -177,8 +205,28 @@ def extract_features(path,pred, detc, preview = False):
             print (f"Error: this file: {image_path} doesn't have a face to detect!")
             continue
         
-        ratios = get_ratios(shape, image)
-        
-        
+        _, features = get_ratios(shape, image)
+        embedded[i] = features
+        labels.append(human_name)
 
+    df = pd.DataFrame(embedded)
+    df["output"] = labels
+    df.to_csv("../csv_files/embedded_2.csv",index=False)
+    
+    
+def test_preview(blur = False, dataset_path = "../dataset/main_data/*/*", pred=None, detc=None):
+    human_files = np.array(glob(dataset_path))
+    image_count = len(human_files)
+    rand_int = np.random.random_integers(0,image_count)
+    image_path = human_files[rand_int]
+    face_name = image_path.split("/")[-1].split("\\")[1]
+    state, shape, rect, image = get_shape(image_path, pred, detc)
+    while not state:
+        print (f"Error: this file: {image_path} doesn't have a face to detect!")
+        rand_int = np.random.random_integers(0,image_count)
+        state, shape, rect, image = get_shape(image_path, pred, detc)
 
+    lines, embeddings = get_ratios(shape, image)
+    draw_landmarks(image,shape,rect, blur = blur, manual = True, lines = lines)
+    
+    return embeddings, face_name, image_path
