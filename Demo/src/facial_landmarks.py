@@ -6,12 +6,15 @@ import dlib
 import copy
 import cv2
 from auxilary import path_to_shape_predictor, shape_to_np, dominant_key_points, fixed_key_point, \
-    how_sure, store_keys, create_key_points_data_frame, mylistdir
+    how_sure, store_keys, create_key_points_data_frame, mylistdir, distance_two_points
 from collections import OrderedDict
 from PIL import Image
 from matplotlib import image
 from matplotlib import pyplot
 import delaunay
+from scipy import ndimage
+from glob import glob
+import pandas as pd
 
 def load_pred_detec():
     detector = dlib.get_frontal_face_detector()
@@ -34,14 +37,27 @@ def get_shape(image_path, predictor, detector):
     return True,shape, rect, image
 
 
-def draw_landmarks(image,shape,rect):
+def blur_image(image, sigma):
+    gausBlur = cv2.GaussianBlur(image, (sigma, sigma),0)  
+
+    very_blurred = ndimage.gaussian_filter(image, sigma=5)
+    cv2.imshow('Gaussian Blurring', very_blurred) 
+    cv2.waitKey(0) 
+    cv2.destroyAllWindows()
+    return very_blurred
+
+def draw_landmarks(image,shape,rect, blur = False, manual = False, lines = None):
     '''
         To show red dot circle where key points exist.
 
         `image_path` is the path to the image
-
-        `circle_type` dominant or no_dominant    
     '''
+
+    cv2.imshow("Original Image", image)
+    cv2.waitKey(0)
+
+    if blur:
+        image = blur_image(image, 5)
     orig_image = copy.deepcopy(image)
     # shape, rect, image = predict_shapes(image_path)
     (x, y, w, h) = face_utils.rect_to_bb(rect)
@@ -60,123 +76,157 @@ def draw_landmarks(image,shape,rect):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-    delaunay.get_delaunay_points(shape,orig_image,returned = False)
-    
-    
+    if manual:
+        for line in lines:
+            cv2.line(image, (line[0][0],line[0][1]), (line[1][0],line[1][1]), (20,255,212), 2)
 
-    
-    # if circle_type == 'dominant':
-    #     shape_dom = shape[dominant_key_points]
-    #     for (x, y) in shape_dom:
-    #         cv2.circle(image, (x, y), 4, (0, 255, 0), -1)
-    #     cv2.circle(image, (shape[fixed_key_point][0], shape[fixed_key_point][1]), 4, (255, 0, 0), -1)
-
-    # cv2.imshow("Dominant Features", image)
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
-
-
-def draw_parts(image_path):
-    shape, rect, image = predict_shapes(image_path)
-    (x, y, w, h) = face_utils.rect_to_bb(rect)
-    cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
-
-    FACIAL_LANDMARKS_IDXS = OrderedDict([
-        ("mouth", (48, 68)),
-        ("right_eyebrow", (17, 22)),
-        ("left_eyebrow", (22, 27)),
-        ("right_eye", (36, 42)),
-        ("left_eye", (42, 48)),
-        ("nose", (27, 36))
-    ])
-
-    overlay = image.copy()
-    output = image.copy()
-    colors = [(19, 199, 109), (79, 76, 240), (230, 159, 23), \
-              (168, 100, 168), (158, 163, 32), (163, 38, 32)]
-
-    for (i, name) in enumerate(FACIAL_LANDMARKS_IDXS.keys()):
-        # grab the (x, y)-coordinates associated with the
-        # face landmark
-        (j, k) = FACIAL_LANDMARKS_IDXS[name]
-        pts = shape[j:k]
-        # how sure are we?
-        percentage = how_sure(pts, name)
-        name = name + " " + str(percentage) + " %"
-        # check if are supposed to draw the jawline
-        hull = cv2.convexHull(pts)
-        cv2.drawContours(overlay, [hull], -1, colors[i], -1)
-        # for parts extraction
-        clone = image.copy()
-        cv2.putText(clone, name, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
-        for (x, y) in pts:
-            cv2.circle(clone, (x, y), 3, (0, 0, 255), -1)
-
-        (x, y, w, h) = cv2.boundingRect(np.array(pts))
-        roi = image[y:y + h, x:x + w]
-        roi = imutils.resize(roi, width=250, inter=cv2.INTER_CUBIC)
-        # show the particular face part
-        cv2.imshow("ROI", roi)
-        cv2.imshow("Image", clone)
+        cv2.imshow("Features", image)
         cv2.waitKey(0)
-
-    alpha = 0.75
-    cv2.addWeighted(overlay, alpha, output, 1 - alpha, 0, output)
-    cv2.imshow(image_path, output)
-    cv2.waitKey(0)
-    return
-
-
-def store_key_points(image_set_paths):
-    # prepare the predictor model
-    create_key_points_data_frame()
-    detector = dlib.get_frontal_face_detector()
-    predictor = dlib.shape_predictor(path_to_shape_predictor)
-    folders = mylistdir(image_set_paths)
-    for folder in folders:
-        set_number = folder
-        folder_path = image_set_paths + folder + "/"
-        images = (mylistdir(folder_path))
-        for im in images:
-            # print (f'image {im} from set {folder}')
-            image_path = folder_path + im
-            # print (image_path)
-            # read the image
-            img = Image.open(image_path)
-            # print (image.size)
-            # print (image.mode)
-            image = np.array(img)
-            # image = cv2.imread(image_path,0)
-            # print (image.shape)
-            # image = imutils.resize(image, width=500)
-            # gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            # detect faces in the grayscale image
-            # cv2.imshow("i",image)
-            rects = detector(image, 1)
-            # loop over the face detections
-            if len(rects) == 0:
-                print(f"image: {im} doesn't have faces!")
-            for (_, rect) in enumerate(rects):
-                shape = predictor(image, rect)
-                shape = shape_to_np(shape)
-                # for (x, y) in shape:
-                #     cv2.circle(image, (x, y), 3, (0, 0, 255), -1)
-                # pyplot.imshow(image)
-                # pyplot.show()
-                # input('ev')
-                # print (im)
-                image_name = str(im)
-                store_keys(image_name, shape, set_number)
+        cv2.destroyAllWindows()
+        image = orig_image
+        return orig_image
+    else:
+        delaunay.get_delaunay_points(shape,image,returned = False)
+        image = orig_image
+        return orig_image
 
 
-def get_key_points(image_path, detector, predictor):
-    img = Image.open(image_path)
-    # image = cv2.imread(image_path)
-    image = np.asarray(img).astype(np.uint8)
-    rects = detector(image, 1)
-    if len(rects) == 0:
-        return None, False
-    rect = rects[0]
-    shape = predictor(image, rect)
-    shape = shape_to_np(shape)
-    return shape,True
+def get_ratios(shape, image):
+    '''
+        Retutns a list of features (ratios):
+        + width:    0-16
+        + L eyebrow 17-21
+        + R eyebrow 22-26
+        + L eye     36-39
+        + R eye     42-46
+        + Mouse     48-54
+        + Nose_width    31-35
+
+
+        + Height:       27-8
+        + Nose_height   27-33
+        + L nose proj   30-31
+        + R nose proj   30-35
+        + M nose proj   30-33
+        + lips height   62-66
+
+        + In addition to these ratios, we can add COLORS:
+            - Eyebrow color
+            - eye color
+            - skin color
+    '''
+    # print (shape)
+    # print (type(image))
+    # print (image.shape)
+    # print (image[0])
+    # input ("ev")
+
+    ratios = []
+    lines = []
+    width = distance_two_points(shape[0], shape[16])
+    # lines.append([shape[0], shape[16]])
+    height = distance_two_points(shape[27], shape[8])
+    # lines.append([shape[27], shape[8]])
+
+    ratios.append(distance_two_points(shape[17], shape[21])/width)
+    ratios.append(distance_two_points(shape[22], shape[26])/width)
+    ratios.append(distance_two_points(shape[36], shape[39])/width)
+    ratios.append(distance_two_points(shape[42], shape[46])/width)
+    ratios.append(distance_two_points(shape[48], shape[54])/width)
+    ratios.append(distance_two_points(shape[31], shape[35])/width)
+
+    lines.append([shape[22], shape[26]])
+    lines.append([shape[36], shape[39]])
+    lines.append([shape[42], shape[46]])
+    lines.append([shape[48], shape[54]])
+    lines.append([shape[31], shape[35]])
+
+
+    ratios.append(distance_two_points(shape[27], shape[33])/height)
+    ratios.append(distance_two_points(shape[30], shape[31])/height)
+    ratios.append(distance_two_points(shape[30], shape[35])/height)
+    ratios.append(distance_two_points(shape[30], shape[33])/height)
+    ratios.append(distance_two_points(shape[62], shape[66])/height)
+    
+    
+    lines.append([shape[27], shape[33]])
+    lines.append([shape[30], shape[31]])
+    lines.append([shape[30], shape[35]])
+    lines.append([shape[30], shape[33]])
+    lines.append([shape[62], shape[66]])
+    #eyebrows points 17-18-19-20-21-22-23-24-25-26
+    eyebrows = shape[17:27]
+    eyebrows_values = []
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    for point in eyebrows:
+        try:
+            eyebrows_values.append(gray_image[point[0],point[1]])
+        except IndexError:
+            continue
+    ratios.append(np.average(eyebrows_values)/255)
+
+    #nose color (SKIN)
+    skin = shape[27:36]
+    skin_values = []
+    for point in skin:
+        skin_values.append(gray_image[point[0],point[1]])
+    ratios.append(np.average(skin_values)/255)
+
+    #Lips color
+    lips = shape[48:68]
+    lips_values = []
+    for point in lips:
+        lips_values.append(gray_image[point[0],point[1]])
+    ratios.append(np.average(lips_values)/255)
+
+    return lines, ratios
+
+def extract_features(path,pred, detc, preview = False):
+    '''
+        For each image in the data set:
+        + Fetch the name
+        + Extract its key points
+        + Calc lengths and all the features
+        + Store them in an csv file `embedded_manual.csv`
+    '''
+
+    human_files = np.array(glob(path))
+    embedded = np.zeros([len(human_files) ,14])
+    labels = []
+    for i, image_path in enumerate(human_files):
+        if i%100 == 0:
+            print (f'image: {i}')
+        # Fetch the name
+        human_name = image_path.split("/")[-1].split("\\")[1]
+        
+        # Do we have a face?
+        state, shape, rect, image = get_shape(image_path, pred, detc)
+        if not state:
+            print (f"Error: this file: {image_path} doesn't have a face to detect!")
+            continue
+        
+        _, features = get_ratios(shape, image)
+        embedded[i] = features
+        labels.append(human_name)
+
+    df = pd.DataFrame(embedded)
+    df["output"] = labels
+    df.to_csv("../csv_files/embedded_2.csv",index=False)
+    
+    
+def test_preview(blur = False, dataset_path = "../dataset/main_data/*/*", pred=None, detc=None):
+    human_files = np.array(glob(dataset_path))
+    image_count = len(human_files)
+    rand_int = np.random.random_integers(0,image_count)
+    image_path = human_files[rand_int]
+    face_name = image_path.split("/")[-1].split("\\")[1]
+    state, shape, rect, image = get_shape(image_path, pred, detc)
+    while not state:
+        print (f"Error: this file: {image_path} doesn't have a face to detect!")
+        rand_int = np.random.random_integers(0,image_count)
+        state, shape, rect, image = get_shape(image_path, pred, detc)
+
+    lines, embeddings = get_ratios(shape, image)
+    draw_landmarks(image,shape,rect, blur = blur, manual = True, lines = lines)
+    
+    return embeddings, face_name, image_path

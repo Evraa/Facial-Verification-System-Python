@@ -22,9 +22,11 @@ import auxilary
 
 def prepare_data():
     print ("Load labels")
-    data = auxilary.read_csv(fileName='../csv_files/embedded.csv')
+    
+    data = auxilary.read_csv(fileName='../csv_files/embedded_2.csv')
     N = data.shape[0] #5050
     D = data.shape[1] - 1 #128
+    
     data_inputs = (data.iloc[:,:D])
     inputs = np.zeros([N,D])
     inputs = np.array(data_inputs)
@@ -42,7 +44,7 @@ def prepare_data():
 
     print (f'Inputs shape: {inputs.shape}')
     print (f'Outputs shape: {y.shape}')
-    return inputs, y
+    return inputs, y, names_encode
 
 def split_data(X,y):
     # X_train, X_test, y_train, y_test = train_test_split(
@@ -68,16 +70,20 @@ def split_data(X,y):
 def save_model(model):
     # serialize model to JSON
     model_json = model.to_json()
-    with open("../sequential_NN_model.json", "w") as json_file:
+    with open("../sequential_NN_model_2.json", "w") as json_file:
         json_file.write(model_json)
     # serialize weights to HDF5
-    model.save_weights("../sequential_NN_model.h5")
+    model.save_weights("../sequential_NN_model_2.h5")
     print("Saved model to disk")
 
 def create_model_relu(input_dim,output_dim):
 
     model_relu = Sequential()
-    model_relu.add(Dense(512, activation='relu', input_shape=(input_dim,), kernel_initializer=tensorflow.keras.initializers.he_normal(seed=None)))
+    model_relu.add(Dense(1024, activation='relu', input_shape=(input_dim,), kernel_initializer=tensorflow.keras.initializers.he_normal(seed=None)))
+    model_relu.add(BatchNormalization())
+    model_relu.add(Dropout(0.5))
+    
+    model_relu.add(Dense(512, activation='relu', kernel_initializer=tensorflow.keras.initializers.he_normal(seed=None)))
     model_relu.add(BatchNormalization())
     model_relu.add(Dropout(0.5))
     
@@ -96,24 +102,41 @@ def create_model_relu(input_dim,output_dim):
 
     return model_relu
     
-def load_model():
-    with open("../sequential_NN_model.json", "r") as json_file:
-        json_loaded_model = json_file.read()
-    model = model_from_json(json_loaded_model)
+def load_model(second = False):
+    if second:
+        with open("../sequential_NN_model_2.json", "r") as json_file:
+            json_loaded_model = json_file.read()
+        model = model_from_json(json_loaded_model)
 
-    model.load_weights('../sequential_NN_model.h5')
-    return model
+        model.load_weights('../sequential_NN_model_2.h5')
+        return model
+    else:
+        with open("../sequential_NN_model.json", "r") as json_file:
+            json_loaded_model = json_file.read()
+        model = model_from_json(json_loaded_model)
+
+        model.load_weights('../sequential_NN_model.h5')
+        return model
 
 
-def predict_input(model_relu, embedding):
-    pred = model_relu.predict([[embedding]])
-    print (pred)
+def predict_input(embedding, second = False):
+    embedding = np.reshape(embedding, (1,-1))
+    inputs, y, le = prepare_data()
+    model = load_model(second = second)
+    pred = model.predict([[embedding]])
+    # print (pred)
     ind = np.argsort(pred[0])
-    # print(ind[::-1][:5])
-    # print("Prediction: ",le.inverse_transform([ind[::-1][0]])[0])
+    print(ind[::-1][:5]) #FIRST five
+    identical = []
+    similars = []
+    identical.append(le.inverse_transform([ind[::-1][0]])[0])
+    for i in range (1,5):
+        similars.append(le.inverse_transform([ind[::-1][i]])[0])
     # print("Prediction Probability: ",pred[0][ind[::-1][0]]*100,"%")
+    print ("ID: ", identical)
+    print ("Similar: ",similars)
+    return identical, similars
     
-
 def plot_acc (history):
     plt.figure(figsize=(16,5))
     plt.subplot(121)
@@ -140,26 +163,13 @@ def train():
     if os.path.exists("../sequential_NN_model.h5"):
         print ("The model already exist, do you want to train it again?")
         input("Press Enter for re-training, press ctrl+c for exit")
-    X, y = prepare_data()
+    X, y, names_encode = prepare_data()
     X_train, X_val, y_train, y_val = split_data(X,y)
     input_dim = X_train.shape[1]
     output_dim = y_train.shape[1]
     model_relu = create_model_relu(input_dim,output_dim)
-    history = model_relu.fit(X_train, y_train, batch_size=16, epochs=1,validation_data=(X_val,y_val))
+    history = model_relu.fit(X_train, y_train, batch_size=32, epochs=1000,validation_data=(X_val,y_val))
     save_model(model_relu)
     plot_acc (history)
     return  model_relu
 
-
-
-if __name__ == "__main__":
-    # model = train()
-    inputs, y = prepare_data()
-    model = load_model()
-    input_Sample = np.zeros([1,128])
-    input_Sample[0] = inputs[0]
-    # print (inputs[0].shape)
-    # print (input_Sample.shape)
-    
-    # print (model.output_shape)
-    predict_input(model,input_Sample )

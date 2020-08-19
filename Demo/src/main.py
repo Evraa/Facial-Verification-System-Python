@@ -1,23 +1,19 @@
-import facial_landmarks
-# import auxilary
-# import face_recognition
-import SVM
-import get_diff
-import show_tests
-# from get_lengths import *
-# from identify_faces import *
-# from calc_weights import calc_weights
-# from delaunay import get_delaunay_points,store_shape_tri
-# import face_recognition
-# from joblib import dump, load
-import auxilary
-# import pandas as pd
+#GLOBAL IMPORTS
 import numpy as np
 from termcolor import colored
 from glob import glob
-from create_model import create_model
-# import euc
+
+#LOCAL IMPORTS
+import auxilary
+import facial_landmarks
+import SVM
+import show_tests
 import NN
+from create_model import create_model
+
+#MAGGIE COMMENT THESE TWO
+import face_recognition
+import show_results 
 
 
 def take_action():
@@ -25,11 +21,17 @@ def take_action():
     print (colored("\tBefore we start, please make sure that your dataset is placed at Demo/dataset/*",'red'))
     print (colored("\tand the two models are placed at Demo/src/",'red'))
 
-    print (colored("\tTo Transform your data to affine dataset, \t\tpress 1",'cyan'))
-    print (colored("\tTo Create Embeddings for the data you just transformed, press 2",'cyan'))
+    print (colored("\tTo Transform your data to affine dataset, \t\tpress 1 (Do ONCE)",'cyan'))
+    print (colored("\tTo Create Embeddings for the data you just transformed, press 2 (Do ONCE)",'cyan'))
     print (colored("\tTo Test classification using Euclidean equation, \tpress 3",'cyan'))
-    print (colored("\tTo Train the NN model for classification, \t\tpress 4",'cyan'))
+    print (colored("\tTo Train the NN model for classification, \t\tpress 4 (Do ONCE)",'cyan'))
     print (colored("\tTo Test classification using Neural Networks, \t\tpress 5",'cyan'))
+    print (colored("\tTo Test classification using SVM with Bayes, \t\tpress 6",'cyan'))
+    print (colored("\tTo Test classification using NN with Blured images, \tpress 7",'cyan'))
+    print (colored("\tTo Extract Features Manually from faces and store them, press 8 (Do ONCE)",'cyan'))
+    print (colored("\tTo Test classification using Neural Networks 2, \tpress 9",'cyan'))
+    print (colored("\tfor Mag! to get inputs and targets \t\t\tpress 10",'cyan'))
+    
 
     print (colored("\tTo Exit \t\t\t\t\t\tpress 0",'cyan'))
     exit = False
@@ -52,6 +54,7 @@ if __name__ == "__main__":
 
     print (colored('\t\tLoading models once, to make the rest of the operations faster','yellow'))
     pred, detc = facial_landmarks.load_pred_detec()
+
     while True:
         action = take_action()
 
@@ -81,13 +84,14 @@ if __name__ == "__main__":
         elif action == 3:
             print (colored("\t\t\tSTARTING",'green'))            
             try:
-                # image_num = 7820
-                euc.Euc_result_preview()
+                show_results.Euc_result_preview()
                 print (colored('\t\t\tDONE','green'))
             except:
                 print (colored("\t\t\tERROR",'red'))
         
         elif action == 4:
+            # NN.train()
+                
             print (colored("\t\t\tSTARTING",'green'))            
             try:
                 NN.train()
@@ -96,26 +100,71 @@ if __name__ == "__main__":
                 print (colored("\t\t\tERROR",'red'))
         
         elif action == 5:
-            pass
-        
+            print (colored("\t\t\tSTARTING",'green'))            
+            try:
+                show_results.NN_result_preview()
+                print (colored('\t\t\tDONE','green'))
+            except:
+                print (colored("\t\t\tERROR",'red'))
+    
+        elif action == 6:
+            print (colored("\t\t\tTraining SVM clf",'green'))            
+            try:
+                clf = SVM.svm_compare()
+                print (colored('\t\t\tSuccessfully trained clf','green'))
+            except:
+                print (colored("\t\t\tERROR in training",'red'))
+            
+            print (colored("\t\t\Showing Results",'green'))            
+            try:
+                show_tests.show_tests(auxilary.path_to_maindata , clf, detc,pred)
+                print (colored('\t\t\tDone','green'))
+            except:
+                print (colored("\t\t\tERROR",'red'))
+
+        elif action == 7:
+            print (colored("\t\t\tSTARTING",'green'))            
+            try:
+                show_results.NN_result_preview(blur=True)
+                print (colored('\t\t\tDONE','green'))
+            except:
+                print (colored("\t\t\tERROR",'red'))
+        elif action == 8:
+            print (colored("\t\t\tSTARTING",'green'))            
+            try:
+                dataset_path = '../dataset/main_data/*/*'
+                facial_landmarks.extract_features(path = dataset_path,pred=pred, detc=detc)
+                print (colored('\t\t\tDONE','green'))
+            except:
+                print (colored("\t\t\tERROR",'red'))
+        elif action == 9:
+            print (colored("\t\t\tSTARTING",'green'))            
+            try:
+                show_results.NN_result_preview(second=True,pred=pred, detc=detc)
+                print (colored('\t\t\tDONE','green'))
+            except:
+                print (colored("\t\t\tERROR",'red'))
+        elif action == 10:
+            print (colored("\t\t\tSTARTING",'green'))            
+            try:
+                inputs, targets, encoded_names = NN.prepare_data()
+                image_count = len(targets)
+                random_int = np.random.random_integers(0,image_count)
+                
+                print (colored("first row's features: ", "yellow"))
+                print (inputs[random_int])
+                print (colored("First row's target value:", "yellow"))
+                print (targets[random_int])
+                print (colored("what is the index of the one ?", "yellow"))
+                one = list(np.where(targets[random_int] == 1))
+                print (one)
+                print (colored("encoded value:","yellow"))
+                print (encoded_names.inverse_transform( one ))
+                print (colored('\t\t\tDONE','green'))
+            except:
+                print (colored("\t\t\tERROR",'red'))
         elif action == 0:
             #EXIT
             break
         
-    print("hello :D")
-    image_path = '../dataset/Mag.jpg'
-    # facial_landmarks.draw_landmarks(image_path)
-    # facial_landmarks.draw_parts(image_path)
-
-    # load a dataset
-    # 1) get key points (mylistdir workaround for OS DS_store)
-    # facial_landmarks.store_key_points(auxilary.path_to_maindata)
-    # 2) get differences
-    # get_diff.get_diff(auxilary.path_to_csv_key_points, auxilary.path_to_maindata)\
     
-    # print ("Loading the detector and predictor...\n")
-    predictor , detector = facial_landmarks.load_pred_detec()
-    # print ("Training the Classifier...\n")
-    clf = SVM.svm_compare()
-    # print ("Testing random image...\n")
-    show_tests.show_tests(auxilary.path_to_maindata , clf, detector,predictor)

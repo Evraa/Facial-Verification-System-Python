@@ -3,8 +3,9 @@ import face_recognition
 import show_tests
 import numpy as np
 import os
-
-
+import NN
+import cv2
+import facial_landmarks
 def euclidean(input_1, input_2):
     diff = input_1 - input_2
     power = np.power(diff, 2)
@@ -104,10 +105,11 @@ def trim_outputs (labels, face_name, identicals, similars):
     print ("\n\n\n")
     return idc_paths, idc_names, sim_paths, sim_names, others_paths, others_names
 
+
 def Euc_result_preview(image_num = None):
     print ("Load labels")
     data = auxilary.read_csv(fileName='../csv_files/embedded.csv')
-    N = len(data) #13142
+    N = len(data) 
     D = 128
     
     data_inputs = (data.iloc[:,:D])
@@ -118,12 +120,97 @@ def Euc_result_preview(image_num = None):
     labels = np.array(data.iloc[:,D])
     
     embeddings,face_name, human_file_path = face_recognition.face_recognition(dataset_path = "../dataset/main_data/*/*", preview=True, image_num = image_num)
+    
     identicals, similars = results(embeddings, inputs, labels)
 
     
 
     idc_paths, idc_names, sim_paths, sim_names, others_paths, others_names = \
         trim_outputs (labels, face_name, identicals, similars)
+    
+    show_tests.buttons(identicalls=idc_paths, id_titles=idc_names, similars=sim_paths,sim_titles=sim_names, left_overs=others_paths, left_titles=others_names,
+                orig_image_path=human_file_path, orig_title=face_name,title1="MATCHING",title2= "SIMILARS", title3="OTHERS")
+
+
+
+def trim_NN_outputs (labels, face_name, identicals, similars, human_file_path):
+    N = labels.shape[0]
+    others_names = []
+    others_paths = []
+    path = '../dataset/main_data/'
+    #for others
+    for _ in range (9):
+        rand_int = np.random.random_integers(0,N-1)
+        label = labels[rand_int]
+        dir_path = path + label + '/'
+        files_count = (os.listdir(dir_path))
+        while label == face_name or len(files_count) < 1 or \
+            label in identicals or label in similars:
+            
+            rand_int = np.random.random_integers(0,N-1)
+            label = labels[rand_int]
+            dir_path = path + label + '/'
+            files_count = (os.listdir(dir_path))
+
+        others_names.append(label)
+        others_paths.append(dir_path + files_count[0])
+
+    #for similars
+    sim_paths = []
+    sim_names = similars
+
+    for sim in similars:
+        sim_path = path + sim + '/'
+        files = os.listdir(sim_path)
+        if len(files) > 0:
+            sim_paths.append(sim_path+files[0])
+
+    #for identicals
+    idc_name = identicals[0]
+    idc_paths, idc_names = [], []
+    id_path = path + idc_name + '/'
+    files = os.listdir(id_path)
+    count = len(files)
+    it = 9 if count >=9  else count
+    for i in range (it):
+        idc_names.append(idc_name)
+        img_path = id_path + files[i]
+        idc_paths.append(img_path)
+
+    return idc_paths, idc_names, sim_paths, sim_names, others_paths, others_names
+
+
+
+def NN_result_preview(second= False,image_num = None, blur = False, pred=None, detc=None):
+    print ("Load labels")
+    if second:
+        data = auxilary.read_csv(fileName='../csv_files/embedded_2.csv')
+        D = 14
+    else:
+        data = auxilary.read_csv(fileName='../csv_files/embedded.csv')
+        D = 128
+    N = len(data)
+    
+    
+    data_inputs = (data.iloc[:,:D])
+    inputs = np.zeros([N,D])
+    inputs = np.array(data_inputs)
+
+    labels = np.zeros([N,1])
+    labels = np.array(data.iloc[:,D])
+    
+    if not second:
+        embeddings,face_name, human_file_path = face_recognition.face_recognition(dataset_path = "../dataset/main_data/*/*", 
+            preview=True, image_num = image_num, blur = blur)
+    else:
+        embeddings,face_name, human_file_path = facial_landmarks.test_preview(blur = blur, dataset_path = "../dataset/main_data/*/*",
+            pred=pred, detc=detc)
+
+    # identicals, similars = NN_results(embeddings, inputs, labels)
+    identicals, similars = NN.predict_input(embeddings, second = second)
+
+    idc_paths, idc_names, sim_paths, sim_names, others_paths, others_names = \
+        trim_NN_outputs (labels, face_name, identicals, similars, human_file_path)
     
     show_tests.buttons(identicalls=idc_paths, id_titles=idc_names, similars=sim_paths,sim_titles=sim_names, left_overs=others_paths, left_titles=others_names,
                 orig_image_path=human_file_path, orig_title=face_name,title1="MATCHING",title2= "SIMILARS", title3="OTHERS")
