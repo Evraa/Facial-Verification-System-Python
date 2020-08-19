@@ -10,6 +10,7 @@ import SVM
 import show_tests
 import NN
 from create_model import create_model
+import plot_weights
 
 #MAGGIE COMMENT THESE TWO
 import face_recognition
@@ -31,6 +32,7 @@ def take_action():
     print (colored("\tTo Extract Features Manually from faces and store them, press 8 (Do ONCE)",'cyan'))
     print (colored("\tTo Test classification using Neural Networks 2, \tpress 9",'cyan'))
     print (colored("\tfor Mag! to get inputs and targets \t\t\tpress 10",'cyan'))
+    print (colored("\tTo Calc new weights and plot them \t\t\tpress 11 (Do ONCE)",'cyan'))
     
 
     print (colored("\tTo Exit \t\t\t\t\t\tpress 0",'cyan'))
@@ -160,6 +162,14 @@ if __name__ == "__main__":
                 print (one)
                 print (colored("encoded value:","yellow"))
                 print (encoded_names.inverse_transform( one ))
+                print (colored('\t\t\tDONE','green'))
+            except:
+                print (colored("\t\t\tERROR",'red'))
+
+        elif action == 11:
+            print (colored("\t\t\tSTARTING",'green'))            
+            try:
+                plot_weights.run_main(csv_path = "../csv_files/embedded_2.csv")
                 print (colored('\t\t\tDONE','green'))
             except:
                 print (colored("\t\t\tERROR",'red'))

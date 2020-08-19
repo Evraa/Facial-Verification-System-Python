@@ -128,7 +128,7 @@ def get_ratios(shape, image):
     height = distance_two_points(shape[27], shape[8])
     # lines.append([shape[27], shape[8]])
 
-    ratios.append(distance_two_points(shape[17], shape[21])/width)
+    ratios.append(distance_two_points(shape[17], shape[21])/width) ##This one is not affecting at all !!
     ratios.append(distance_two_points(shape[22], shape[26])/width)
     ratios.append(distance_two_points(shape[36], shape[39])/width)
     ratios.append(distance_two_points(shape[42], shape[46])/width)
