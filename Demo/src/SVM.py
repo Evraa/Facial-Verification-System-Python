@@ -73,7 +73,7 @@ def svm_compare():
     #
     # plt.show()
 
-    # show_vectors(X_train, y_train)
+    show_vectors(X_train, y_train)
 
     return clf
 

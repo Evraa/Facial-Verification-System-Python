@@ -33,8 +33,8 @@ yhat = model.predict(X)
 clusters = unique(yhat)
 # create scatter plot for samples from each cluster
 
-acc=accuracy_score(labels, model)
-print("Accuracy score is", acc)
+# acc=accuracy_score(labels, model)
+# print("Accuracy score is", acc)
 
 for cluster in clusters:
     # get row indexes for samples with this cluster
