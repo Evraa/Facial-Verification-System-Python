@@ -94,66 +94,90 @@ def draw_landmarks(image,shape,rect, blur = False, manual = False, lines = None)
 def get_ratios(shape, image):
     '''
         Retutns a list of features (ratios):
-        + width:    0-16
-        + 0 L eyebrow 17-21
-        + 1 R eyebrow 22-26
-        + 2 L eye     36-39
-        + 3 R eye     42-46
-        + 4 Mouse     48-54
-        + 5 Nose_width    31-35
+        + width:        0-16
+        + 0 L eyebrow   17-21
+        + 1 R eyebrow   22-26
+        + 2 L eye       36-39
+        + 3 R eye       42-45
+        + 4 Mouse       48-54
+        + 5 Nose_width  31-35
+        + +teeth_width  4-12
+        + +eyebrows_wid 21-22
+        + + eyes_width  39-42
 
-
-        + Height:       27-8
-        + 6 Nose_height   27-33
-        + 7 L nose proj   30-31
-        + 8 R nose proj   30-35
-        + 9 M nose proj   30-33
-        + 10 lips height   62-66
+        + Height:           27-8
+        + 6 Nose_height     27-33
+        + 7 L nose proj     30-31
+        + 8 R nose proj     30-35
+        + 9 M nose proj     30-33
+        + 10 lips height    62-66
+        + + Chin height     57-8
+        + + L eye hight     37-41 // 38-40
+        + + R eye hight     43-47 // 44-46
+        + + Nose to mouth   33-51
+        + + Mouse height    51-57
 
         + In addition to these ratios, we can add COLORS:
             - 11 Eyebrow color
             - 12 eye color
             - 13 skin color
     '''
-    # print (shape)
-    # print (type(image))
-    # print (image.shape)
-    # print (image[0])
-    # input ("ev")
+    
 
     ratios = []
     lines = []
     width = distance_two_points(shape[0], shape[16])
-    # lines.append([shape[0], shape[16]])
     height = distance_two_points(shape[27], shape[8])
-    # lines.append([shape[27], shape[8]])
-
+    
     ratios.append(distance_two_points(shape[17], shape[21])/width) ##This one is not affecting at all !!
     ratios.append(distance_two_points(shape[22], shape[26])/width) 
     ratios.append(distance_two_points(shape[36], shape[39])/width)
-    ratios.append(distance_two_points(shape[42], shape[46])/width)
+    ratios.append(distance_two_points(shape[42], shape[45])/width)
     ratios.append(distance_two_points(shape[48], shape[54])/width)
     ratios.append(distance_two_points(shape[31], shape[35])/width)
+    ratios.append(distance_two_points(shape[4], shape[12])/width)
+    ratios.append(distance_two_points(shape[21], shape[22])/width)
+    ratios.append(distance_two_points(shape[39], shape[42])/width)
 
+    lines.append([shape[17], shape[21]])
     lines.append([shape[22], shape[26]])
     lines.append([shape[36], shape[39]])
-    lines.append([shape[42], shape[46]])
+    lines.append([shape[42], shape[45]])
     lines.append([shape[48], shape[54]])
     lines.append([shape[31], shape[35]])
-
+    lines.append([shape[4], shape[12]])
+    lines.append([shape[21], shape[22]])
+    lines.append([shape[39], shape[42]])
 
     ratios.append(distance_two_points(shape[27], shape[33])/height)
     ratios.append(distance_two_points(shape[30], shape[31])/height)
     ratios.append(distance_two_points(shape[30], shape[35])/height)
     ratios.append(distance_two_points(shape[30], shape[33])/height)
     ratios.append(distance_two_points(shape[62], shape[66])/height)
+    ratios.append(distance_two_points(shape[57], shape[8])/height)
+    ratios.append(distance_two_points(shape[33], shape[51])/height)
+    ratios.append(distance_two_points(shape[51], shape[57])/height)
     
+    # Left eye height estimate
+    l1 = distance_two_points(shape[37], shape[41])
+    l2 = distance_two_points(shape[40], shape[38])
+    l  = l1+l2/2
+    ratios.append(l/height)
+    #RIGHT
+    l1 = distance_two_points(shape[43], shape[47])
+    l2 = distance_two_points(shape[44], shape[46])
+    l  = l1+l2/2
+    ratios.append(l/height)
     
     lines.append([shape[27], shape[33]])
     lines.append([shape[30], shape[31]])
     lines.append([shape[30], shape[35]])
     lines.append([shape[30], shape[33]])
     lines.append([shape[62], shape[66]])
+    lines.append([shape[57], shape[8]])
+    lines.append([shape[33], shape[51]])
+    lines.append([shape[51], shape[57]])
+    
     #eyebrows points 17-18-19-20-21-22-23-24-25-26
     eyebrows = shape[17:27]
     eyebrows_values = []
