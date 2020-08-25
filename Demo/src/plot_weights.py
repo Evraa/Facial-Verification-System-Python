@@ -2,6 +2,10 @@
 import numpy as np
 from glob import glob
 import pandas as pd
+from scipy.stats import norm
+import matplotlib.pyplot as plt
+
+
 #LOCAL IMPORTS
 import auxilary
 
@@ -85,7 +89,11 @@ def compare ():
     return prob, idx
 
 def run_main(csv_path = "../csv_files/embedded_2.csv"):
-    get_diff_similar(csv_path=csv_path)
-    get_diff_diff (csv_path = csv_path)
-    return compare ()
+    # get_diff_similar(csv_path=csv_path)
+    # get_diff_diff (csv_path = csv_path)
+    weights, idx =  compare ()
+    print ('Features index: ')
+    print (idx)
+    print ("Weight: ")
+    print (weights*100)
     

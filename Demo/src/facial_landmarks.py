@@ -95,25 +95,25 @@ def get_ratios(shape, image):
     '''
         Retutns a list of features (ratios):
         + width:    0-16
-        + L eyebrow 17-21
-        + R eyebrow 22-26
-        + L eye     36-39
-        + R eye     42-46
-        + Mouse     48-54
-        + Nose_width    31-35
+        + 0 L eyebrow 17-21
+        + 1 R eyebrow 22-26
+        + 2 L eye     36-39
+        + 3 R eye     42-46
+        + 4 Mouse     48-54
+        + 5 Nose_width    31-35
 
 
         + Height:       27-8
-        + Nose_height   27-33
-        + L nose proj   30-31
-        + R nose proj   30-35
-        + M nose proj   30-33
-        + lips height   62-66
+        + 6 Nose_height   27-33
+        + 7 L nose proj   30-31
+        + 8 R nose proj   30-35
+        + 9 M nose proj   30-33
+        + 10 lips height   62-66
 
         + In addition to these ratios, we can add COLORS:
-            - Eyebrow color
-            - eye color
-            - skin color
+            - 11 Eyebrow color
+            - 12 eye color
+            - 13 skin color
     '''
     # print (shape)
     # print (type(image))
@@ -129,7 +129,7 @@ def get_ratios(shape, image):
     # lines.append([shape[27], shape[8]])
 
     ratios.append(distance_two_points(shape[17], shape[21])/width) ##This one is not affecting at all !!
-    ratios.append(distance_two_points(shape[22], shape[26])/width)
+    ratios.append(distance_two_points(shape[22], shape[26])/width) 
     ratios.append(distance_two_points(shape[36], shape[39])/width)
     ratios.append(distance_two_points(shape[42], shape[46])/width)
     ratios.append(distance_two_points(shape[48], shape[54])/width)
