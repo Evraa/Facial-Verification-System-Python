@@ -75,10 +75,19 @@ def draw_landmarks(image,shape,rect, blur = False, manual = False, lines = None)
     cv2.imshow("Predicted Facial points", image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
-
+    # i = 0
     if manual:
         for line in lines:
-            cv2.line(image, (line[0][0],line[0][1]), (line[1][0],line[1][1]), (20,255,212), 2)
+            # if i%2 == 0:
+            #     color = (20,255,212)
+            # else:
+            #     color = (255,20,212)
+            # i += 1
+            rand_int_1 = int(np.random.random_integers(0,255))
+            rand_int_2 = int(np.random.random_integers(0,255))
+            rand_int_3 = int(np.random.random_integers(0,255))
+            color = (rand_int_1, rand_int_2, rand_int_3)
+            cv2.line(image, (line[0][0],line[0][1]), (line[1][0],line[1][1]), color, 3)
 
         cv2.imshow("Features", image)
         cv2.waitKey(0)
@@ -101,21 +110,21 @@ def get_ratios(shape, image):
         + 3 R eye       42-45
         + 4 Mouse       48-54
         + 5 Nose_width  31-35
-        + +teeth_width  4-12
-        + +eyebrows_wid 21-22
-        + + eyes_width  39-42
+        + 6 teeth_width  4-12
+        + 7 eyebrows_wid 21-22
+        + 8 eyes_width  39-42
 
         + Height:           27-8
-        + 6 Nose_height     27-33
-        + 7 L nose proj     30-31
-        + 8 R nose proj     30-35
-        + 9 M nose proj     30-33
-        + 10 lips height    62-66
-        + + Chin height     57-8
-        + + L eye hight     37-41 // 38-40
-        + + R eye hight     43-47 // 44-46
-        + + Nose to mouth   33-51
-        + + Mouse height    51-57
+        + 9 Nose_height     27-33
+        + 10 L nose proj     30-31
+        + 11 R nose proj     30-35
+        + 12 M nose proj     30-33
+        + 13 lips height    62-66
+        + 14 Chin height     57-8
+        + 15 L eye hight     37-41 // 38-40
+        + 16 R eye hight     43-47 // 44-46
+        + 17 Nose to mouth   33-51
+        + 18 Mouse height    51-57
 
         + In addition to these ratios, we can add COLORS:
             - 11 Eyebrow color
