@@ -173,3 +173,18 @@ def train():
     plot_acc (history)
     return  model_relu
 
+
+def predict_input_from_video(embedding, le):
+    embedding = np.reshape(embedding, (1,-1))
+    
+    model = load_model(second = True)
+    pred = model.predict([[embedding]])
+    # print (pred)
+    ind = np.argsort(pred[0])
+    # print(ind[::-1][:5]) #FIRST five
+    identical = []
+    identical.append(le.inverse_transform([ind[::-1][0]])[0])
+    percentage = pred[0][ind[::-1][0]]*100
+    # print("Prediction Probability: ",pred[0][ind[::-1][0]]*100,"%")
+    # print ("ID: ", identical)
+    return identical[0], percentage

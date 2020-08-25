@@ -37,6 +37,7 @@ def get_shape(image_path, predictor, detector):
     return True,shape, rect, image
 
 
+
 def blur_image(image, sigma):
     gausBlur = cv2.GaussianBlur(image, (sigma, sigma),0)  
 
@@ -263,3 +264,28 @@ def test_preview(blur = False, dataset_path = "../dataset/main_data/*/*", pred=N
     draw_landmarks(image,shape,rect, blur = blur, manual = True, lines = lines)
     
     return embeddings, face_name, image_path
+
+def test_frame(frame, pred, detc ):
+    '''
+        + Takes frame from video
+        + Returns that frame with a box around the faces detected
+        + with each box a name and percentage of prediction
+    '''
+    state, shape, rect, image = get_shape_from_image (frame, pred, detc)
+    if not state:
+        return False, None, None
+    
+    return True, shape, rect
+
+def get_shape_from_image (image, predictor, detector):
+    #read the image
+    # image = imutils.resize(image, width=500)
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    # detect faces in the grayscale image
+    rects = detector(gray, 1)
+    if len(rects) == 0:
+        return False,None,None,None
+    rect = rects[0]
+    shape = predictor(gray, rect)
+    shape = shape_to_np(shape)
+    return True,shape, rect, image
