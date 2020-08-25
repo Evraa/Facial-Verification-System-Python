@@ -79,21 +79,21 @@ def save_model(model):
 def create_model_relu(input_dim,output_dim):
 
     model_relu = Sequential()
-    model_relu.add(Dense(1024, activation='relu', input_shape=(input_dim,), kernel_initializer=tensorflow.keras.initializers.he_normal(seed=None)))
+    model_relu.add(Dense(2048, activation='relu', input_shape=(input_dim,), kernel_initializer=tensorflow.keras.initializers.he_normal(seed=None)))
     model_relu.add(BatchNormalization())
-    model_relu.add(Dropout(0.5))
+    model_relu.add(Dropout(0.25))
     
-    model_relu.add(Dense(512, activation='relu', kernel_initializer=tensorflow.keras.initializers.he_normal(seed=None)))
+    model_relu.add(Dense(1024, activation='relu', kernel_initializer=tensorflow.keras.initializers.he_normal(seed=None)))
     model_relu.add(BatchNormalization())
-    model_relu.add(Dropout(0.5))
+    model_relu.add(Dropout(0.25))
+    
+    model_relu.add(Dense(512, activation='relu', kernel_initializer=tensorflow.keras.initializers.he_normal(seed=None)) )
+    model_relu.add(BatchNormalization())
+    model_relu.add(Dropout(0.25))
     
     model_relu.add(Dense(256, activation='relu', kernel_initializer=tensorflow.keras.initializers.he_normal(seed=None)) )
     model_relu.add(BatchNormalization())
-    model_relu.add(Dropout(0.5))
-    
-    model_relu.add(Dense(128, activation='relu', kernel_initializer=tensorflow.keras.initializers.he_normal(seed=None)) )
-    model_relu.add(BatchNormalization())
-    model_relu.add(Dropout(0.5))
+    model_relu.add(Dropout(0.25))
     
 
     model_relu.add(Dense(output_dim,activation='softmax'))

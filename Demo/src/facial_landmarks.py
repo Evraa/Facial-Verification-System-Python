@@ -224,7 +224,7 @@ def extract_features(path,pred, detc, preview = False):
     '''
 
     human_files = np.array(glob(path))
-    embedded = np.zeros([len(human_files) ,14])
+    embedded = np.zeros([len(human_files) ,22])
     labels = []
     for i, image_path in enumerate(human_files):
         if i%100 == 0:
