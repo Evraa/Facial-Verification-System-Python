@@ -168,7 +168,7 @@ def train():
     input_dim = X_train.shape[1]
     output_dim = y_train.shape[1]
     model_relu = create_model_relu(input_dim,output_dim)
-    history = model_relu.fit(X_train, y_train, batch_size=32, epochs=1000,validation_data=(X_val,y_val))
+    history = model_relu.fit(X_train, y_train, batch_size=32, epochs=200,validation_data=(X_val,y_val))
     save_model(model_relu)
     plot_acc (history)
     return  model_relu
