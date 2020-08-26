@@ -79,21 +79,21 @@ def save_model(model):
 def create_model_relu(input_dim,output_dim):
 
     model_relu = Sequential()
-    model_relu.add(Dense(1024, activation='relu', input_shape=(input_dim,), kernel_initializer=tensorflow.keras.initializers.he_normal(seed=None)))
+    model_relu.add(Dense(2048, activation='relu', input_shape=(input_dim,), kernel_initializer=tensorflow.keras.initializers.he_normal(seed=None)))
     model_relu.add(BatchNormalization())
-    model_relu.add(Dropout(0.5))
+    model_relu.add(Dropout(0.25))
     
-    model_relu.add(Dense(512, activation='relu', kernel_initializer=tensorflow.keras.initializers.he_normal(seed=None)))
+    model_relu.add(Dense(1024, activation='relu', kernel_initializer=tensorflow.keras.initializers.he_normal(seed=None)))
     model_relu.add(BatchNormalization())
-    model_relu.add(Dropout(0.5))
+    model_relu.add(Dropout(0.25))
+    
+    model_relu.add(Dense(512, activation='relu', kernel_initializer=tensorflow.keras.initializers.he_normal(seed=None)) )
+    model_relu.add(BatchNormalization())
+    model_relu.add(Dropout(0.25))
     
     model_relu.add(Dense(256, activation='relu', kernel_initializer=tensorflow.keras.initializers.he_normal(seed=None)) )
     model_relu.add(BatchNormalization())
-    model_relu.add(Dropout(0.5))
-    
-    model_relu.add(Dense(128, activation='relu', kernel_initializer=tensorflow.keras.initializers.he_normal(seed=None)) )
-    model_relu.add(BatchNormalization())
-    model_relu.add(Dropout(0.5))
+    model_relu.add(Dropout(0.25))
     
 
     model_relu.add(Dense(output_dim,activation='softmax'))
@@ -173,3 +173,18 @@ def train():
     plot_acc (history)
     return  model_relu
 
+
+def predict_input_from_video(embedding, le):
+    embedding = np.reshape(embedding, (1,-1))
+    
+    model = load_model(second = True)
+    pred = model.predict([[embedding]])
+    # print (pred)
+    ind = np.argsort(pred[0])
+    # print(ind[::-1][:5]) #FIRST five
+    identical = []
+    identical.append(le.inverse_transform([ind[::-1][0]])[0])
+    percentage = pred[0][ind[::-1][0]]*100
+    # print("Prediction Probability: ",pred[0][ind[::-1][0]]*100,"%")
+    # print ("ID: ", identical)
+    return identical[0], percentage

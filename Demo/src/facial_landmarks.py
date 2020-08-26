@@ -37,6 +37,7 @@ def get_shape(image_path, predictor, detector):
     return True,shape, rect, image
 
 
+
 def blur_image(image, sigma):
     gausBlur = cv2.GaussianBlur(image, (sigma, sigma),0)  
 
@@ -75,10 +76,19 @@ def draw_landmarks(image,shape,rect, blur = False, manual = False, lines = None)
     cv2.imshow("Predicted Facial points", image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
-
+    # i = 0
     if manual:
         for line in lines:
-            cv2.line(image, (line[0][0],line[0][1]), (line[1][0],line[1][1]), (20,255,212), 2)
+            # if i%2 == 0:
+            #     color = (20,255,212)
+            # else:
+            #     color = (255,20,212)
+            # i += 1
+            rand_int_1 = int(np.random.random_integers(0,255))
+            rand_int_2 = int(np.random.random_integers(0,255))
+            rand_int_3 = int(np.random.random_integers(0,255))
+            color = (rand_int_1, rand_int_2, rand_int_3)
+            cv2.line(image, (line[0][0],line[0][1]), (line[1][0],line[1][1]), color, 3)
 
         cv2.imshow("Features", image)
         cv2.waitKey(0)
@@ -94,66 +104,90 @@ def draw_landmarks(image,shape,rect, blur = False, manual = False, lines = None)
 def get_ratios(shape, image):
     '''
         Retutns a list of features (ratios):
-        + width:    0-16
-        + L eyebrow 17-21
-        + R eyebrow 22-26
-        + L eye     36-39
-        + R eye     42-46
-        + Mouse     48-54
-        + Nose_width    31-35
+        + width:        0-16
+        + 0 L eyebrow   17-21
+        + 1 R eyebrow   22-26
+        + 2 L eye       36-39
+        + 3 R eye       42-45
+        + 4 Mouse       48-54
+        + 5 Nose_width  31-35
+        + 6 teeth_width  4-12
+        + 7 eyebrows_wid 21-22
+        + 8 eyes_width  39-42
 
-
-        + Height:       27-8
-        + Nose_height   27-33
-        + L nose proj   30-31
-        + R nose proj   30-35
-        + M nose proj   30-33
-        + lips height   62-66
+        + Height:           27-8
+        + 9 Nose_height     27-33
+        + 10 L nose proj     30-31
+        + 11 R nose proj     30-35
+        + 12 M nose proj     30-33
+        + 13 lips height    62-66
+        + 14 Chin height     57-8
+        + 15 L eye hight     37-41 // 38-40
+        + 16 R eye hight     43-47 // 44-46
+        + 17 Nose to mouth   33-51
+        + 18 Mouse height    51-57
 
         + In addition to these ratios, we can add COLORS:
-            - Eyebrow color
-            - eye color
-            - skin color
+            - 11 Eyebrow color
+            - 12 eye color
+            - 13 skin color
     '''
-    # print (shape)
-    # print (type(image))
-    # print (image.shape)
-    # print (image[0])
-    # input ("ev")
+    
 
     ratios = []
     lines = []
     width = distance_two_points(shape[0], shape[16])
-    # lines.append([shape[0], shape[16]])
     height = distance_two_points(shape[27], shape[8])
-    # lines.append([shape[27], shape[8]])
-
-    ratios.append(distance_two_points(shape[17], shape[21])/width)
-    ratios.append(distance_two_points(shape[22], shape[26])/width)
+    
+    ratios.append(distance_two_points(shape[17], shape[21])/width) ##This one is not affecting at all !!
+    ratios.append(distance_two_points(shape[22], shape[26])/width) 
     ratios.append(distance_two_points(shape[36], shape[39])/width)
-    ratios.append(distance_two_points(shape[42], shape[46])/width)
+    ratios.append(distance_two_points(shape[42], shape[45])/width)
     ratios.append(distance_two_points(shape[48], shape[54])/width)
     ratios.append(distance_two_points(shape[31], shape[35])/width)
+    ratios.append(distance_two_points(shape[4], shape[12])/width)
+    ratios.append(distance_two_points(shape[21], shape[22])/width)
+    ratios.append(distance_two_points(shape[39], shape[42])/width)
 
+    lines.append([shape[17], shape[21]])
     lines.append([shape[22], shape[26]])
     lines.append([shape[36], shape[39]])
-    lines.append([shape[42], shape[46]])
+    lines.append([shape[42], shape[45]])
     lines.append([shape[48], shape[54]])
     lines.append([shape[31], shape[35]])
-
+    lines.append([shape[4], shape[12]])
+    lines.append([shape[21], shape[22]])
+    lines.append([shape[39], shape[42]])
 
     ratios.append(distance_two_points(shape[27], shape[33])/height)
     ratios.append(distance_two_points(shape[30], shape[31])/height)
     ratios.append(distance_two_points(shape[30], shape[35])/height)
     ratios.append(distance_two_points(shape[30], shape[33])/height)
     ratios.append(distance_two_points(shape[62], shape[66])/height)
+    ratios.append(distance_two_points(shape[57], shape[8])/height)
+    ratios.append(distance_two_points(shape[33], shape[51])/height)
+    ratios.append(distance_two_points(shape[51], shape[57])/height)
     
+    # Left eye height estimate
+    l1 = distance_two_points(shape[37], shape[41])
+    l2 = distance_two_points(shape[40], shape[38])
+    l  = l1+l2/2
+    ratios.append(l/height)
+    #RIGHT
+    l1 = distance_two_points(shape[43], shape[47])
+    l2 = distance_two_points(shape[44], shape[46])
+    l  = l1+l2/2
+    ratios.append(l/height)
     
     lines.append([shape[27], shape[33]])
     lines.append([shape[30], shape[31]])
     lines.append([shape[30], shape[35]])
     lines.append([shape[30], shape[33]])
     lines.append([shape[62], shape[66]])
+    lines.append([shape[57], shape[8]])
+    lines.append([shape[33], shape[51]])
+    lines.append([shape[51], shape[57]])
+    
     #eyebrows points 17-18-19-20-21-22-23-24-25-26
     eyebrows = shape[17:27]
     eyebrows_values = []
@@ -191,7 +225,7 @@ def extract_features(path,pred, detc, preview = False):
     '''
 
     human_files = np.array(glob(path))
-    embedded = np.zeros([len(human_files) ,14])
+    embedded = np.zeros([len(human_files) ,22])
     labels = []
     for i, image_path in enumerate(human_files):
         if i%100 == 0:
@@ -230,3 +264,28 @@ def test_preview(blur = False, dataset_path = "../dataset/main_data/*/*", pred=N
     draw_landmarks(image,shape,rect, blur = blur, manual = True, lines = lines)
     
     return embeddings, face_name, image_path
+
+def test_frame(frame, pred, detc ):
+    '''
+        + Takes frame from video
+        + Returns that frame with a box around the faces detected
+        + with each box a name and percentage of prediction
+    '''
+    state, shape, rect, image = get_shape_from_image (frame, pred, detc)
+    if not state:
+        return False, None, None
+    
+    return True, shape, rect
+
+def get_shape_from_image (image, predictor, detector):
+    #read the image
+    # image = imutils.resize(image, width=500)
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    # detect faces in the grayscale image
+    rects = detector(gray, 1)
+    if len(rects) == 0:
+        return False,None,None,None
+    rect = rects[0]
+    shape = predictor(gray, rect)
+    shape = shape_to_np(shape)
+    return True,shape, rect, image

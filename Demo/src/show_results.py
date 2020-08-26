@@ -185,7 +185,7 @@ def NN_result_preview(second= False,image_num = None, blur = False, pred=None, d
     print ("Load labels")
     if second:
         data = auxilary.read_csv(fileName='../csv_files/embedded_2.csv')
-        D = 14
+        D = 22
     else:
         data = auxilary.read_csv(fileName='../csv_files/embedded.csv')
         D = 128
