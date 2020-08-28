@@ -1,5 +1,8 @@
 # from networkx.drawing.tests.test_pylab import plt
 # from sympy.plotting.tests.test_plot import matplotlib
+from matplotlib.mlab import PCA
+import matplotlib as plt
+from mlxtend.plotting import plot_decision_regions
 
 import auxilary
 import numpy as np
@@ -60,8 +63,34 @@ def svm_compare():
     # Get support vectors themselves
     # support_vectors = clf.support_vectors_
 
+    # Get support vectors themselves
+    # support_vectors = clf.support_vectors_
+    # X_train2 = pca.fit_transform(X_train)
+    # clf.fit(X_train2, y_train)
+    # plot_decision_regions(X_train2, y_train.astype(np.integer), clf=clf, legend=2)
+    #
+    # plt.xlabel(X_train[0], size=14)
+    # plt.ylabel(X_train[1], size=14)
+    # plt.title('SVM Decision Region Boundary', size=16)
+    #
+    # plt.show()
+
+    show_vectors(X_train, y_train)
+
     return clf
 
 
+def show_vectors(x, y):
+    clf2 = svm.SVC(gamma=0.001, C=100, probability=True)
+    pca = PCA(n_components=2)
+    X_train2 = pca.fit_transform(x)
+    clf2.fit(X_train2, y)
+    plot_decision_regions(X_train2, y.astype(np.integer), clf=clf2, legend=2)
+
+    plt.xlabel(x[0], size=14)
+    plt.ylabel(x[1], size=14)
+    plt.title('SVM Decision Region Boundary', size=16)
+
+    plt.show()
 
 svm_compare()
