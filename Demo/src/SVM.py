@@ -13,14 +13,14 @@ def svm_compare():
     TODO: implement svm
     '''
     # path = '../csv_files/csv_differences.csv'
-    path = '../csv_files/csv_differences_prof.csv'
+    path = '../csv_files/svm_set1.csv'
     data = auxilary.read_csv(fileName=path)
 
     # READ THE INPUTS
     # we have 1520 inputs -> N
     # each one of them is 12 dimension -> D
     N = len(data)
-    D = 12
+    D = 22
     inputs = np.zeros([N, D])
     data_input = (data['inputs'])
     for i, input_list in enumerate(data_input):
@@ -64,4 +64,4 @@ def svm_compare():
 
 
 
-# svm_compare()
+svm_compare()

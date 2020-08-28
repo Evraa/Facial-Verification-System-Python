@@ -2,26 +2,34 @@ import itertools
 from random import random, sample, choices, randint
 
 import os, math
+
+import pandas
+
 import auxilary
 import copy
 import numpy as np
+
+
 def comnimationals(n):
     f = math.factorial
-    return int(f(n) / f(2) / f(n-2))
+    return int(f(n) / f(2) / f(n - 2))
 
 
 def get_points(string):
-    string = string.replace('[', '') 
-    string = string.replace(']', '') 
+    print(string)
+    string = string.replace('[', '')
+    string = string.replace(']', '')
     string = string.split(',')
-    points = [int(string[0]),int(string[1])]
+    points = [int(string[0]), int(string[1])]
     return points
 
-def mse_diff (row1,row2):
-    diff_1 = np.array(clac_diff(row1))
-    diff_2 = np.array(clac_diff(row2))
 
-    return abs(np.subtract(diff_1,diff_2))
+def mse_diff(row1, row2):
+    diff_1 = pandas.to_numeric(row1)
+    diff_2 = pandas.to_numeric(row2)
+
+    return abs(np.subtract(diff_1, diff_2)).to_list()
+
 
 def clac_diff(row):
     diff_1 = []
@@ -32,130 +40,92 @@ def clac_diff(row):
     rowC = rowC[1:]
     for r in rowC:
         r_p = get_points(r)
-        diff_1.append(auxilary.distance_two_points(base,r_p))
+        diff_1.append(auxilary.distance_two_points(base, r_p))
     return diff_1
 
-def get_diff(key_points_path, image_dir):
 
+
+def get_diff(key_points_path, image_dir):
     main_data = auxilary.read_csv(key_points_path)
-    #create diff csv
-    columns = ['inputs','label']
-    path = '../csv_files/csv_differences_prof.csv'
+    # create diff csv
+    columns = ['inputs', 'label']
+    path = '../csv_files/svm_set1.csv'
 
     if not os.path.exists(path):
         auxilary.create_csv(path, columns)
-    
+
     dataframe = auxilary.read_csv(fileName=path)
-    print ("a",len(main_data))
+    print("a", len(main_data))
 
+    print("b", len(dataframe[dataframe.label == 0]))
+    num_sets = int(main_data[['output']].nunique())
+    list_of_people = main_data['output'].unique()
+    data_size = 1000
 
-    print ("b",len(dataframe[dataframe.label == 0] ) )
-    # values = auxilary.strings_to_lists (dataframe['inputs'][0])
-    num_sets = main_data['image_set'].nunique()
+    # # GET LABEL 1
+    def get_ones():
+        for person in list_of_people:
+            print(person)
+            if len(dataframe.index) > data_size:
+                break
 
+            df_values = main_data.iloc[:, 0:22]
+            df_filter = df_values[main_data['output'] == person]
+            values_per_set = math.ceil(data_size / num_sets)
+            pairs = list(itertools.combinations(df_filter.index, 2))
+            if len(pairs) > values_per_set:
+                pairs = pairs[0:int(values_per_set)]
 
-    # GET LABEL 1
-    set_i_mask = main_data['image_set'] == "Vladimir_Putin"
-    set_i = main_data[set_i_mask]
-    # for index, row in set_i.iterrows():
-    #     for index2, row2 in set_i.iterrows():
-    #         if index >= index2:
-    #             continue
-    #         diff = mse_diff(row, row2)
-    #         row_dict = {
-    #             'inputs': [],
-    #             'label': 1
-    #         }
-    #         row_dict['inputs'].append(diff)
-    #         dataframe = auxilary.read_csv(fileName=path)
-    #         auxilary.add_row(dataframe, row_dict, fileName=path)
-    #         print(index,index2)
+            for pair in pairs:
+                print(pair, pair[0], pair[1])
+                row1 = df_values.iloc[pair[0]]
+                row2 = df_values.iloc[pair[1]]
+                diff = mse_diff(row1,row2)
+                row_dict = {
+                    'inputs': [],
+                    'label': 1
+                }
+                row_dict['inputs'].append(diff)
+                dataframe = auxilary.read_csv(fileName=path)
+                auxilary.add_row(dataframe, row_dict, fileName=path)
+
+    # RUN ONCE ONLY
+    # get_ones()
 
     # GET LABEL 0
-    num_0 = len(dataframe)
-    photos_per_set = len(dataframe)/num_sets
-    if photos_per_set > 7:
-        photos_per_set = 7
-    sets = auxilary.mylistdir(image_dir)
-    set_indx = 0
-    r = choices(sets, k=num_0)
-    for cset in r:
-        dataframe = auxilary.read_csv(fileName=path)
-        compare_set = main_data[main_data['image_set'] == cset]
-        set_indx = set_indx + 1
-        rand_num = randint(0, len(compare_set) - 1)
-        compare_row = compare_set.iloc[rand_num]
-        row = set_i.iloc[randint(0, len(set_i)-1)]
-        diff = mse_diff(row,compare_row)
-        row_dict = {
-            'inputs': [],
-            'label': 0
-        }
-        row_dict['inputs'].append(diff)
-        auxilary.add_row(dataframe, row_dict, fileName=path)
+    curr_size = len(dataframe.index)
 
+    def get_zeros(dataframe, size, index):
+        while size > 0:
+            index2 = curr_size - index
+            print(index,index2)
+            if index2 <= index:
+                dataframe.drop([0], inplace=True)
+                size = size - 1
+                get_zeros(dataframe, size, 0)
+                break
+            row1 = dataframe.iloc[index]
+            row2 = dataframe.iloc[index2]
+            diff = mse_diff(row1, row2)
+            row_dict = {
+                'inputs': [],
+                'label': 0
+            }
+            row_dict['inputs'].append(diff)
+            df = auxilary.read_csv(fileName=path)
+            print(row_dict['inputs'])
+            auxilary.add_row(df, row_dict, fileName=path)
+            size = size - 1
+            index = index + 1
+        return
 
-    # for row in set_i.iterrows():
-    #     dataframe = auxilary.read_csv(fileName=path)
-    #     compare_set = main_data[main_data['image_set'] == r[set_indx]]
-    #     set_indx = set_indx + 1
-    #     rand_num = randint(0, len(compare_set) - 1)
-    #     compare_row = compare_set.iloc[rand_num]
-    #     diff = mse_diff(row[1], compare_row)
-    #     # print("DIFFERENCE: ", diff)
-    #     row_dict = {
-    #         'inputs': [],
-    #         'label': 0
-    #     }
-    #     row_dict['inputs'].append(diff)
-    #     auxilary.add_row(dataframe, row_dict, fileName=path)
+    #RUN ONCE ONLY
+    # get_zeros(main_data.iloc[:, 0:22], curr_size, 0)
 
-    #append similars
-    # for i in range (num_sets):
-        # set_i_mask = main_data['image_set'] == (i+1)
-        # set_i = main_data[set_i_mask]
-        # # iters = comnimationals(len(set_i))
-        # # for it in range (iters):
-        # for index, row in set_i.iterrows():
-        #     diff_1 = clac_diff(row)
-        #
-        #     for index_2,row_2 in set_i.iterrows():
-        #         if index >= index_2:
-        #             continue
-        #         diff_2 = clac_diff(row_2)
-        #         diff = mse_diff (diff_1,diff_2)
-        #         row_dict = {
-        #             'inputs': [],
-        #             'label':1
-        #         }
-        #         row_dict['inputs'].append(diff)
-        #         dataframe = auxilary.read_csv(fileName=path)
-        #         auxilary.add_row(dataframe, row_dict, fileName=path)
-    #
-    # #append differents
-    # uniques = []
-    # for i in range (15):
-    #     # set_i_mask = main_data['image_set'] == (i+1)
-    #     set_i = main_data.loc[ main_data['image_set'] == (i+1) ].iloc[6]
-    #     uniques.append(set_i)
-    #
-    # for i,unique in enumerate(uniques):
-    #     diff_1 = clac_diff(unique)
-    #
-    #     for j,unique_2 in enumerate(uniques):
-    #         if i >= j:
-    #             continue
-    #         diff_2 = clac_diff(unique_2)
-    #         diff = mse_diff (diff_1,diff_2)
-    #         row_dict = {
-    #             'inputs': [],
-    #             'label':0
-    #         }
-    #         row_dict['inputs'].append(diff)
-    #         dataframe = auxilary.read_csv(fileName=path)
-    #         auxilary.add_row(dataframe, row_dict, fileName=path)
-            
-    # dataframe = auxilary.read_csv(fileName=path)
+    dataframe = auxilary.read_csv(fileName=path)
     print ("c",len(dataframe))
     print ("d",len(dataframe[dataframe.label == 1] ) )
     print ("d",len(dataframe[dataframe.label == 0] ) )
+
+
+get_diff('../csv_files/embedded_2.csv', '/Demo/dataset/main_data')

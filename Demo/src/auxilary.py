@@ -375,14 +375,15 @@ def how_sure (pts,name):
 
 
 def strings_to_lists (string):
+    print(string)
     string = string.replace('[', '') 
     string = string.replace(']', '') 
     string = string.replace('\n', '') 
-    string = string.replace('', '') 
-    
+    string = string.replace(',', '')
+    print(string)
     string = string.split(' ')
     values = []
-    for st in  string:
+    for st in string:
         if st == '':
             continue
         values.append(float(st))
