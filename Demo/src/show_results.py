@@ -133,7 +133,7 @@ def Euc_result_preview(image_num = None):
 
 
 
-def trim_NN_outputs (labels, face_name, identicals, similars, human_file_path):
+def trim_NN_outputs (labels, face_name, identicals, similars, human_file_path, pos_fals = False):
     N = labels.shape[0]
     others_names = []
     others_paths = []
@@ -165,23 +165,68 @@ def trim_NN_outputs (labels, face_name, identicals, similars, human_file_path):
         if len(files) > 0:
             sim_paths.append(sim_path+files[0])
 
-    #for identicals
-    idc_name = identicals[0]
-    idc_paths, idc_names = [], []
-    id_path = path + idc_name + '/'
-    files = os.listdir(id_path)
-    count = len(files)
-    it = 9 if count >=9  else count
-    for i in range (it):
-        idc_names.append(idc_name)
-        img_path = id_path + files[i]
-        idc_paths.append(img_path)
+    if pos_fals:
+        #give it:
+        # one image for pos
+        # one image for neg
+        # one image either for false pos or flase neg 
+
+        idc_paths, idc_names = [], []
+        # 1-
+        idc_names.append(identicals[0] + " POSITIVE")
+        idc_path = path +  identicals[0] + '/'
+        files = os.listdir(idc_path)
+        rand_int = np.random.random_integers(0,len(files)-1)
+        idc_path += files[rand_int]
+        pos_path = idc_path
+        idc_paths.append(idc_path)
+        
+        #2-
+        idc_names.append(similars[0] + " NEGATIVE")
+        idc_path = path +  similars[0] + '/'
+        files = os.listdir(idc_path)
+        rand_int = np.random.random_integers(0,len(files)-1)
+        idc_path += files[rand_int]
+        neg_path = idc_path
+        idc_paths.append(idc_path)
+
+        if face_name == identicals[0]:
+            #no flase positive
+            #no false negatives
+            idc_names.append("No False Pos")
+            idc_paths.append("../img/correct.jpg")
+            idc_names.append("No False Neg")
+            idc_paths.append("../img/correct.jpg")
+        else:
+            # false positive detected
+            idc_names.append(identicals[0] + " FALSE_POSITIVE")
+            idc_paths.append(pos_path)
+
+            if face_name == similars[0]:
+                #false negative
+                idc_names.append(similars[0] + " FALSE_NEGATIVE")
+                idc_paths.append(neg_path)
+            else:
+                idc_names.append("No False Neg")
+                idc_paths.append("../img/correct.jpg")
+    else:
+        #for identicals
+        idc_name = identicals[0]
+        idc_paths, idc_names = [], []
+        id_path = path + idc_name + '/'
+        files = os.listdir(id_path)
+        count = len(files)
+        it = 9 if count >=9  else count
+        for i in range (it):
+            idc_names.append(idc_name)
+            img_path = id_path + files[i]
+            idc_paths.append(img_path)
 
     return idc_paths, idc_names, sim_paths, sim_names, others_paths, others_names
 
 
 
-def NN_result_preview(second= False,image_num = None, blur = False, pred=None, detc=None):
+def NN_result_preview(second= False,image_num = None, blur = False, pred=None, detc=None, pos_fals = False):
     print ("Load labels")
     if second:
         data = auxilary.read_csv(fileName='../csv_files/embedded_2.csv')
@@ -210,7 +255,7 @@ def NN_result_preview(second= False,image_num = None, blur = False, pred=None, d
     identicals, similars = NN.predict_input(embeddings, second = second)
 
     idc_paths, idc_names, sim_paths, sim_names, others_paths, others_names = \
-        trim_NN_outputs (labels, face_name, identicals, similars, human_file_path)
+        trim_NN_outputs (labels, face_name, identicals, similars, human_file_path, pos_fals = pos_fals)
     
     show_tests.buttons(identicalls=idc_paths, id_titles=idc_names, similars=sim_paths,sim_titles=sim_names, left_overs=others_paths, left_titles=others_names,
                 orig_image_path=human_file_path, orig_title=face_name,title1="MATCHING",title2= "SIMILARS", title3="OTHERS")

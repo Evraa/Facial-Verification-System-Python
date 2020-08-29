@@ -11,6 +11,7 @@ import show_tests
 import NN
 from create_model import create_model
 import plot_weights
+import video_capture
 
 #MAGGIE COMMENT THESE TWO
 import face_recognition
@@ -33,6 +34,9 @@ def take_action():
     print (colored("\tTo Test classification using Neural Networks 2, \tpress 9",'cyan'))
     print (colored("\tfor Mag! to get inputs and targets \t\t\tpress 10",'cyan'))
     print (colored("\tTo Calc new weights and plot them \t\t\tpress 11 (Do ONCE)",'cyan'))
+    print (colored("\tTo Test video using Neural Networks 2, \t\t\tpress 12",'cyan'))
+    print (colored("\tTo Test classification using Neural Networks, \t\tpress 13",'cyan'))
+    print (colored("\tTo Test classification using Neural Networks 2, \tpress 14",'cyan'))
     
 
     print (colored("\tTo Exit \t\t\t\t\t\tpress 0",'cyan'))
@@ -92,8 +96,6 @@ if __name__ == "__main__":
                 print (colored("\t\t\tERROR",'red'))
         
         elif action == 4:
-            # NN.train()
-                
             print (colored("\t\t\tSTARTING",'green'))            
             try:
                 NN.train()
@@ -173,6 +175,31 @@ if __name__ == "__main__":
                 print (colored('\t\t\tDONE','green'))
             except:
                 print (colored("\t\t\tERROR",'red'))
+        
+        elif action == 12:
+            print (colored("\t\t\tSTARTING",'green'))            
+            try:
+                video_capture.main_loop(pred, detc)
+                print (colored('\t\t\tDONE','green'))
+            except:
+                print (colored("\t\t\tERROR",'red'))
+        
+        elif action == 13:
+            print (colored("\t\t\tSTARTING",'green'))            
+            try:
+                show_results.NN_result_preview(pos_fals = True, blur=True)
+                print (colored('\t\t\tDONE','green'))
+            except:
+                print (colored("\t\t\tERROR",'red'))
+        
+        elif action == 14:
+            print (colored("\t\t\tSTARTING",'green'))            
+            try:
+                show_results.NN_result_preview(second = True, pos_fals = True, pred=pred, detc=detc)
+                print (colored('\t\t\tDONE','green'))
+            except:
+                print (colored("\t\t\tERROR",'red'))
+
         elif action == 0:
             #EXIT
             break

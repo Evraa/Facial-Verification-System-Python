@@ -83,5 +83,5 @@ def main_loop(pred, detc):
     cv2.destroyAllWindows()
 
 
-pred, detc = facial_landmarks.load_pred_detec()
-main_loop(pred, detc)
+# pred, detc = facial_landmarks.load_pred_detec()
+# main_loop(pred, detc)
