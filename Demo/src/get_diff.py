@@ -37,7 +37,7 @@ def get_diff(key_points_path):
     main_data = auxilary.read_csv(key_points_path)
     #create diff csv
     columns = ['inputs','label']
-    path = '../csv_files/csv_differences_prof.csv'
+    path = '../csv_files/csv_differences.csv'
 
     if not os.path.exists(path):
         auxilary.create_csv(path, columns)
@@ -53,16 +53,17 @@ def get_diff(key_points_path):
     #append similars
     for i in range (num_sets):
         set_i_mask = main_data['image_set'] == (i+1)
-        set_i = main_data[set_i_mask]
+        set_i = main_data[set_i_mask].iloc[:, 2:]
         # iters = comnimationals(len(set_i))
         # for it in range (iters):
         for index, row in set_i.iterrows():
-            diff_1 = clac_diff(row)
-
+            # diff_1 = clac_diff(row)
+            diff_1 = row.to_list()
             for index_2,row_2 in set_i.iterrows():
                 if index >= index_2:
                     continue
-                diff_2 = clac_diff(row_2)
+                # diff_2 = clac_diff(row_2)
+                diff_2 = row_2.to_list()
                 diff = mse_diff (diff_1,diff_2)
                 row_dict = {
                     'inputs': [],
@@ -71,22 +72,23 @@ def get_diff(key_points_path):
                 row_dict['inputs'].append(diff)
                 dataframe = auxilary.read_csv(fileName=path)
                 auxilary.add_row(dataframe, row_dict, fileName=path)
-                print("head",dataframe.head())
 
     #append differents
     uniques = []
     for i in range (num_sets):
         # set_i_mask = main_data['image_set'] == (i+1)
-        set_i = main_data.loc[ main_data['image_set'] == (i+1) ].iloc[6]
+        set_i = main_data.loc[ main_data['image_set'] == (i+1) ].iloc[0, 2:]
         uniques.append(set_i)
 
     for i,unique in enumerate(uniques):
-        diff_1 = clac_diff(unique)
+        # diff_1 = clac_diff(unique)
+        diff_1 = unique.to_list()
 
         for j,unique_2 in enumerate(uniques):
             if i >= j:
                 continue
-            diff_2 = clac_diff(unique_2)
+            # diff_2 = clac_diff(unique_2)
+            diff_2 = unique_2.to_list()
             diff = mse_diff (diff_1,diff_2)
             row_dict = {
                 'inputs': [],

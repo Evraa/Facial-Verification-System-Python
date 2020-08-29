@@ -23,7 +23,7 @@ def svm_compare():
     # we have 1520 inputs -> N
     # each one of them is 12 dimension -> D
     N = len(data)
-    D = 12
+    D = 22
     inputs = np.zeros([N, D])
     data_input = (data['inputs'])
     for i, input_list in enumerate(data_input):

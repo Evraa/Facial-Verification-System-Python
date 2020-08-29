@@ -1,5 +1,7 @@
 from auxilary import path_to_csv_lengths,compareFaces,store_csv,pd, read_csv
-
+''' EUCLIDEAN DISTANCE
+    - obselete -
+    '''
 
 def identify_faces_based_on_lengths():
     #read the data

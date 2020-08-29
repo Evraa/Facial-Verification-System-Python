@@ -144,6 +144,7 @@ def show_tests(dataset_path, clf, detector, predictor):
             base_point = key_points[auxilary.fixed_key_point]
             key_points = key_points[auxilary.dominant_key_points]
             lengths = auxilary.calc_lengths(key_points, base_point)
+            print(lengths)
 
             # Calc differences
             diff_input = mse_diff(lengths, orig_lengths)

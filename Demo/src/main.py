@@ -34,11 +34,12 @@ if __name__ == "__main__":
     # 1) get key points (mylistdir workaround for OS DS_store)
     # facial_landmarks.store_key_points(auxilary.path_to_yalefaces)
     # 2) get differences
-    # get_diff.get_diff(auxilary.path_to_csv_key_points)
+    path = '../csv_files/facial_ratios.csv'
+    # get_diff.get_diff(path)
     
     # print ("Loading the detector and predictor...\n")
     predictor , detector = facial_landmarks.load_pred_detec(auxilary.path_to_shape_predictor)
-    # # print ("Training the Classifier...\n")
+    # print ("Training the Classifier...\n")
     clf = SVM.svm_compare()
-    # # print ("Testing random image...\n")
+    # print ("Testing random image...\n")
     show_tests.show_tests(auxilary.path_to_yalefaces,clf,detector,predictor)
