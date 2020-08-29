@@ -2,7 +2,7 @@
 from glob import glob
 import numpy as np
 import os
-# import openface
+import openface
 import cv2
 from create_model import create_model
 import pandas as pd
