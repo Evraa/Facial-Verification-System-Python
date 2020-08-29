@@ -28,7 +28,7 @@ def mse_diff(row1, row2):
     diff_1 = pandas.to_numeric(row1)
     diff_2 = pandas.to_numeric(row2)
 
-    return abs(np.subtract(diff_1, diff_2)).to_list()
+    return np.subtract(diff_1, diff_2).to_list()
 
 
 def clac_diff(row):
@@ -44,12 +44,12 @@ def clac_diff(row):
     return diff_1
 
 
-
-def get_diff(key_points_path, image_dir):
+#formerly get_diff
+def get_binary_classification(key_points_path, image_dir):
     main_data = auxilary.read_csv(key_points_path)
     # create diff csv
     columns = ['inputs', 'label']
-    path = '../csv_files/svm_set1.csv'
+    path = '../csv_files/svm_set2.csv'
 
     if not os.path.exists(path):
         auxilary.create_csv(path, columns)
@@ -66,6 +66,7 @@ def get_diff(key_points_path, image_dir):
     def get_ones():
         for person in list_of_people:
             print(person)
+            dataframe = auxilary.read_csv(fileName=path)
             if len(dataframe.index) > data_size:
                 break
 
@@ -77,7 +78,6 @@ def get_diff(key_points_path, image_dir):
                 pairs = pairs[0:int(values_per_set)]
 
             for pair in pairs:
-                print(pair, pair[0], pair[1])
                 row1 = df_values.iloc[pair[0]]
                 row2 = df_values.iloc[pair[1]]
                 diff = mse_diff(row1,row2)
@@ -95,17 +95,18 @@ def get_diff(key_points_path, image_dir):
     # GET LABEL 0
     curr_size = len(dataframe.index)
 
-    def get_zeros(dataframe, size, index):
+    def get_zeros(list_of_people, size, index):
         while size > 0:
-            index2 = curr_size - index
+            index2 = len(list_of_people) - ( index + 1)
             print(index,index2)
             if index2 <= index:
-                dataframe.drop([0], inplace=True)
+                list_of_people = list_of_people[1:]
                 size = size - 1
-                get_zeros(dataframe, size, 0)
+                get_zeros(list_of_people, size, 0)
                 break
-            row1 = dataframe.iloc[index]
-            row2 = dataframe.iloc[index2]
+            df = main_data.iloc[:, 0:22]
+            row1 = df[main_data['output'] == list_of_people[index]].sample().squeeze()
+            row2 = df[main_data['output'] == list_of_people[index2]].sample().squeeze()
             diff = mse_diff(row1, row2)
             row_dict = {
                 'inputs': [],
@@ -120,12 +121,12 @@ def get_diff(key_points_path, image_dir):
         return
 
     #RUN ONCE ONLY
-    # get_zeros(main_data.iloc[:, 0:22], curr_size, 0)
+    get_zeros(list_of_people, curr_size, 0)
 
     dataframe = auxilary.read_csv(fileName=path)
     print ("c",len(dataframe))
     print ("d",len(dataframe[dataframe.label == 1] ) )
     print ("d",len(dataframe[dataframe.label == 0] ) )
 
-
-get_diff('../csv_files/embedded_2.csv', '/Demo/dataset/main_data')
+# get_multiclass('../csv_files/embedded_2.csv')
+get_binary_classification('../csv_files/embedded_2.csv', '/Demo/dataset/main_data')

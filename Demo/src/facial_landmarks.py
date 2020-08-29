@@ -215,6 +215,126 @@ def get_ratios(shape, image):
 
     return lines, ratios
 
+
+def get_ratios2(shape, image):
+    '''
+        Retutns a list of features (ratios):
+        + width:        0-16
+        + 0 L eyebrow   17-21
+        + 1 R eyebrow   22-26
+        + 2 L eye       36-39
+        + 3 R eye       42-45
+        + 4 Mouse       48-54
+        + 5 Nose_width  31-35
+        + 6 teeth_width  4-12
+        + 7 eyebrows_wid 21-22
+        + 8 eyes_width  39-42
+
+        + Height:           27-8
+        + 9 Nose_height     27-33
+        + 10 L nose proj     30-31
+        + 11 R nose proj     30-35
+        + 12 M nose proj     30-33
+        + 13 lips height    62-66
+        + 14 Chin height     57-8
+        + 15 L eye hight     37-41 // 38-40
+        + 16 R eye hight     43-47 // 44-46
+        + 17 Nose to mouth   33-51
+        + 18 Mouse height    51-57
+
+        + Ratios to store:
+            - outer left eyebrow / width
+            - inner left eyebrow / width
+            - outer right eyebrow / width
+            - inner right eyebrow / width
+            - dist between eyebrows / width
+            - dist between eyes / width
+            - outer eye / width
+            - mouth / width
+            -
+    '''
+
+    ratios = []
+    lines = []
+    width = distance_two_points(shape[0], shape[16])
+    height = distance_two_points(shape[27], shape[8])
+
+    ratios.append(distance_two_points(shape[17], shape[21]) / width)  ##This one is not affecting at all !!
+    ratios.append(distance_two_points(shape[22], shape[26]) / width)
+    ratios.append(distance_two_points(shape[36], shape[39]) / width)
+    ratios.append(distance_two_points(shape[42], shape[45]) / width)
+    ratios.append(distance_two_points(shape[48], shape[54]) / width)
+    ratios.append(distance_two_points(shape[31], shape[35]) / width)
+    ratios.append(distance_two_points(shape[4], shape[12]) / width)
+    ratios.append(distance_two_points(shape[21], shape[22]) / width)
+    ratios.append(distance_two_points(shape[39], shape[42]) / width)
+
+    lines.append([shape[17], shape[21]])
+    lines.append([shape[22], shape[26]])
+    lines.append([shape[36], shape[39]])
+    lines.append([shape[42], shape[45]])
+    lines.append([shape[48], shape[54]])
+    lines.append([shape[31], shape[35]])
+    lines.append([shape[4], shape[12]])
+    lines.append([shape[21], shape[22]])
+    lines.append([shape[39], shape[42]])
+
+    ratios.append(distance_two_points(shape[27], shape[33]) / height)
+    ratios.append(distance_two_points(shape[30], shape[31]) / height)
+    ratios.append(distance_two_points(shape[30], shape[35]) / height)
+    ratios.append(distance_two_points(shape[30], shape[33]) / height)
+    ratios.append(distance_two_points(shape[62], shape[66]) / height)
+    ratios.append(distance_two_points(shape[57], shape[8]) / height)
+    ratios.append(distance_two_points(shape[33], shape[51]) / height)
+    ratios.append(distance_two_points(shape[51], shape[57]) / height)
+
+    # Left eye height estimate
+    l1 = distance_two_points(shape[37], shape[41])
+    l2 = distance_two_points(shape[40], shape[38])
+    l = l1 + l2 / 2
+    ratios.append(l / height)
+    # RIGHT
+    l1 = distance_two_points(shape[43], shape[47])
+    l2 = distance_two_points(shape[44], shape[46])
+    l = l1 + l2 / 2
+    ratios.append(l / height)
+
+    lines.append([shape[27], shape[33]])
+    lines.append([shape[30], shape[31]])
+    lines.append([shape[30], shape[35]])
+    lines.append([shape[30], shape[33]])
+    lines.append([shape[62], shape[66]])
+    lines.append([shape[57], shape[8]])
+    lines.append([shape[33], shape[51]])
+    lines.append([shape[51], shape[57]])
+
+    # eyebrows points 17-18-19-20-21-22-23-24-25-26
+    eyebrows = shape[17:27]
+    eyebrows_values = []
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    for point in eyebrows:
+        try:
+            eyebrows_values.append(gray_image[point[0], point[1]])
+        except IndexError:
+            continue
+    ratios.append(np.average(eyebrows_values) / 255)
+
+    # nose color (SKIN)
+    skin = shape[27:36]
+    skin_values = []
+    for point in skin:
+        skin_values.append(gray_image[point[0], point[1]])
+    ratios.append(np.average(skin_values) / 255)
+
+    # Lips color
+    lips = shape[48:68]
+    lips_values = []
+    for point in lips:
+        lips_values.append(gray_image[point[0], point[1]])
+    ratios.append(np.average(lips_values) / 255)
+
+    return lines, ratios
+
 def extract_features(path,pred, detc, preview = False):
     '''
         For each image in the data set:
