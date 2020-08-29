@@ -6,7 +6,7 @@ from glob import glob
 #LOCAL IMPORTS
 import auxilary
 import facial_landmarks
-import SVM
+# import SVM
 import show_tests
 import NN
 from create_model import create_model
