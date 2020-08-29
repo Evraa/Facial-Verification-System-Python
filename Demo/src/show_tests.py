@@ -165,19 +165,29 @@ def show_tests(dataset_path, clf, detector, predictor):
             if prob <= 0.5 and skip:
                 # continue
                 break
-            thsh = 0.80
-            if thsh >= prob > 0.6 and skip:
+            thsh = 0.75
+            if thsh >= prob > 0.6:
                 similars.append(image_path)
                 similars_names.append(image_name)
                 # continue
-                break
-            if prob > thsh or not skip:
+                if skip:
+                    break
+                elif not skip:
+                    continue
+            if prob > thsh:
                 identicalls.append(image_path)
                 identicalls_names.append(image_name)
-                continue
+                # continue
+                if skip:
+                    break
+                elif not skip:
+                    continue
             else:
                 left_overs.append(image_path)
-                break
+                if skip:
+                    break
+                elif not skip:
+                    continue
 
 
     # ax1.imshow(mpimg.imread(orig_image_path))
@@ -197,7 +207,7 @@ def show_tests(dataset_path, clf, detector, predictor):
     # plt.show()
 
     # buttons(identicalls, similars, left_overs, orig_image_path, identical_title, similar_title, "Non-Matched Images")
-    buttons(identicalls[:15], similars[:15], left_overs[:15], orig_image_path, identical_title, similar_title, "Non-Matched Images")
+    buttons(identicalls, similars, left_overs, orig_image_path, identical_title, similar_title, "Non-Matched Images")
 
 
 def display_sets(img_list, orig, title, img_list_titles=[], orig_title="Original Photo" ):
@@ -209,7 +219,7 @@ def display_sets(img_list, orig, title, img_list_titles=[], orig_title="Original
         ax1 = plt.subplot2grid(gridsize, (0, 0), colspan=get_length, rowspan=get_length)
         # ax1.set_title("Original Photo")
         if orig_title == None:
-            orig_title = "Original Image"
+            orig_title = orig.split("/")[4]
         ax1.set_title(orig_title)
         # pos = ax1.get_position()
         # x = pos.x0 + pos.x1 / 3

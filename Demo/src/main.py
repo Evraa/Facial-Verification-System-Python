@@ -120,11 +120,11 @@ if __name__ == "__main__":
                 print (colored("\t\t\tERROR in training",'red'))
             
             print (colored("\t\t\Showing Results",'green'))            
-            try:
-                show_tests.show_tests(auxilary.path_to_maindata , clf, detc,pred)
-                print (colored('\t\t\tDone','green'))
-            except:
-                print (colored("\t\t\tERROR",'red'))
+            # try:
+            show_tests.show_tests(auxilary.path_to_maindata , clf, detc,pred)
+            print (colored('\t\t\tDone','green'))
+            # except:
+            #     print (colored("\t\t\tERROR",'red'))
 
         elif action == 7:
             print (colored("\t\t\tSTARTING",'green'))            
