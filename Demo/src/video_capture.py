@@ -6,6 +6,11 @@ import NN
 import threading
 import time
 import numpy as np
+import face_recognition
+from create_model import create_model
+import openface
+
+
 #GLOBALS
 frame = None
 NAME = "unknown"
@@ -14,7 +19,9 @@ detc = None
 available = False
 cache = False
 rect = None
-correct = False
+correct = True
+model = create_model()
+model.load_weights('../open_face.h5')
 
 def verify_frame(pred, detc, le):
     global frame, NAME, available, cache, rect, correct
@@ -23,15 +30,18 @@ def verify_frame(pred, detc, le):
             state, shape, rect = facial_landmarks.test_frame(frame, pred, detc )
             if state:
                 #FIND THE NAME
-                _, embeddings = facial_landmarks.get_ratios(shape, frame)
-                name, percentage = NN.predict_input_from_video(embeddings, le)
+                # _, embeddings = facial_landmarks.get_ratios(shape, frame)
+                embeddings = face_recognition.get_embeddings(frame, rect, model)
+
+                name, percentage = NN.predict_input_from_video(embeddings, le, second = False)
                 percentage = float("{:.2f}".format(percentage))
                 NAME = str(name) +" "+str(percentage)+ "%"
-                if name != "Colin_Powell":
-                    print (name)
-                    correct = False
-                else:
-                    correct = True
+                # if name != "Bill_Clinton":
+                #     print (name)
+                #     correct = False
+                # else:
+                #     print ("Correct")
+                #     correct = True
                 available = True
             else:
                 available = False
@@ -41,7 +51,7 @@ def verify_frame(pred, detc, le):
 def main_loop(pred, detc):
     global frame, NAME, available, cache, rect, correct
     #video path
-    path_to_vid = '../video/Colin_Powell.mp4'
+    path_to_vid = '../video/bill_bush.mp4'
     video_capture = cv2.VideoCapture(path_to_vid)
     size = (int(video_capture.get(cv2.CAP_PROP_FRAME_WIDTH)), int(video_capture.get(cv2.CAP_PROP_FRAME_HEIGHT)))
 
@@ -50,7 +60,7 @@ def main_loop(pred, detc):
     _, _, le = NN.prepare_data()
     verification_thread = threading.Thread(target=verify_frame, args=(pred, detc, le), daemon=True)
     verification_thread.start()
-    out = cv2.VideoWriter('../video/Colin_Powell_2.avi', cv2.VideoWriter_fourcc(*'DIVX'), 30.0, size)
+    out = cv2.VideoWriter('../video/bill_bush_2.avi', cv2.VideoWriter_fourcc(*'DIVX'), 30.0, size)
     while still:
         # Capture frame-by-frame
         still, frame_clear = video_capture.read()

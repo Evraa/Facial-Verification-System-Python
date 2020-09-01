@@ -174,10 +174,10 @@ def train():
     return  model_relu
 
 
-def predict_input_from_video(embedding, le):
+def predict_input_from_video(embedding, le, second= True):
     embedding = np.reshape(embedding, (1,-1))
     
-    model = load_model(second = True)
+    model = load_model(second = second)
     pred = model.predict([[embedding]])
     # print (pred)
     ind = np.argsort(pred[0])
@@ -188,3 +188,4 @@ def predict_input_from_video(embedding, le):
     # print("Prediction Probability: ",pred[0][ind[::-1][0]]*100,"%")
     # print ("ID: ", identical)
     return identical[0], percentage
+    

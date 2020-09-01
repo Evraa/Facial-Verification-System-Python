@@ -2,7 +2,7 @@
 from glob import glob
 import numpy as np
 import os
-# import openface
+import openface
 import cv2
 from create_model import create_model
 import pandas as pd
@@ -67,7 +67,8 @@ def get_labesl(human_files):
         labels.append(get_name_from_path(human_file))
     return labels
 
-def affine_transformation(human_files,pred,detec,preview = False, image_num=None, blur = False):
+def affine_transformation(human_files=None,pred=None,detec=None,preview = False, 
+    image_num=None, blur = False, frame=False, image_clear=None, rect = None):
     '''
         For each Image in the dataset
             + Extract the key points
@@ -79,6 +80,10 @@ def affine_transformation(human_files,pred,detec,preview = False, image_num=None
     face_aligner = openface.AlignDlib(auxilary.path_to_shape_predictor)
     affine_dir = '../dataset/lfw_affine/'
 
+    if frame:
+        alignedFace = face_aligner.align(96, image_clear, rect, \
+                landmarkIndices=openface.AlignDlib.OUTER_EYES_AND_NOSE)
+        return alignedFace
     if preview:
         # for i ,human_file in enumerate(human_files):
         #     folders =  (get_folder_from_path(human_file))
@@ -178,8 +183,11 @@ def face_recognition(dataset_path = "../dataset/lfw/*/*", preview=False, image_n
        
         return embeddings, face_name, human_file_path
 
-
-
+def get_embeddings(frame, rect, model):
+    image = affine_transformation(frame=True, image_clear = frame,rect=rect)
+    image = (image / 255.).astype(np.float32)
+    embeddings = model.predict(np.expand_dims(image, axis=0))[0] 
+    return embeddings
 
 
 # face_recognition(dataset_path = "../dataset/lfw_affine/*/*")

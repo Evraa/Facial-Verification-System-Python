@@ -195,7 +195,7 @@ if __name__ == "__main__":
         elif action == 14:
             print (colored("\t\t\tSTARTING",'green'))            
             try:
-                show_results.NN_result_preview(second = False, pos_fals = True, pred=pred, detc=detc)
+                show_results.NN_result_preview(second = True, pos_fals = True, pred=pred, detc=detc)
                 print (colored('\t\t\tDONE','green'))
             except:
                 print (colored("\t\t\tERROR",'red'))
