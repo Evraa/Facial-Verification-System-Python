@@ -1,6 +1,6 @@
 # from networkx.drawing.tests.test_pylab import plt
 # from sympy.plotting.tests.test_plot import matplotlib
-from mlxtend.plotting import plot_decision_regions
+# from mlxtend.plotting import plot_decision_regions
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix
@@ -180,4 +180,4 @@ def show_vectors(x, y):
     plt.show()
 
 # svm_compare()
-multiclass_classification('../csv_files/embedded_2.csv')
+# multiclass_classification('../csv_files/embedded_2.csv')

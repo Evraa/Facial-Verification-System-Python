@@ -27,7 +27,7 @@ def verify_frame(pred, detc, le):
                 name, percentage = NN.predict_input_from_video(embeddings, le)
                 percentage = float("{:.2f}".format(percentage))
                 NAME = str(name) +" "+str(percentage)+ "%"
-                if name != "George_W_Bush":
+                if name != "Colin_Powell":
                     print (name)
                     correct = False
                 else:
@@ -41,7 +41,7 @@ def verify_frame(pred, detc, le):
 def main_loop(pred, detc):
     global frame, NAME, available, cache, rect, correct
     #video path
-    path_to_vid = '../video/bill_bush.mp4'
+    path_to_vid = '../video/Colin_Powell.mp4'
     video_capture = cv2.VideoCapture(path_to_vid)
     size = (int(video_capture.get(cv2.CAP_PROP_FRAME_WIDTH)), int(video_capture.get(cv2.CAP_PROP_FRAME_HEIGHT)))
 
@@ -50,7 +50,7 @@ def main_loop(pred, detc):
     _, _, le = NN.prepare_data()
     verification_thread = threading.Thread(target=verify_frame, args=(pred, detc, le), daemon=True)
     verification_thread.start()
-    out = cv2.VideoWriter('../video/bill_bush_2.avi', cv2.VideoWriter_fourcc(*'DIVX'), 30.0, size)
+    out = cv2.VideoWriter('../video/Colin_Powell_2.avi', cv2.VideoWriter_fourcc(*'DIVX'), 30.0, size)
     while still:
         # Capture frame-by-frame
         still, frame_clear = video_capture.read()
