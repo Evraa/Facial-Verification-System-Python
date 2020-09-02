@@ -4,7 +4,7 @@ from glob import glob
 import pandas as pd
 from scipy.stats import norm
 import matplotlib.pyplot as plt
-
+import copy
 
 #LOCAL IMPORTS
 import auxilary
@@ -15,12 +15,15 @@ import auxilary
 def get_diff_similar(csv_path):
     data = auxilary.read_csv(fileName=csv_path)
     N = data.shape[0] #5050
-    D = data.shape[1] - 1 #13
+    D = data.shape[1] - 1 #22
     george_data = data[data['output'] == 'George_W_Bush']
     sim_diff = []
+    ev = 0
     for index_1, row_1 in george_data.iterrows():
         features_1 = np.array(row_1[:D])
-
+        if ev%50 == 0:
+            print (f'image: {ev}')
+        ev += 1
         for index_2, row_2 in george_data.iterrows():
             if index_1 >= index_2:
                 continue
@@ -38,7 +41,7 @@ def get_diff_diff (csv_path):
 
     data = auxilary.read_csv(fileName=csv_path)
     N = data.shape[0] #5050
-    D = data.shape[1] - 1 #13
+    D = data.shape[1] - 1 #22
     diff_diff = []
     for i in range (iterations):
         if i %1000 == 0:
@@ -71,29 +74,34 @@ def compare ():
     
     sub = np.subtract(difs, sims)
     sub = sub[:-1]
-    feats = np.zeros([14, 2])
+    feats = np.zeros([22, 2])
 
-    for i in range (14):
+    for i in range (22):
         if sub[i] > 0:
             feats[i] = [int(i), sub[i]]
 
     sorted_array = feats[np.argsort(feats[:, 1])]
     flipped = np.flip(sorted_array)
+    w_mul = copy.deepcopy(feats)
 
     feats = flipped[:, 0]
     idx = flipped [:,1]
     summ =  (np.sum(feats))
 
+    w_mul = w_mul[:, 1] / summ
+
     prob = (feats) / summ 
 
-    return prob, idx
+    return prob, idx, w_mul*100
 
 def run_main(csv_path = "../csv_files/embedded_2.csv"):
     # get_diff_similar(csv_path=csv_path)
     # get_diff_diff (csv_path = csv_path)
-    weights, idx =  compare ()
+    weights, idx, w_mul =  compare ()
     print ('Features index: ')
     print (idx)
     print ("Weight: ")
     print (weights*100)
+    print ("weights not sorted: ")
+    print (w_mul)
     
