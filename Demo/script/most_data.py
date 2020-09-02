@@ -6,10 +6,12 @@ import numpy as np
 from glob import glob
 import os
 
-main_path = "../dataset/main_data/"
-folders = os.listdir(main_path)
-dic = {}
-for f in folders:
-    dic[f]  = len(os.listdir(main_path+f))
+def go ():
+    main_path = "../dataset/main_data/"
+    folders = os.listdir(main_path)
+    dic = {}
+    for f in folders:
+        dic[f]  = len(os.listdir(main_path+f))
 
-print({key: value for key, value in sorted(dic.items(), key=lambda item: item[1])})
+    print({key: value for key, value in sorted(dic.items(), key=lambda item: item[1])})
+

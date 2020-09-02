@@ -21,7 +21,7 @@ import auxilary
 
 
 def prepare_data():
-    print ("Load labels")
+    # print ("Load labels")
     
     data = auxilary.read_csv(fileName='../csv_files/embedded_2.csv')
     N = data.shape[0] #5050
@@ -42,29 +42,53 @@ def prepare_data():
     for i, row in enumerate(y):
         row[Y[i]] = 1
 
-    print (f'Inputs shape: {inputs.shape}')
-    print (f'Outputs shape: {y.shape}')
+    # print (f'Inputs shape: {inputs.shape}')
+    # print (f'Outputs shape: {y.shape}')
     return inputs, y, names_encode
 
-def split_data(X,y):
-    # X_train, X_test, y_train, y_test = train_test_split(
-    #     X,
-    #     y,
-    #     test_size=0.2,
-    #     shuffle=True,
-    #     random_state=42,
-    # )
-    X_train = X
-    y_train = y
+def split_data(X,Y):
+    
 
-    random_int = np.random.randint (0, X_train.shape[0]-1, size=(1500))
-    X_test = X_train[random_int]
-    y_test = y_train[random_int]
+    X_train, X_test = [], []
+    y_train, y_test = [], []
+    ind = 0
+    three =0
+    for x,y in zip(X,Y):
+        if three <3:
+            X_test.append(x)
+            y_test.append(y)
+            three += 1
+            
+        else:
+            if np.where(y==1)[0] != ind:
+                X_test.append(x)
+                y_test.append(y)
+                three = 1
+                ind = np.where(y==1)[0]
+                
+            else:
+                X_train.append(x)
+                y_train.append(y)
+                
+    X_train = np.array(X_train)
+    X_test = np.array(X_test)
+    y_train = np.array(y_train)
+    y_test = np.array(y_test)
+    # random_int = np.random.randint (0, X.shape[0]-1, size=(750))
+    # X_test = X_train[random_int]
+    # y_test = y_train[random_int]
+    # for x,y in zip(X,Y):
+    #     if x in X_test:
+    #         pass
+    #     else:
+    #         X_train.append (x)
+    #         y_train.append (y)
+    # X_train = np.array(X_train)
+    # y_train = np.array(y_train)
     print (f'Train data shape: {X_train.shape}')
     print (f'Test data shape: {X_test.shape}')
     print (f'Train output shape: {y_train.shape}')
     print (f'Test output shape: {y_test.shape}')
-    
     return X_train, X_test, y_train, y_test
 
 def save_model(model):
@@ -81,11 +105,11 @@ def create_model_relu(input_dim,output_dim):
     model_relu = Sequential()
     model_relu.add(Dense(2048, activation='relu', input_shape=(input_dim,), kernel_initializer=tensorflow.keras.initializers.he_normal(seed=None)))
     model_relu.add(BatchNormalization())
-    model_relu.add(Dropout(0.25))
+    model_relu.add(Dropout(0.5))
     
     model_relu.add(Dense(1024, activation='relu', kernel_initializer=tensorflow.keras.initializers.he_normal(seed=None)))
     model_relu.add(BatchNormalization())
-    model_relu.add(Dropout(0.25))
+    model_relu.add(Dropout(0.35))
     
     model_relu.add(Dense(512, activation='relu', kernel_initializer=tensorflow.keras.initializers.he_normal(seed=None)) )
     model_relu.add(BatchNormalization())
@@ -93,7 +117,7 @@ def create_model_relu(input_dim,output_dim):
     
     model_relu.add(Dense(256, activation='relu', kernel_initializer=tensorflow.keras.initializers.he_normal(seed=None)) )
     model_relu.add(BatchNormalization())
-    model_relu.add(Dropout(0.25))
+    model_relu.add(Dropout(0.15))
     
 
     model_relu.add(Dense(output_dim,activation='softmax'))
@@ -119,10 +143,11 @@ def load_model(second = False):
         return model
 
 
-def predict_input(embedding, second = False):
+def predict_input(embedding, second = False, model=None):
     embedding = np.reshape(embedding, (1,-1))
     inputs, y, le = prepare_data()
-    model = load_model(second = second)
+    if model == None:
+        model = load_model(second = second)
     pred = model.predict([[embedding]])
     # print (pred)
     ind = np.argsort(pred[0])
@@ -136,6 +161,8 @@ def predict_input(embedding, second = False):
     print ("ID: ", identical)
     print ("Similar: ",similars)
     return identical, similars
+
+
     
 def plot_acc (history):
     plt.figure(figsize=(16,5))
@@ -168,8 +195,8 @@ def train():
     input_dim = X_train.shape[1]
     output_dim = y_train.shape[1]
     model_relu = create_model_relu(input_dim,output_dim)
-    history = model_relu.fit(X_train, y_train, batch_size=32, epochs=500,validation_data=(X_val,y_val))
-    save_model(model_relu)
+    history = model_relu.fit(X_train, y_train, batch_size=64, epochs=500,validation_data=(X_val,y_val))
+    # save_model(model_relu)
     plot_acc (history)
     return  model_relu
 
@@ -188,4 +215,17 @@ def predict_input_from_video(embedding, le, second= True):
     # print("Prediction Probability: ",pred[0][ind[::-1][0]]*100,"%")
     # print ("ID: ", identical)
     return identical[0], percentage
+
+def predict_input_with_percentage(embedding, second = False, model=None):
+    embedding = np.reshape(embedding, (1,-1))
+    inputs, y, le = prepare_data()
+    if model == None:
+        model = load_model(second = second)
+    pred = model.predict([[embedding]])
+    # print (pred)
+    ind = np.argsort(pred[0])
+    # print(ind[::-1][:5]) #FIRST five
+    name = (le.inverse_transform([ind[::-1][0]])[0])
+    percent = pred[0][ind[::-1][0]]*100
     
+    return name, percent

@@ -22,3 +22,4 @@ Demo/dataset/main_data
 Demo/sequential_NN_model_2.json
 Demo/csv_files
 Demo/video
+*.joblib
