@@ -200,7 +200,7 @@ def store_2(image, store_path, image_name):
     io.imsave(fname=store_path+name+"random_noise.jpg", arr=rn)
 
 if __name__ == "__main__":
-    dataset = '../dataset/main_data/*/*'
+    dataset = '../dataset/main_data/*'
     folders = np.array(glob(dataset))
 
     print ("Refer to the author for the correct sequence of execution!")
@@ -208,12 +208,14 @@ if __name__ == "__main__":
     #     source = image_path
     #     dst = image_path.replace("main_data", "augmented")
     #     os.rename(source, dst)
+    
     # rand_int = np.random.randint(0, len(folders)-1)
     # img_path = folders[rand_int]
     # image = io.imread(img_path)
     # flipped = flip_hor(image)
     # print (image[0])
     # input('e')
+    
     # for e, folder in enumerate(folders):
     #     print (f'Folder: {e}/{len(folders)}')
     #     num_imgs = len(os.listdir(folder))
@@ -267,3 +269,24 @@ if __name__ == "__main__":
     # subplot_two_images(image, flip_hor(image),rotate_right(image),
     #                             rotate_left(image),random_noise_fn (image), gaus_blur(image),
     #                             shift_right(image), shift_left(image) )
+
+    for e, folder in enumerate(folders):
+        num_imgs = len(os.listdir(folder))
+        
+        if num_imgs>700 :
+            image_paths = os.listdir(folder)
+            for image_path in image_paths:
+                rand_int = np.random.randint(0, 2)
+                if rand_int == 0:
+                    deleted_file_path = folder + '/' + image_path
+                    os.remove(deleted_file_path)
+            print (f"this was: {num_imgs} and became {len(os.listdir(folder))}")
+        
+        elif num_imgs>500:
+            image_paths = os.listdir(folder)
+            for image_path in image_paths:
+                rand_int = np.random.randint(0, 3)
+                if rand_int == 0:
+                    deleted_file_path = folder + '/' + image_path
+                    os.remove(deleted_file_path)
+            print (f"this was: {num_imgs} and became {len(os.listdir(folder))}")

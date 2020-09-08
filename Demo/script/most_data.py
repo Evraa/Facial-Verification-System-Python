@@ -5,6 +5,8 @@
 import numpy as np
 from glob import glob
 import os
+import matplotlib.pyplot as plt
+
 
 def go ():
     main_path = "../dataset/main_data/"
@@ -16,5 +18,7 @@ def go ():
         values.append(len(os.listdir(main_path+f)))
     # print({key: value for key, value in sorted(dic.items(), key=lambda item: item[1])})
     print (sorted(set(values)))
-
+    print (np.average(np.array(values)))
+    plt.plot(values, "-o")
+    plt.show()
 go()
