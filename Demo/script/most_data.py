@@ -10,8 +10,11 @@ def go ():
     main_path = "../dataset/main_data/"
     folders = os.listdir(main_path)
     dic = {}
+    values=[]
     for f in folders:
         dic[f]  = len(os.listdir(main_path+f))
+        values.append(len(os.listdir(main_path+f)))
+    # print({key: value for key, value in sorted(dic.items(), key=lambda item: item[1])})
+    print (sorted(set(values)))
 
-    print({key: value for key, value in sorted(dic.items(), key=lambda item: item[1])})
-
+go()
