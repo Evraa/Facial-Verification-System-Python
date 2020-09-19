@@ -27,8 +27,8 @@ import show_tests
 if __name__ == "__main__":
     print("hello :D")
     image_path = '../dataset/Mag.jpg'
-    # facial_landmarks.draw_landmarks(image_path)
-    # facial_landmarks.draw_parts(image_path)
+    facial_landmarks.draw_landmarks(image_path)
+    facial_landmarks.draw_parts(image_path)
 
     # load a dataset
     # 1) get key points (mylistdir workaround for OS DS_store)

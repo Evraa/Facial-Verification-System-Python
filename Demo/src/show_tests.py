@@ -155,7 +155,7 @@ def show_tests(dataset_path, clf, detector, predictor):
             prob = prob[0][1]
             if prob <= 0.5:
                 continue
-            thsh = 0.86
+            thsh = 0.90
             if prob <= thsh and prob > 0.75:
                 similars.append(image_path)
                 similars_names.append(image_name)
@@ -246,11 +246,15 @@ def buttons(identicalls, similars, left_overs, orig_image_path, title1, title2, 
         plt.imshow(mpimg.imread(orig_image_path))
 
         def same(self, event):
-            display_sets(identicalls, orig_image_path, title1)
+            fresh_list = []
+            for img in identicalls:
+                if img.split('/')[3] == orig_image_path.split('/')[3]:
+                    fresh_list.append(img)
+            display_sets(fresh_list, orig_image_path, title1)
             plt.show()
 
         def similar(self, event):
-            display_sets(similars, orig_image_path, title2)
+            display_sets(similars[:9], orig_image_path, title2)
             plt.show()
 
         def rest(self, event):

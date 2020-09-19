@@ -377,7 +377,7 @@ def strings_to_lists (string):
     string = string.replace('[', '') 
     string = string.replace(']', '') 
     string = string.replace('\n', '') 
-    string = string.replace('', '') 
+    string = string.replace(',', '')
     
     string = string.split(' ')
     values = []
@@ -399,3 +399,19 @@ def mylistdir(directory):
     filelist = os.listdir(directory)
     return [x for x in filelist
             if not (x.startswith('.'))]
+
+
+def get_enum_coor(dataframe):
+    arr = []
+
+    def format_coor(s):
+        val = strings_to_lists(s)
+        row = val[0]
+        col = val[1]
+        return col * 300 + row
+
+    for index, row in dataframe.iterrows():
+        map_iterator = map(format_coor, row)
+        result = list(map_iterator)
+        arr.append(result)
+    return arr

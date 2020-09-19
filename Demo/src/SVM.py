@@ -16,14 +16,14 @@ def svm_compare():
     '''
     TODO: implement svm
     '''
-    path = '../csv_files/csv_differences.csv'
+    path = '../csv_files/csv_differences_prof.csv'
     data = auxilary.read_csv(fileName=path)
 
     # READ THE INPUTS
     # we have 1520 inputs -> N
     # each one of them is 12 dimension -> D
     N = len(data)
-    D = 22
+    D = 12
     inputs = np.zeros([N, D])
     data_input = (data['inputs'])
     for i, input_list in enumerate(data_input):
@@ -52,6 +52,7 @@ def svm_compare():
     # for sample in X_test:
     #     y_pred = clf.predict_proba(sample.reshape(1, -1))
     #     print(y_pred)
+
 
     # TO DO ALL SAMPLES AT ONCE
     y_prob = clf.predict_proba(X_test)
