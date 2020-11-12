@@ -102,43 +102,49 @@ if __name__ == "__main__":
                 print (colored("\t\t\tERROR",'red'))
         
         elif action == 5:
-            print (colored("\t\t\tSTARTING",'green'))            
-            try:
-                show_results.NN_result_preview()
-                print (colored('\t\t\tDONE','green'))
-            except:
-                print (colored("\t\t\tERROR",'red'))
+            print (colored("\t\t\tSTARTING",'green'))
+            show_results.NN_result_preview(second=True, detc=detc, pred=pred)
+            # try:
+            #     show_results.NN_result_preview()
+            #     print (colored('\t\t\tDONE','green'))
+            # except:
+            #     print (colored("\t\t\tERROR",'red'))
     
         elif action == 6:
-            print (colored("\t\t\tTraining SVM clf",'green'))            
-            try:
-                clf = SVM.svm_compare()
-                print (colored('\t\t\tSuccessfully trained clf','green'))
-            except:
-                print (colored("\t\t\tERROR in training",'red'))
-            
-            print (colored("\t\t\Showing Results",'green'))            
-            try:
-                show_tests.show_tests(auxilary.path_to_maindata , clf, detc,pred)
-                print (colored('\t\t\tDone','green'))
-            except:
-                print (colored("\t\t\tERROR",'red'))
+            print (colored("\t\t\tTraining SVM clf",'green'))
+            clf = SVM.svm_compare()
+            # try:
+            #     clf = SVM.svm_compare()
+            #     print (colored('\t\t\tSuccessfully trained clf','green'))
+            # except:
+            #     print (colored("\t\t\tERROR in training",'red'))
+            #
+            print (colored("\t\tShowing Results",'green'))
+            show_tests.show_tests(auxilary.path_to_maindata, clf, detc, pred)
+            # try:
+            #     show_tests.show_tests(auxilary.path_to_maindata , clf, detc,pred)
+            #     print (colored('\t\t\tDone','green'))
+            # except:
+            #     print (colored("\t\t\tERROR",'red'))
 
         elif action == 7:
-            print (colored("\t\t\tSTARTING",'green'))            
-            try:
-                show_results.NN_result_preview(blur=True)
-                print (colored('\t\t\tDONE','green'))
-            except:
-                print (colored("\t\t\tERROR",'red'))
+            print (colored("\t\t\tSTARTING",'green'))
+            show_results.NN_result_preview(blur=True, second=True, detc=detc, pred=pred)
+            # try:
+            #     show_results.NN_result_preview(blur=True)
+            #     print (colored('\t\t\tDONE','green'))
+            # except:
+            #     print (colored("\t\t\tERROR",'red'))
         elif action == 8:
-            print (colored("\t\t\tSTARTING",'green'))    
-            try:
-                dataset_path = '../dataset/main_data/*/*'
-                facial_landmarks.extract_features(path = dataset_path,pred=pred, detc=detc)
-                print (colored('\t\t\tDONE','green'))
-            except:
-                print (colored("\t\t\tERROR",'red'))
+            print (colored("\t\t\tSTARTING",'green'))
+            dataset_path = '../dataset/main_data/*/*'
+            facial_landmarks.extract_features(path=dataset_path, pred=pred, detc=detc)
+            # try:
+            #     dataset_path = '../dataset/main_data/*/*'
+            #     facial_landmarks.extract_features(path = dataset_path,pred=pred, detc=detc)
+            #     print (colored('\t\t\tDONE','green'))
+            # except:
+            #     print (colored("\t\t\tERROR",'red'))
         elif action == 9:
             print (colored("\t\t\tSTARTING",'green'))            
             try:

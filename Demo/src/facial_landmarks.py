@@ -26,8 +26,10 @@ def get_shape(image_path, predictor, detector):
     #read the image
     image = cv2.imread(image_path)
     image = imutils.resize(image, width=500)
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    gray = np.asarray(cv2.cvtColor(image, cv2.COLOR_BGR2GRAY))
     # detect faces in the grayscale image
+
+    print(type(gray))
     rects = detector(gray, 1)
     if len(rects) == 0:
         return False,None,None,None
@@ -253,7 +255,7 @@ def test_preview(blur = False, dataset_path = "../dataset/main_data/*/*", pred=N
     image_count = len(human_files)
     rand_int = np.random.random_integers(0,image_count)
     image_path = human_files[rand_int]
-    face_name = image_path.split("/")[-1].split("\\")[1]
+    face_name = image_path.split("/")[-1]
     state, shape, rect, image = get_shape(image_path, pred, detc)
     while not state:
         print (f"Error: this file: {image_path} doesn't have a face to detect!")

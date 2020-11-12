@@ -123,7 +123,7 @@ def predict_input(embedding, second = False):
     embedding = np.reshape(embedding, (1,-1))
     inputs, y, le = prepare_data()
     model = load_model(second = second)
-    pred = model.predict([[embedding]])
+    pred = model.predict([embedding])
     # print (pred)
     ind = np.argsort(pred[0])
     print(ind[::-1][:5]) #FIRST five

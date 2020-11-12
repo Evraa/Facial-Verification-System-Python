@@ -188,10 +188,9 @@ def NN_result_preview(second= False,image_num = None, blur = False, pred=None, d
         D = 22
     else:
         data = auxilary.read_csv(fileName='../csv_files/embedded.csv')
-        D = 128
+        D = 22
     N = len(data)
-    
-    
+
     data_inputs = (data.iloc[:,:D])
     inputs = np.zeros([N,D])
     inputs = np.array(data_inputs)

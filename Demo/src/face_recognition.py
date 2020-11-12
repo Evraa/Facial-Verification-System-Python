@@ -24,7 +24,7 @@ def get_name_from_path(path):
     file_name = path.split('/')
     #split \
     file_name = file_name[len(file_name)-1]
-    file_name = path.split('\\')
+    # file_name = path.split('\\')
     return file_name[1]
 
 def get_folder_from_path(path):
