@@ -147,7 +147,6 @@ def store_embeddings(human_files,model):
 #Main function
 def face_recognition(dataset_path = "../dataset/lfw/*/*", preview=False, image_num = None, blur = False):
     '''
-        + My Goal?
         + For each face in the dataset
             - Detect face
             - Extract landmarks
