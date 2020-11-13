@@ -157,10 +157,10 @@ def face_recognition(dataset_path = "../dataset/lfw/*/*", preview=False, image_n
     '''
     #Load the predictor and detector only once
     pred , detec = facial_landmarks.load_pred_detec()
-    
+
     #Load the dataset
     human_files = np.array(glob(dataset_path))
-    
+
     #Create model for 128 features extraction
     model = create_model()
     model.load_weights('../open_face.h5')
@@ -173,7 +173,7 @@ def face_recognition(dataset_path = "../dataset/lfw/*/*", preview=False, image_n
         # print out the embeddings
         image,face_name, human_file_path = affine_transformation(human_files,pred,detec,preview=preview, image_num = image_num, blur = blur)
         image = (image / 255.).astype(np.float32)
-        embeddings = model.predict(np.expand_dims(image, axis=0))[0] 
+        embeddings = model.predict(np.expand_dims(image, axis=0))[0]
        
         return embeddings, face_name, human_file_path
 

@@ -263,7 +263,7 @@ def is_similar(img, orig):
         li.append(abs(x-y))
     return np.average(li) < THRESHOLD
 
-def buttons(identicalls, similars, left_overs, orig_image_path, title1, title2, title3, id_titles=[], sim_titles=[],left_titles=[],orig_title=None ):
+def buttons(identicalls, similars, orig_image_path, left_overs=[], title1='', title2='', title3='', id_titles=[], sim_titles=[],left_titles=[],orig_title=None ):
     class Index(object):
 
         plt.imshow(mpimg.imread(orig_image_path))

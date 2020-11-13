@@ -29,7 +29,6 @@ def get_shape(image_path, predictor, detector):
     gray = np.asarray(cv2.cvtColor(image, cv2.COLOR_BGR2GRAY))
     # detect faces in the grayscale image
 
-    print(type(gray))
     rects = detector(gray, 1)
     if len(rects) == 0:
         return False,None,None,None

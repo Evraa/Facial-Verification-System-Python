@@ -14,7 +14,6 @@ from utils import LRN2D
 
 def create_model():
     myInput = Input(shape=(96, 96, 3))
-
     x = ZeroPadding2D(padding=(3, 3), input_shape=(96, 96, 3))(myInput)
     x = Conv2D(64, (7, 7), strides=(2, 2), name='conv1')(x)
     x = BatchNormalization(axis=3, epsilon=0.00001, name='bn1')(x)

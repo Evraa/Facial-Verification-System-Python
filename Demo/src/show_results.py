@@ -1,3 +1,5 @@
+import random
+
 import auxilary
 import face_recognition
 import show_tests
@@ -110,7 +112,7 @@ def Euc_result_preview(image_num = None):
     print ("Load labels")
     data = auxilary.read_csv(fileName='../csv_files/embedded.csv')
     N = len(data) 
-    D = 128
+    D = 22
     
     data_inputs = (data.iloc[:,:D])
     inputs = np.zeros([N,D])
@@ -118,17 +120,24 @@ def Euc_result_preview(image_num = None):
 
     labels = np.zeros([N,1])
     labels = np.array(data.iloc[:,D])
-    
-    embeddings,face_name, human_file_path = face_recognition.face_recognition(dataset_path = "../dataset/main_data/*/*", preview=True, image_num = image_num)
-    
+
+    target = random.choice(range(N))
+    print("Testing image no. ",target, ", ", data.iloc[target, 22])
+    # embeddings,face_name, human_file_path = face_recognition.face_recognition(dataset_path = "../dataset/main_data/*/*", preview=True, image_num = image_num)
+    # print(face_name, human_file_path)
+    face_name = data.iloc[target,-1]
+    human_file_path = 'bs path'
+    embeddings = data.iloc[target,:-1]
+
     identicals, similars = results(embeddings, inputs, labels)
 
-    
+    # idc_paths, idc_names, sim_paths, sim_names, others_paths, others_names = \
+    #     trim_outputs (labels, face_name, identicals, similars)
 
-    idc_paths, idc_names, sim_paths, sim_names, others_paths, others_names = \
-        trim_outputs (labels, face_name, identicals, similars)
-    
-    show_tests.buttons(identicalls=idc_paths, id_titles=idc_names, similars=sim_paths,sim_titles=sim_names, left_overs=others_paths, left_titles=others_names,
+    all_set = data.loc[data['output'] == target]
+    # print(all_set)
+
+    show_tests.buttons(identicalls=identicals, similars=similars,
                 orig_image_path=human_file_path, orig_title=face_name,title1="MATCHING",title2= "SIMILARS", title3="OTHERS")
 
 
@@ -213,4 +222,3 @@ def NN_result_preview(second= False,image_num = None, blur = False, pred=None, d
     
     show_tests.buttons(identicalls=idc_paths, id_titles=idc_names, similars=sim_paths,sim_titles=sim_names, left_overs=others_paths, left_titles=others_names,
                 orig_image_path=human_file_path, orig_title=face_name,title1="MATCHING",title2= "SIMILARS", title3="OTHERS")
-

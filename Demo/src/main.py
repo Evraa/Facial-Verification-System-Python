@@ -84,12 +84,13 @@ if __name__ == "__main__":
                 print (colored("\t\t\tERROR",'red'))
         
         elif action == 3:
-            print (colored("\t\t\tSTARTING",'green'))            
-            try:
-                show_results.Euc_result_preview()
-                print (colored('\t\t\tDONE','green'))
-            except:
-                print (colored("\t\t\tERROR",'red'))
+            print (colored("\t\t\tSTARTING",'green'))
+            show_results.Euc_result_preview()
+            # try:
+            #     show_results.Euc_result_preview()
+            #     print (colored('\t\t\tDONE','green'))
+            # except:
+            #     print (colored("\t\t\tERROR",'red'))
         
         elif action == 4:
             # NN.train()
