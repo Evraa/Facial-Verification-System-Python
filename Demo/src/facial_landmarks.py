@@ -10,6 +10,7 @@ from auxilary import path_to_shape_predictor, shape_to_np, dominant_key_points, 
 from collections import OrderedDict
 from PIL import Image
 from matplotlib import image
+import face_recognition
 from matplotlib import pyplot
 import delaunay
 from scipy import ndimage
@@ -26,6 +27,7 @@ def get_shape(image_path, predictor, detector):
     #read the image
     image = cv2.imread(image_path)
     image = imutils.resize(image, width=500)
+    # image = face_recognition.(image)
     gray = np.asarray(cv2.cvtColor(image, cv2.COLOR_BGR2GRAY))
     # detect faces in the grayscale image
 
@@ -232,8 +234,7 @@ def extract_features(path,pred, detc, preview = False):
         if i%100 == 0:
             print (f'image: {i}')
         # Fetch the name
-        human_name = image_path.split("/")[-1].split("\\")[1]
-        
+        human_name = image_path.split("/")[-1]
         # Do we have a face?
         state, shape, rect, image = get_shape(image_path, pred, detc)
         if not state:
@@ -246,14 +247,16 @@ def extract_features(path,pred, detc, preview = False):
 
     df = pd.DataFrame(embedded)
     df["output"] = labels
-    df.to_csv("../csv_files/embedded_2.csv",index=False)
+    df.to_csv("../csv_files/embedded_3.csv",index=False)
     
     
-def test_preview(blur = False, dataset_path = "../dataset/main_data/*/*", pred=None, detc=None):
-    human_files = np.array(glob(dataset_path))
-    image_count = len(human_files)
-    rand_int = np.random.random_integers(0,image_count)
-    image_path = human_files[rand_int]
+def test_preview(blur = False, dataset_path = "../dataset/main_data/*/*", pred=None, detc=None, image_path = None):
+    if not image_path:
+        print("No path given")
+        human_files = np.array(glob(dataset_path))
+        image_count = len(human_files)
+        rand_int = np.random.random_integers(0,image_count)
+        image_path = human_files[rand_int]
     face_name = image_path.split("/")[-1]
     state, shape, rect, image = get_shape(image_path, pred, detc)
     while not state:

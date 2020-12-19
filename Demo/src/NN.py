@@ -20,18 +20,16 @@ import matplotlib.pyplot as plt
 import auxilary
 
 
-def prepare_data():
+def prepare_data(csv):
     print ("Load labels")
     
-    data = auxilary.read_csv(fileName='../csv_files/embedded_2.csv')
+    data = auxilary.read_csv(fileName=csv)
     N = data.shape[0] #5050
     D = data.shape[1] - 1 #128
     
     data_inputs = (data.iloc[:,:D])
-    inputs = np.zeros([N,D])
     inputs = np.array(data_inputs)
 
-    labels = np.zeros([N,1])
     labels = np.array(data.iloc[:,D])
 
     names_encode = LabelEncoder().fit(labels)
@@ -102,27 +100,19 @@ def create_model_relu(input_dim,output_dim):
 
     return model_relu
     
-def load_model(second = False):
-    if second:
-        with open("../sequential_NN_model_2.json", "r") as json_file:
-            json_loaded_model = json_file.read()
-        model = model_from_json(json_loaded_model)
+def load_model():
+    with open("../sequential_NN_model_2.json", "r") as json_file:
+        json_loaded_model = json_file.read()
+    model = model_from_json(json_loaded_model)
 
-        model.load_weights('../sequential_NN_model_2.h5')
-        return model
-    else:
-        with open("../sequential_NN_model.json", "r") as json_file:
-            json_loaded_model = json_file.read()
-        model = model_from_json(json_loaded_model)
-
-        model.load_weights('../sequential_NN_model.h5')
-        return model
+    model.load_weights('../sequential_NN_model_2.h5')
+    return model
 
 
-def predict_input(embedding, second = False):
+def predict_input(csv, embedding, bucket=False):
     embedding = np.reshape(embedding, (1,-1))
-    inputs, y, le = prepare_data()
-    model = load_model(second = second)
+    inputs, y, le = prepare_data(csv)
+    model = load_model()
     pred = model.predict([embedding])
     # print (pred)
     ind = np.argsort(pred[0])
@@ -133,8 +123,9 @@ def predict_input(embedding, second = False):
     for i in range (1,5):
         similars.append(le.inverse_transform([ind[::-1][i]])[0])
     # print("Prediction Probability: ",pred[0][ind[::-1][0]]*100,"%")
-    print ("ID: ", identical)
-    print ("Similar: ",similars)
+    if not bucket:
+            print("ID: ", identical)
+            print("Similar: ",similars)
     return identical, similars
     
 def plot_acc (history):
@@ -159,11 +150,11 @@ def plot_acc (history):
     plt.show()
     return 
 
-def train():
+def train(csv):
     if os.path.exists("../sequential_NN_model.h5"):
         print ("The model already exist, do you want to train it again?")
         input("Press Enter for re-training, press ctrl+c for exit")
-    X, y, names_encode = prepare_data()
+    X, y, names_encode = prepare_data(csv)
     X_train, X_val, y_train, y_val = split_data(X,y)
     input_dim = X_train.shape[1]
     output_dim = y_train.shape[1]
@@ -177,7 +168,7 @@ def train():
 def predict_input_from_video(embedding, le):
     embedding = np.reshape(embedding, (1,-1))
     
-    model = load_model(second = True)
+    model = load_model()
     pred = model.predict([[embedding]])
     # print (pred)
     ind = np.argsort(pred[0])

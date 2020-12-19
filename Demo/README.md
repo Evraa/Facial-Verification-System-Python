@@ -46,7 +46,7 @@
 
 
 
-# Folders Discription:
+# Folders Description:
 
 
 # [dataset folder](https://github.com/Evraa/Facial-Verification-System-Python/tree/master/Demo/dataset)

@@ -35,9 +35,8 @@ def get_folder_from_path(path):
     #split /
     file_name = path.split('/')
     #split \
-    file_name = file_name[len(file_name)-1]
-    file_name = path.split('\\')
-    return file_name[1] + '\\' + file_name[2]
+    file_name = file_name[len(file_name)-2]
+    return file_name + "/"
 
 
 def create_folder(path):
@@ -78,7 +77,6 @@ def affine_transformation(human_files,pred,detec,preview = False, image_num=None
     falsy_dir = '../dataset/falsy/'
     face_aligner = openface.AlignDlib(auxilary.path_to_shape_predictor)
     affine_dir = '../dataset/lfw_affine/'
-
     if preview:
         # for i ,human_file in enumerate(human_files):
         #     folders =  (get_folder_from_path(human_file))
@@ -110,7 +108,7 @@ def affine_transformation(human_files,pred,detec,preview = False, image_num=None
         state, shape, rect, image = facial_landmarks.get_shape(human_file, pred, detec)
         if state:
             file_path = affine_dir + get_folder_from_path(human_file)
-            create_folder(affine_dir + get_name_from_path(human_file))
+            create_folder(file_path)
             alignedFace = face_aligner.align(96, image, rect, \
                     landmarkIndices=openface.AlignDlib.OUTER_EYES_AND_NOSE)
             cv2.imwrite(file_path, alignedFace)
@@ -127,6 +125,7 @@ def affine_transformation(human_files,pred,detec,preview = False, image_num=None
 
 def store_embeddings(human_files,model):
     labels = get_labesl(human_files)
+    print((labels))
     data_size = len(human_files)
     embedded = np.zeros((data_size, 128))
     for i, human_file in enumerate(human_files):

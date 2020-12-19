@@ -1,5 +1,6 @@
 # from networkx.drawing.tests.test_pylab import plt
 # from sympy.plotting.tests.test_plot import matplotlib
+import pickle
 
 import auxilary
 import numpy as np
@@ -8,12 +9,11 @@ from sklearn.linear_model import SGDClassifier
 from sklearn.model_selection import train_test_split
 
 
-def svm_compare():
+def svm_compare(path):
     '''
     TODO: implement svm
     '''
     # path = '../csv_files/csv_differences.csv'
-    path = '../csv_files/csv_differences_prof.csv'
     data = auxilary.read_csv(fileName=path)
 
     # READ THE INPUTS
@@ -60,7 +60,7 @@ def svm_compare():
     # Get support vectors themselves
     # support_vectors = clf.support_vectors_
 
-    return clf
+    pickle.dump(clf, open("../SVM_clf.p", "wb" ))
 
 
 

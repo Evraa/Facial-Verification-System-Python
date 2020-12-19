@@ -1,3 +1,4 @@
+import pickle
 from random import randint
 
 import numpy as np
@@ -9,8 +10,10 @@ import matplotlib.image as mpimg
 from matplotlib import animation
 from matplotlib.widgets import Button
 
+import SVM
 import facial_landmarks
 import auxilary
+import show_results
 
 
 def show_image(title, images_list):
@@ -86,7 +89,7 @@ def add_titlebox(ax, text):
     return ax
 
 
-def show_tests(dataset_path, clf, detector, predictor):
+def show_tests(dataset_path, detector, predictor, bucket, img='', embed_data=None):
     '''
         + Takes the folder of sets of images
         + Randomly choose an image, and show [Identicalls, simillars, Fasle call]
@@ -101,15 +104,34 @@ def show_tests(dataset_path, clf, detector, predictor):
             4- show it to the clf
 
             5- state the prediction
+
+        If bucket is true
+            Gather the results of the SVM run and the NN run
+            Display it using the test visualizing functions
     '''
-    orig_image_path, orig_image_name = get_random_image_path(dataset_path)
+    if len(img) > 3:
+        orig_image_path = img
+        orig_image_name = img.split("/")[3]
+    else:
+        orig_image_path, orig_image_name = get_random_image_path(dataset_path)
     print(f'image name: {orig_image_name}')
     # orig_image_path = '../dataset/yalefaces/6/subject06_0.gif'
     # orig_image_name = "subject01_0.gif"
-    orig_key_points, state = facial_landmarks.get_shape(orig_image_path, detector, predictor)
+    state, orig_key_points, rects, image = facial_landmarks.get_shape(orig_image_path, predictor, detector)
     while state is False:
         orig_image_path, orig_image_name = get_random_image_path(dataset_path)
-        orig_key_points, state = facial_landmarks.get_key_points(orig_image_path, detector, predictor)
+        state, orig_key_points, rects, image = facial_landmarks.get_shape(orig_image_path, predictor, detector)
+
+    if bucket:
+        svm_iden, svm_sim, svm_left = svm_show_tests(dataset_path,orig_key_points,orig_image_path,predictor,detector,True)
+        nn_iden, stats = show_results.NN_result_preview(embed_data, orig_image_path,False, predictor,detector,True)
+        both = list(set(svm_iden) & set(nn_iden))
+        buttons(both,list(set(nn_iden)-set(svm_iden)), orig_image_path, list(set(svm_iden)-set(nn_iden)),"Both","NN","SVM", stats=stats)
+    else:
+        svm_show_tests(dataset_path, orig_key_points, orig_image_path, predictor,detector, False)
+
+def svm_show_tests(dataset_path, orig_key_points, orig_image_path, predictor, detector, bucket):
+    clf = pickle.load(open( "../SVM_clf.p", "rb" ))
     orig_base_point = orig_key_points[auxilary.fixed_key_point]
     orig_key_points = orig_key_points[auxilary.dominant_key_points]
     orig_lengths = auxilary.calc_lengths(orig_key_points, orig_base_point)
@@ -123,8 +145,8 @@ def show_tests(dataset_path, clf, detector, predictor):
     similars = []
     similars_names = []
     left_overs = []
-    identical_title = "Identical Images"
-    similar_title = "Similar Images"
+    identical_title = "Identical"
+    similar_title = "Similar"
 
     # fig = plt.figure()
     # ax1 = fig.add_subplot(1, 2, 1)
@@ -144,9 +166,7 @@ def show_tests(dataset_path, clf, detector, predictor):
             # ax2.axis("off")
             # ims.append([im])
 
-            if image_path == orig_image_path:
-                continue
-            key_points, state = facial_landmarks.get_key_points(image_path, detector, predictor)
+            state, key_points, rects, image = facial_landmarks.get_shape(image_path, predictor, detector)
             if state is False:
                 continue
             base_point = key_points[auxilary.fixed_key_point]
@@ -196,8 +216,10 @@ def show_tests(dataset_path, clf, detector, predictor):
     # display_sets(left_overs, orig_image_path, "Non-Matched Images")
     # plt.show()
 
-    # buttons(identicalls, similars, left_overs, orig_image_path, identical_title, similar_title, "Non-Matched Images")
-    buttons(identicalls[:15], similars[:15], left_overs[:15], orig_image_path, identical_title, similar_title, "Non-Matched Images")
+    if bucket:
+        return identicalls, similars, left_overs
+    else:
+        buttons(identicalls[:15], similars[:15], orig_image_path, left_overs[:15], identical_title, similar_title, "Others")
 
 
 def display_sets(img_list, orig, title, img_list_titles=[], orig_title="Original Photo" ):
@@ -263,10 +285,12 @@ def is_similar(img, orig):
         li.append(abs(x-y))
     return np.average(li) < THRESHOLD
 
-def buttons(identicalls, similars, orig_image_path, left_overs=[], title1='', title2='', title3='', id_titles=[], sim_titles=[],left_titles=[],orig_title=None ):
+def buttons(identicalls, similars, orig_image_path, left_overs=[], title1='', title2='', title3='', id_titles=[], sim_titles=[],left_titles=[],orig_title=None, stats = None ):
+    print(stats)
     class Index(object):
 
         plt.imshow(mpimg.imread(orig_image_path))
+
         def same(self, event):
             display_sets(img_list=identicalls, orig=orig_image_path, title=title1, img_list_titles=id_titles, orig_title=orig_title)
             plt.show()
@@ -285,11 +309,15 @@ def buttons(identicalls, similars, orig_image_path, left_overs=[], title1='', ti
     axsame = plt.axes([0.36, 0, 0.1, 0.075])
     axsimilar = plt.axes([0.47, 0, 0.1, 0.075])
     axrest = plt.axes([0.58, 0, 0.1, 0.075])
-    bsame = Button(axsame, 'Identical')
+
+    bsame = Button(axsame, title1)
     bsame.on_clicked(callback.same)
-    bsimilar = Button(axsimilar, 'Similar')
+
+    bsimilar = Button(axsimilar, title2)
     bsimilar.on_clicked(callback.similar)
-    brest = Button(axrest, 'Rest')
+
+    brest = Button(axrest, title3)
     brest.on_clicked(callback.rest)
+    plt.text(5, 5, 'your legend', bbox={'facecolor': 'white', 'pad': 10})
 
     plt.show()
