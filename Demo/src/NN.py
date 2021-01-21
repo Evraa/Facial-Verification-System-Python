@@ -22,6 +22,7 @@ import auxilary
 
 def prepare_data(csv):
     print ("Load labels")
+    #embedded_2.csv
     
     data = auxilary.read_csv(fileName=csv)
     N = data.shape[0] #5050
@@ -68,10 +69,10 @@ def split_data(X,y):
 def save_model(model):
     # serialize model to JSON
     model_json = model.to_json()
-    with open("../sequential_NN_model_2.json", "w") as json_file:
+    with open("../sequential_NN_model.json", "w") as json_file:
         json_file.write(model_json)
     # serialize weights to HDF5
-    model.save_weights("../sequential_NN_model_2.h5")
+    model.save_weights("../sequential_NN_model.h5")
     print("Saved model to disk")
 
 def create_model_relu(input_dim,output_dim):
@@ -101,11 +102,11 @@ def create_model_relu(input_dim,output_dim):
     return model_relu
     
 def load_model():
-    with open("../sequential_NN_model_2.json", "r") as json_file:
+    with open("../sequential_NN_model.json", "r") as json_file:
         json_loaded_model = json_file.read()
     model = model_from_json(json_loaded_model)
 
-    model.load_weights('../sequential_NN_model_2.h5')
+    model.load_weights('../sequential_NN_model.h5')
     return model
 
 

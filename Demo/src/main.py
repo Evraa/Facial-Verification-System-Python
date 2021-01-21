@@ -54,8 +54,11 @@ if __name__ == "__main__":
 
     print (colored('\t\tLoading models once, to make the rest of the operations faster','yellow'))
     pred, detc = facial_landmarks.load_pred_detec()
-    file_dataset = '../dataset/main_data/*/*'
+    dataset = '../dataset/main_data/*/*'
+    file_dataset = '../dataset/main_data/'
     embedded_dataset = '../csv_files/embedded_2.csv'
+    demo_string = '../dataset/main_data/Kate_Hudson/Kate_Hudson_0001.jpg'
+    demo1 = '../dataset/grouped/1/2.jpg'
 
     while True:
         action = take_action()
@@ -63,8 +66,7 @@ if __name__ == "__main__":
         if action == 1:
             #Affine transformation
             print (colored("\t\t\tSTARTING",'green'))
-            dataset_path = '../dataset/main_data/*/*'
-            human_files = np.array(glob(dataset_path))
+            human_files = np.array(glob(dataset))
             face_recognition.affine_transformation(human_files, pred, detc)
 
             # embedding time
@@ -82,14 +84,14 @@ if __name__ == "__main__":
 
         elif action == 2:
             print (colored("\t\t\tSTARTING",'green'))
-            dataset_path = '../dataset/main_data/*/*'
-            facial_landmarks.extract_features(path=dataset_path, pred=pred, detc=detc)
+            facial_landmarks.extract_features(path=dataset, pred=pred, detc=detc)
             # try:
             #     dataset_path = '../dataset/main_data/*/*'
             #     facial_landmarks.extract_features(path = dataset_path,pred=pred, detc=detc)
             #     print (colored('\t\t\tDONE','green'))
             # except:
             #     print (colored("\t\t\tERROR",'red'))
+
         elif action == 3:
             print(colored("\t\t\tSTARTING", 'green'))
             try:
@@ -100,18 +102,16 @@ if __name__ == "__main__":
                 print(colored("\t\t\tERROR", 'red'))
         
         elif action == 4:
-            dataset_path = '../csv_files/embedded_2.csv'
             print (colored("\t\t\tSTARTING",'green'))            
             try:
-                NN.train(dataset_path)
+                NN.train(embedded_dataset)
                 print (colored('\t\t\tDONE','green'))
             except:
                 print (colored("\t\t\tERROR",'red'))
         
         elif action == 5:
-            dataset_path = '../csv_files/embedded_2.csv'
             print(colored("\t\t\tSTARTING", 'green'))
-            show_results.NN_result_preview(dataset_path, detc=detc, pred=pred)
+            show_results.NN_result_preview(embedded_dataset, file_dataset, detc=detc, pred=pred)
             print(colored('\t\t\tDONE', 'green'))
             # try:
             #     dataset_path = '../csv_files/embedded_2.csv'
@@ -135,7 +135,7 @@ if __name__ == "__main__":
             except:
                 print (colored("\t\t\tERROR in training",'red'))
             print (colored("\t\tShowing Results",'green'))
-            show_tests.show_tests(auxilary.path_to_maindata, detc, pred, False)
+            show_tests.show_tests(file_dataset, detc, pred, False)
             # try:
             #     show_tests.show_tests(auxilary.path_to_maindata , clf, detc,pred)
             #     print (colored('\t\t\tDone','green'))
@@ -145,8 +145,7 @@ if __name__ == "__main__":
         elif action == 7:
             print(colored("\t\t\tSTARTING", 'green'))
             try:
-                dataset_path = '../csv_files/embedded.csv'
-                show_results.Euc_result_preview(dataset_path)
+                show_results.Euc_result_preview(embedded_dataset)
                 print(colored('\t\t\tDONE', 'green'))
             except:
                 print(colored("\t\t\tERROR", 'red'))
@@ -154,14 +153,16 @@ if __name__ == "__main__":
         elif action == 10:
             print (colored("\t\t\tSTARTING",'green'))            
             try:
-                plot_weights.run_main(csv_path = "../csv_files/embedded_2.csv")
+                plot_weights.run_main(csv_path = embedded_dataset)
                 print (colored('\t\t\tDONE','green'))
             except:
                 print (colored("\t\t\tERROR",'red'))
         elif action == 11:
-            dataset_path = '../dataset/main_data/'
-            img = input(colored("\t\t\tImage path: ",'blue'))
-            show_tests.show_tests(dataset_path, detc, pred, True, img, embedded_dataset)
+            try:
+                img = input(colored("\t\t\tImage path: ",'blue'))
+                show_tests.show_tests(file_dataset, detc, pred, True, img, embedded_dataset)
+            except:
+                print (colored("\t\t\tERROR",'red'))
         elif action == 0:
             #EXIT
             break

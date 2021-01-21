@@ -58,7 +58,7 @@ def get_random_image_path(dataset_path):
     print(folder_numb, file_numb)
 
     folder_path = dataset_path + str(folder_numb) + '/'
-    images = os.listdir(folder_path)
+    images = auxilary.mylistdir(folder_path)
     image_name = images[file_numb]
     image_path = folder_path + image_name
     if not os.path.exists(image_path):
@@ -124,7 +124,7 @@ def show_tests(dataset_path, detector, predictor, bucket, img='', embed_data=Non
 
     if bucket:
         svm_iden, svm_sim, svm_left = svm_show_tests(dataset_path,orig_key_points,orig_image_path,predictor,detector,True)
-        nn_iden, stats = show_results.NN_result_preview(embed_data, orig_image_path,False, predictor,detector,True)
+        nn_iden, stats = show_results.NN_result_preview(embed_data, dataset_path, orig_image_path,False, predictor,detector,True)
         both = list(set(svm_iden) & set(nn_iden))
         buttons(both,list(set(nn_iden)-set(svm_iden)), orig_image_path, list(set(svm_iden)-set(nn_iden)),"Both","NN","SVM", stats=stats)
     else:
@@ -156,7 +156,7 @@ def svm_show_tests(dataset_path, orig_key_points, orig_image_path, predictor, de
     # show_one_image(orig_image_path,orig_image_name)
     for folder_name in folder_names:
         folder_path = dataset_path + folder_name + '/'
-        image_names = os.listdir(folder_path)
+        image_names = auxilary.mylistdir(folder_path)
         for image_name in image_names:
             str = f'Testing folder {folder_name}, image {image_name}'
             print(str)

@@ -31,23 +31,22 @@ def results(embeddings, inputs, labels):
     return identicals, similars
 
 
-def trim_outputs(labels, face_name, identicals, similars):
+def trim_outputs(path, labels, face_name, identicals, similars):
     N = labels.shape[0]
     others_names = []
     others_paths = []
-    path = '../dataset/main_data/'
     # for others
     for i in range(9):
         rand_int = np.random.random_integers(0, N - 1)
         label = labels[rand_int]
-        dir_path = path + label + '/'
-        files_count = (os.listdir(dir_path))
+        dir_path = path + str(label) + '/'
+        files_count = (auxilary.mylistdir(dir_path))
         while label == face_name or len(files_count) < 1 or \
                 label in identicals or label in similars:
             rand_int = np.random.random_integers(0, N - 1)
             label = labels[rand_int]
-            dir_path = path + label + '/'
-            files_count = (os.listdir(dir_path))
+            dir_path = path + str(label) + '/'
+            files_count = (auxilary.mylistdir(dir_path))
 
         others_names.append(label)
         others_paths.append(dir_path + files_count[0])
@@ -66,15 +65,15 @@ def trim_outputs(labels, face_name, identicals, similars):
     sim_paths = []
     sim_names = similars_2
     for sim in similars_2:
-        dir_path = path + sim + '/'
-        files_count = (os.listdir(dir_path))
+        dir_path = path + str(sim) + '/'
+        files_count = (auxilary.mylistdir(dir_path))
         sim_paths.append(dir_path + files_count[0])
 
     # IDENTICALS
     idc_paths, idc_names = [], []
     # make sure the main file occurs
     dir_path = path + face_name + '/'
-    files_count = os.listdir(dir_path)
+    files_count = auxilary.mylistdir(dir_path)
     for i, file_count in enumerate(files_count):
         if i >= 9:
             break
@@ -92,8 +91,8 @@ def trim_outputs(labels, face_name, identicals, similars):
         idc = identicals[i]
         if idc not in idc_names:
             idc_names.append("NOT MATCHING")
-            dir_path = path + idc + '/'
-            files_count = (os.listdir(dir_path))
+            dir_path = path + str(idc) + '/'
+            files_count = (auxilary.mylistdir(dir_path))
             idc_paths.append(dir_path + files_count[0])
             others_count -= 1
 
@@ -144,23 +143,22 @@ def Euc_result_preview(dataset_path, image_num=None):
                        title3="OTHERS")
 
 
-def trim_NN_outputs(labels, face_name, identicals, similars, bucket):
+def trim_NN_outputs(path, labels, face_name, identicals, similars, bucket):
     N = labels.shape[0]
     others_names = []
     others_paths = []
-    path = '../dataset/main_data/'
     # for others
     for _ in range(9):
         rand_int = np.random.random_integers(0, N - 1)
         label = labels[rand_int]
-        dir_path = path + label + '/'
-        files_count = (os.listdir(dir_path))
+        dir_path = path + str(label) + '/'
+        files_count = (auxilary.mylistdir(dir_path))
         while label == face_name or len(files_count) < 1 or \
                 label in identicals or label in similars:
             rand_int = np.random.random_integers(0, N - 1)
             label = labels[rand_int]
-            dir_path = path + label + '/'
-            files_count = (os.listdir(dir_path))
+            dir_path = path + str(label) + '/'
+            files_count = (auxilary.mylistdir(dir_path))
 
         others_names.append(label)
         others_paths.append(dir_path + files_count[0])
@@ -170,16 +168,16 @@ def trim_NN_outputs(labels, face_name, identicals, similars, bucket):
     sim_names = similars
 
     for sim in similars:
-        sim_path = path + sim + '/'
-        files = os.listdir(sim_path)
+        sim_path = path + str(sim) + '/'
+        files = auxilary.mylistdir(sim_path)
         if len(files) > 0:
             sim_paths.append(sim_path + files[0])
 
     # for identicals
     idc_name = identicals[0]
     idc_paths, idc_names = [], []
-    id_path = path + idc_name + '/'
-    files = os.listdir(id_path)
+    id_path = path + str(idc_name) + '/'
+    files = auxilary.mylistdir(id_path)
     count = len(files)
     # it = 9 if count >=9  else count
     for i in range(count):
@@ -190,11 +188,12 @@ def trim_NN_outputs(labels, face_name, identicals, similars, bucket):
     return idc_paths, idc_names, sim_paths, sim_names, others_paths, others_names
 
 
-def NN_result_preview(dataset, image_path=None, blur=False, pred=None, detc=None, bucket=False):
+def NN_result_preview(embedded_data, file_paths, image_path=None, blur=False, pred=None, detc=None, bucket=False):
     print("Load labels")
-    data = auxilary.read_csv(fileName=dataset)
+    data = auxilary.read_csv(fileName=embedded_data)
     D = 22
     N = len(data)
+    recur_paths = file_paths+'*/*'
 
     data_inputs = (data.iloc[:, :D])
     inputs = np.zeros([N, D])
@@ -204,16 +203,16 @@ def NN_result_preview(dataset, image_path=None, blur=False, pred=None, detc=None
     labels = np.array(data.iloc[:, D])
 
     embeddings, face_name, human_file_path = facial_landmarks.test_preview(
-        blur=blur, dataset_path="../dataset/main_data/*/*", pred=pred, detc=detc, image_path=image_path)
+        blur=blur, dataset_path=recur_paths, pred=pred, detc=detc, image_path=image_path)
 
     # stats = get_stats(data, embeddings)
     stats = None
 
     # identicals, similars = NN_results(embeddings, inputs, labels)
-    identicals, similars = NN.predict_input(dataset, embeddings)
+    identicals, similars = NN.predict_input(embedded_data, embeddings)
 
     idc_paths, idc_names, sim_paths, sim_names, others_paths, others_names = \
-        trim_NN_outputs(labels, face_name, identicals, similars, bucket)
+        trim_NN_outputs(file_paths, labels, face_name, identicals, similars, bucket)
 
     if bucket:
         return idc_paths, stats
@@ -226,7 +225,6 @@ def NN_result_preview(dataset, image_path=None, blur=False, pred=None, detc=None
 
 def get_stats(data, embeddings):
     av = data.mean()
-    print(av, embeddings)
     variation = (abs(av - embeddings) / av) * 100
     eyebr = np.average(variation[0:5])
     eye = np.average(variation[6:13])

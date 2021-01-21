@@ -82,3 +82,6 @@ Where repeatedly used functions exist
 Use the permDict(dataframe) to analyze a DataFrame of faces. 
 Each face has 6 length values that determine similarity,
 as compared to the x scale of the face.
+
+
+## Adding a new bucket decision algorithm

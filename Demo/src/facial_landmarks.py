@@ -234,7 +234,7 @@ def extract_features(path,pred, detc, preview = False):
         if i%100 == 0:
             print (f'image: {i}')
         # Fetch the name
-        human_name = image_path.split("/")[-1]
+        human_name = image_path.split("/")[-2]
         # Do we have a face?
         state, shape, rect, image = get_shape(image_path, pred, detc)
         if not state:
@@ -253,6 +253,7 @@ def extract_features(path,pred, detc, preview = False):
 def test_preview(blur = False, dataset_path = "../dataset/main_data/*/*", pred=None, detc=None, image_path = None):
     if not image_path:
         print("No path given")
+        print(dataset_path)
         human_files = np.array(glob(dataset_path))
         image_count = len(human_files)
         rand_int = np.random.random_integers(0,image_count)
